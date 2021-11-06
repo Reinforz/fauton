@@ -1,59 +1,27 @@
 import fs from 'fs';
 import path from 'path';
-import { IDfaTests } from './types';
+import { IDfaTest } from './types';
 import {
 	generateAggregateMessage,
 	generateBinaryStrings,
 	generateCaseMessage,
+	generateRandomBinaryStrings,
 	testDfa,
 } from './utils';
 
 const SHOW_EACH_CASE = false,
-	LIMIT = 10_000_000;
+	LIMIT = 10_000_000,
+	RANDOM_BINARY_STRINGS = true;
 
-const dfaTests: IDfaTests[] = [
-	{
-		// Write your test logic here
-		testLogic(randomBinaryString) {
-			const oddLength = randomBinaryString.length % 2 === 1;
-			let zerosInEvenPositions = true;
-			for (let index = 1; index <= randomBinaryString.length; index++) {
-				const binaryChar = randomBinaryString[index - 1];
-				const isEvenIndex = index % 2 === 0;
-				if (isEvenIndex && binaryChar !== '0') {
-					zerosInEvenPositions = false;
-					break;
-				}
-			}
-			return oddLength && zerosInEvenPositions;
-		},
-		// Write your dfa logic here
-		DFA: {
-			label: 'DFA 3',
-			start_state: 'Q0',
-			final_states: ['Q1'],
-			transitions: {
-				Q0: {
-					0: 'Q1',
-					1: 'Q1',
-				},
-				Q1: {
-					0: 'Q0',
-					1: 'Q2',
-				},
-				Q2: {
-					0: 'Q2',
-					1: 'Q2',
-					// If we are in a trap, we stop processing strings immediately
-					isTrap: true,
-				},
-			},
-		},
-	},
-];
+const dfaTests: IDfaTest[] = [];
 
 function main() {
-	const generatedBinaryStrings = generateBinaryStrings(LIMIT);
+	let generatedBinaryStrings: string[] = [];
+	if (RANDOM_BINARY_STRINGS) {
+		generatedBinaryStrings = generateRandomBinaryStrings(LIMIT, 1, 20);
+	} else {
+		generatedBinaryStrings = generateBinaryStrings(LIMIT);
+	}
 	// Create the log directory if it doesn't exist
 	const logPath = path.resolve(__dirname, 'logs');
 	if (!fs.existsSync(logPath)) {

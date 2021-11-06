@@ -12,7 +12,7 @@ export interface IBinaryDFA {
 	>;
 }
 
-export interface IDfaTests {
+export interface IDfaTest {
 	testLogic: (binary: string) => boolean;
 	DFA: IBinaryDFA;
 }
