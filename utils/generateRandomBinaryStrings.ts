@@ -5,14 +5,19 @@ export default function generateRandomBinaryStrings(
 	minLength: number,
 	maxLength: number
 ) {
-	const uniqueStrings: Set<string> = new Set();
-	for (let index = 0; index < total; index++) {
-		const stringLength = generateRandomNumber(minLength, maxLength);
-		let binaryString = '';
-		for (let index = 0; index < stringLength; index++) {
-			binaryString += generateRandomNumber(0, 1);
+	// Using a set to store only unique binary strings
+	const uniqueRandomBinaryStrings: Set<string> = new Set();
+	while (uniqueRandomBinaryStrings.size < total) {
+		const binaryStringLength = generateRandomNumber(minLength, maxLength);
+		let randomBinaryString = '';
+		for (let index = 0; index < binaryStringLength; index++) {
+			randomBinaryString += generateRandomNumber(0, 1);
 		}
-		uniqueStrings.add(binaryString);
+
+		if (!uniqueRandomBinaryStrings.has(randomBinaryString)) {
+			console.log(randomBinaryString);
+			uniqueRandomBinaryStrings.add(randomBinaryString);
+		}
 	}
-	return Array.from(uniqueStrings);
+	return Array.from(uniqueRandomBinaryStrings);
 }

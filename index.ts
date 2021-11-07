@@ -11,17 +11,25 @@ import {
 } from './utils';
 
 const SHOW_EACH_CASE = false,
-	LIMIT = 10_000_000,
-	RANDOM_BINARY_STRINGS = true;
+	TOTAL_RANDOM_BINARY_STRINGS = 100_000,
+	BITS_LIMIT = 10,
+	GENERATE_RANDOM_BINARY_STRINGS = true;
 
 const dfaTests: IDfaTest[] = [dfa1Test];
 
+function createFileWriteStreams(dfaLabel: string) {
+	const logPath = path.resolve(__dirname, 'logs');
+	return [`${dfaLabel}.txt`, `${dfaLabel}.incorrect.txt`, `${dfaLabel}.correct.txt`].map(
+		(fileName) => fs.createWriteStream(path.resolve(logPath, fileName))
+	);
+}
+
 function main() {
 	let generatedBinaryStrings: string[] = [];
-	if (RANDOM_BINARY_STRINGS) {
-		generatedBinaryStrings = generateRandomBinaryStrings(LIMIT, 1, 20);
+	if (GENERATE_RANDOM_BINARY_STRINGS) {
+		generatedBinaryStrings = generateRandomBinaryStrings(TOTAL_RANDOM_BINARY_STRINGS, 1, 20);
 	} else {
-		generatedBinaryStrings = generateBinaryStrings(LIMIT);
+		generatedBinaryStrings = generateBinaryStrings(BITS_LIMIT, { withoutPadding: true });
 	}
 	// Create the log directory if it doesn't exist
 	const logPath = path.resolve(__dirname, 'logs');
@@ -31,12 +39,8 @@ function main() {
 
 	dfaTests.forEach((dfaTest) => {
 		// The log files are generated based on the label of the dfa
-		const dfaFilePath = path.resolve(logPath, `${dfaTest.DFA.label}.txt`);
-		const dfaIncorrectStringsFilePath = path.resolve(logPath, `${dfaTest.DFA.label}.incorrect.txt`);
-		const dfaCorrectStringsFilePath = path.resolve(logPath, `${dfaTest.DFA.label}.correct.txt`);
-		const dfaWriteStream = fs.createWriteStream(dfaFilePath);
-		const dfaIncorrectStringsWriteStream = fs.createWriteStream(dfaIncorrectStringsFilePath);
-		const dfaCorrectStringsWriteStream = fs.createWriteStream(dfaCorrectStringsFilePath);
+		const [dfaWriteStream, dfaIncorrectStringsWriteStream, dfaCorrectStringsWriteStream] =
+			createFileWriteStreams(dfaTest.DFA.label);
 
 		let totalCorrect = 0,
 			totalIncorrect = 0;
