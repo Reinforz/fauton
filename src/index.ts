@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { IDfaModule, IDfaModuleInfo } from './types';
 import {
+	countFileLines,
 	generateAggregateMessage,
 	generateBinaryStrings,
 	generateCaseMessage,
@@ -34,13 +35,13 @@ type IConfigs =
 	  };
 
 export class DfaTest {
-	dfas: IDfaModule[];
-	cliProgressBar: cliProgress.SingleBar;
+	#dfas: IDfaModule[];
+	#cliProgressBar: cliProgress.SingleBar;
 	logsPath: string;
 
 	constructor(dfas: IDfaModule[], logsPath: string) {
-		this.dfas = dfas;
-		this.cliProgressBar = new cliProgress.SingleBar(
+		this.#dfas = dfas;
+		this.#cliProgressBar = new cliProgress.SingleBar(
 			{
 				stopOnComplete: true,
 				format: colors.green('{bar}') + '| {percentage}% || {value}/{total} Chunks',
@@ -75,7 +76,7 @@ export class DfaTest {
 		binaryStrings: string[],
 		post?: (dfaModule: IDfaModule, dfaModuleIndex: number) => void
 	) {
-		this.dfas.forEach((dfaModule, dfaModuleIndex) => {
+		this.#dfas.forEach((dfaModule, dfaModuleIndex) => {
 			// The log files are generated based on the label of the dfa
 			const [
 				dfaWriteStream,
@@ -119,7 +120,7 @@ export class DfaTest {
 					logicTestResult
 				);
 				dfaWriteStream.write(withoutColors + '\n');
-				this.cliProgressBar.increment(1);
+				this.#cliProgressBar.increment(1);
 			}
 			post && post(dfaModule, dfaModuleIndex);
 		});
@@ -153,12 +154,12 @@ export class DfaTest {
 	}
 
 	async test(configs: IConfigs) {
-		const writeStreams = this.dfas.map((dfaModule) =>
+		const writeStreams = this.#dfas.map((dfaModule) =>
 			this.#createFileWriteStreams(dfaModule.DFA.label)
 		);
 		const readStream = configs.type === 'file' ? fs.createReadStream(configs.filePath) : null;
 
-		const dfaModuleInfos = this.dfas.map(() => ({
+		const dfaModuleInfos = this.#dfas.map(() => ({
 			falsePositives: 0,
 			falseNegatives: 0,
 			truePositives: 0,
@@ -166,7 +167,8 @@ export class DfaTest {
 		}));
 
 		if (configs.type === 'file' && readStream) {
-			this.cliProgressBar.start(2097712 * this.dfas.length, 0, {
+			const fileLines = await countFileLines(configs.filePath);
+			this.#cliProgressBar.start(fileLines * this.#dfas.length, 0, {
 				speed: 'N/A',
 			});
 			for await (const chunks of readStream) {
@@ -178,7 +180,7 @@ export class DfaTest {
 				);
 			}
 
-			this.dfas.forEach((dfaModule, dfaModuleIndex) => {
+			this.#dfas.forEach((dfaModule, dfaModuleIndex) => {
 				this.#postTest(dfaModule, dfaModuleInfos[dfaModuleIndex], writeStreams[dfaModuleIndex]);
 			});
 		} else if (configs.type === 'generate') {
@@ -192,7 +194,7 @@ export class DfaTest {
 			} else if (configs.range) {
 				binaryStrings = generateBinaryStrings(configs.range.bitLimit);
 			}
-			this.cliProgressBar.start(binaryStrings.length * this.dfas.length, 0, {
+			this.#cliProgressBar.start(binaryStrings.length * this.#dfas.length, 0, {
 				speed: 'N/A',
 			});
 			this.#testDfas(
@@ -208,3 +210,4 @@ export class DfaTest {
 }
 
 export * from './types';
+export * from './utils';
