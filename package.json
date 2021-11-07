@@ -10,6 +10,9 @@
     "start": "node dist/index.js",
     "build:watch": "tsc -w"
   },
+  "files": [
+    "dist/"
+  ],
   "keywords": [
     "dfa",
     "automaton"
