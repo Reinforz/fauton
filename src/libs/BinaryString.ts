@@ -2,6 +2,7 @@ import generateRandomNumber from '../utils/generateRandomNumber';
 
 interface IOptions {
 	withoutPadding: boolean;
+	cb?: (binaryString: string) => void;
 }
 
 export class BinaryString {
@@ -12,16 +13,15 @@ export class BinaryString {
 		for (let i = 0; i < limit; i++) {
 			const binaryString = Number(i).toString(2);
 			const bitDifference = bitsLimit - binaryString.length;
-			for (let index = 1; index < bitDifference; index++) {
-				binaryStrings.add('0'.repeat(index) + binaryString);
+			for (let index = 1; index <= bitDifference; index++) {
+				const paddedBinaryString = '0'.repeat(index) + binaryString;
+				binaryStrings.add(paddedBinaryString);
+				options && options.cb && options.cb(paddedBinaryString);
 			}
 			if (withoutPadding) {
 				binaryStrings.add(binaryString);
+				options && options.cb && options.cb(binaryString);
 			}
-			// Append 0 if the binary string length is less than bits limit
-			const paddedBinaryString =
-				binaryString.length < bitsLimit ? '0'.repeat(bitDifference) + binaryString : binaryString;
-			binaryStrings.add(paddedBinaryString);
 		}
 
 		return Array.from(binaryStrings);
