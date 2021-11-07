@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import dfa1Test from './dfa/dfa1';
-import { IDfaTest } from './types';
+import dfaTests from './dfa';
 import {
 	generateAggregateMessage,
 	generateBinaryStrings,
@@ -11,11 +10,10 @@ import {
 } from './utils';
 
 const SHOW_EACH_CASE = false,
-	TOTAL_RANDOM_BINARY_STRINGS = 100_000,
+	TOTAL_RANDOM_BINARY_STRINGS = 100,
 	BITS_LIMIT = 10,
-	GENERATE_RANDOM_BINARY_STRINGS = true;
-
-const dfaTests: IDfaTest[] = [dfa1Test];
+	GENERATE_RANDOM_BINARY_STRINGS = true,
+	MIX_RANDOM_WITH_RANGE = true;
 
 function createFileWriteStreams(dfaLabel: string) {
 	const logPath = path.resolve(__dirname, 'logs');
@@ -26,7 +24,16 @@ function createFileWriteStreams(dfaLabel: string) {
 
 function main() {
 	let generatedBinaryStrings: string[] = [];
-	if (GENERATE_RANDOM_BINARY_STRINGS) {
+	if (MIX_RANDOM_WITH_RANGE) {
+		// Mix between random and range binary strings
+		generatedBinaryStrings = Array.from(
+			new Set(
+				generateRandomBinaryStrings(TOTAL_RANDOM_BINARY_STRINGS, 1, 20).concat(
+					generateBinaryStrings(BITS_LIMIT, { withoutPadding: true })
+				)
+			)
+		);
+	} else if (GENERATE_RANDOM_BINARY_STRINGS) {
 		generatedBinaryStrings = generateRandomBinaryStrings(TOTAL_RANDOM_BINARY_STRINGS, 1, 20);
 	} else {
 		generatedBinaryStrings = generateBinaryStrings(BITS_LIMIT, { withoutPadding: true });
