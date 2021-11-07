@@ -15,7 +15,6 @@ export default function generateRandomBinaryStrings(
 		}
 
 		if (!uniqueRandomBinaryStrings.has(randomBinaryString)) {
-			console.log(randomBinaryString);
 			uniqueRandomBinaryStrings.add(randomBinaryString);
 		}
 	}
