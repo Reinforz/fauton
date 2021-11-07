@@ -1,6 +1,8 @@
 import colors from 'colors';
 import { IBinaryDFA, IDfaModule } from '../types';
 
+type IMergedDfaOptions = Partial<Pick<Pick<IDfaModule, 'DFA'>['DFA'], 'label' | 'description'>>;
+type TMergeOperation = 'or' | 'and' | 'not';
 export class DfaModule {
 	testLogic: (binaryString: string) => boolean;
 	DFA: IBinaryDFA;
@@ -118,7 +120,7 @@ export class DfaModule {
 		newStates: string[],
 		newTransitions: IDfaModule['DFA']['transitions'],
 		newFinalStates: string[],
-		operation: 'or' | 'not' | 'and',
+		mergeOperation: TMergeOperation,
 		dfaModule?: DfaModule
 	) {
 		this.DFA.states.forEach((currentDfaState) => {
@@ -132,18 +134,18 @@ export class DfaModule {
 				this.DFA.transitions[currentDfaState][1].toString();
 			newTransitions[newState] = [newStateForSymbolZero, newStateForSymbolOne];
 			if (
-				operation === 'or' &&
+				mergeOperation === 'or' &&
 				((dfaModule ? dfaModule.DFA.final_states.includes(dfaState) : true) ||
 					this.DFA.final_states.includes(currentDfaState))
 			) {
 				newFinalStates.push(newState);
 			} else if (
-				operation === 'and' &&
+				mergeOperation === 'and' &&
 				(dfaModule ? dfaModule.DFA.final_states.includes(dfaState) : true) &&
 				this.DFA.final_states.includes(currentDfaState)
 			) {
 				newFinalStates.push(newState);
-			} else if (operation === 'not' && !this.DFA.final_states.includes(currentDfaState)) {
+			} else if (mergeOperation === 'not' && !this.DFA.final_states.includes(currentDfaState)) {
 				newFinalStates.push(newState);
 			}
 		});
@@ -151,8 +153,8 @@ export class DfaModule {
 
 	#merge(
 		dfaModule: DfaModule | undefined,
-		operation: 'and' | 'or' | 'not',
-		mergedDfaOptions?: Partial<Pick<Pick<IDfaModule, 'DFA'>['DFA'], 'label' | 'description'>>
+		mergeOperation: TMergeOperation,
+		mergedDfaOptions?: IMergedDfaOptions
 	) {
 		const newStates: string[] = [];
 		const newTransitions: IDfaModule['DFA']['transitions'] = {};
@@ -167,7 +169,7 @@ export class DfaModule {
 					newStates,
 					newTransitions,
 					newFinalStates,
-					operation,
+					mergeOperation,
 					dfaModule
 				);
 			});
@@ -177,18 +179,18 @@ export class DfaModule {
 				newStates,
 				newTransitions,
 				newFinalStates,
-				operation,
+				mergeOperation,
 				dfaModule
 			);
 		}
 
 		return new DfaModule(
 			(binaryString) => {
-				if (operation === 'or') {
+				if (mergeOperation === 'or') {
 					return (
 						(dfaModule ? dfaModule.testLogic(binaryString) : true) || this.testLogic(binaryString)
 					);
-				} else if (operation === 'and') {
+				} else if (mergeOperation === 'and') {
 					return (
 						(dfaModule ? dfaModule.testLogic(binaryString) : true) && this.testLogic(binaryString)
 					);
@@ -203,7 +205,7 @@ export class DfaModule {
 					`${dfaModule ? dfaModule.DFA.label + ' - ' : ''}${this.DFA.label}`,
 				description:
 					mergedDfaOptions?.description ??
-					operation.toUpperCase() +
+					mergeOperation.toUpperCase() +
 						'(' +
 						`${dfaModule ? dfaModule.DFA.description + ', ' : ''}${this.DFA.description}` +
 						')',
@@ -214,21 +216,15 @@ export class DfaModule {
 		);
 	}
 
-	AND(
-		dfaModule: DfaModule,
-		mergedDfaOptions: Partial<Pick<Pick<IDfaModule, 'DFA'>['DFA'], 'label' | 'description'>>
-	) {
+	AND(dfaModule: DfaModule, mergedDfaOptions: IMergedDfaOptions) {
 		return this.#merge(dfaModule, 'and', mergedDfaOptions);
 	}
 
-	NOT(mergedDfaOptions: Partial<Pick<Pick<IDfaModule, 'DFA'>['DFA'], 'label' | 'description'>>) {
+	NOT(mergedDfaOptions: IMergedDfaOptions) {
 		return this.#merge(undefined, 'not', mergedDfaOptions);
 	}
 
-	OR(
-		dfaModule: DfaModule,
-		mergedDfaOptions: Partial<Pick<Pick<IDfaModule, 'DFA'>['DFA'], 'label' | 'description'>>
-	) {
+	OR(dfaModule: DfaModule, mergedDfaOptions: IMergedDfaOptions) {
 		return this.#merge(dfaModule, 'or', mergedDfaOptions);
 	}
 }
