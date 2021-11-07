@@ -1,6 +1,4 @@
-import { IDfaTest } from '../types';
-
-const dfaTest: IDfaTest = {
+const dfaTest = {
 	testLogic(randomBinaryString) {
 		return randomBinaryString.startsWith('01') && randomBinaryString.endsWith('10');
 	},
@@ -20,4 +18,4 @@ const dfaTest: IDfaTest = {
 	},
 };
 
-export default dfaTest;
+module.exports = dfaTest;
