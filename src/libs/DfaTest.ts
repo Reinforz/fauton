@@ -111,41 +111,59 @@ export class DfaTest {
 			const dfaModuleInfo = dfaModuleInfos[dfaModuleIndex];
 
 			for (let i = 0; i < binaryStrings.length; i++) {
-				const binaryString = binaryStrings[i].replace('\r', '');
-				const logicTestResult = dfaModule.testLogic(binaryString);
-				const dfaModuleResult = testDfa(dfaModule.DFA, binaryString);
-				const isWrong = dfaModuleResult !== logicTestResult;
-				if (!isWrong) {
-					if (dfaModuleResult === false && logicTestResult === false) {
-						dfaModuleInfo.trueNegatives += 1;
+				const binaryString = binaryStrings[i].replace('\r', '').replace('\n', '');
+				if (binaryString.length !== 0) {
+					const logicTestResult = dfaModule.testLogic(binaryString);
+					const dfaModuleResult = testDfa(dfaModule.DFA, binaryString);
+					const isWrong = dfaModuleResult !== logicTestResult;
+					if (!isWrong) {
+						if (dfaModuleResult === false && logicTestResult === false) {
+							dfaModuleInfo.trueNegatives += 1;
+						} else {
+							dfaModuleInfo.truePositives += 1;
+						}
+						correctWriteStream &&
+							correctWriteStream.write(
+								dfaModuleResult === true
+									? 'T'
+									: 'F' +
+											' ' +
+											(logicTestResult === true ? 'T' : 'F') +
+											' ' +
+											binaryString +
+											' ' +
+											'\n'
+							);
 					} else {
-						dfaModuleInfo.truePositives += 1;
+						if (dfaModuleResult && !logicTestResult) {
+							dfaModuleInfo.falsePositives += 1;
+						} else {
+							dfaModuleInfo.falseNegatives += 1;
+						}
+						incorrectWriteStream &&
+							incorrectWriteStream.write(
+								dfaModuleResult === true
+									? 'T'
+									: 'F' +
+											' ' +
+											(logicTestResult === true ? 'T' : 'F') +
+											' ' +
+											binaryString +
+											' ' +
+											'\n'
+							);
 					}
-					correctWriteStream &&
-						correctWriteStream.write(
-							dfaModuleResult + ' ' + logicTestResult + ' ' + binaryString + ' ' + '\n'
-						);
-				} else {
-					if (dfaModuleResult && !logicTestResult) {
-						dfaModuleInfo.falsePositives += 1;
-					} else {
-						dfaModuleInfo.falseNegatives += 1;
-					}
-					incorrectWriteStream &&
-						incorrectWriteStream.write(
-							dfaModuleResult + ' ' + logicTestResult + ' ' + binaryString + ' ' + '\n'
-						);
-				}
-				inputWriteStream && inputWriteStream.write(binaryString + '\n');
+					inputWriteStream && inputWriteStream.write(binaryString + '\n');
 
-				const { withoutColors } = generateCaseMessage(
-					isWrong,
-					binaryString,
-					dfaModuleResult,
-					logicTestResult
-				);
-				caseWriteStream && caseWriteStream.write(withoutColors + '\n');
-				this.#cliProgressBar.increment(1);
+					const { withoutColors } = generateCaseMessage(
+						isWrong,
+						binaryString,
+						dfaModuleResult,
+						logicTestResult
+					);
+					caseWriteStream && caseWriteStream.write(withoutColors + '\n');
+					this.#cliProgressBar.increment(1);
+				}
 			}
 			post && post(dfaModule, dfaModuleIndex);
 		});
