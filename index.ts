@@ -9,8 +9,7 @@ import {
 	testDfa,
 } from './utils';
 
-const SHOW_EACH_CASE = false,
-	TOTAL_RANDOM_BINARY_STRINGS = 1_000_000,
+const TOTAL_RANDOM_BINARY_STRINGS = 1_000_000,
 	BITS_LIMIT = 20,
 	GENERATE_RANDOM_BINARY_STRINGS = false;
 
@@ -66,32 +65,33 @@ function main() {
 			const dfaTestResult = testDfa(dfaTest.DFA, randomBinaryString);
 			const isWrong = dfaTestResult !== logicTestResult;
 			if (!isWrong) {
-				if ((dfaTestResult === true) === logicTestResult) {
-					truePositives += 1;
-				} else {
+				if (dfaTestResult === false && logicTestResult === false) {
 					trueNegatives += 1;
+				} else {
+					truePositives += 1;
 				}
-				dfaCorrectStringsWriteStream.write(randomBinaryString + '\n');
+				dfaCorrectStringsWriteStream.write(
+					randomBinaryString + ' ' + dfaTestResult + ' ' + logicTestResult + '\n'
+				);
 			} else {
 				if (dfaTestResult && !logicTestResult) {
 					falsePositives += 1;
 				} else {
 					falseNegatives += 1;
 				}
-				dfaIncorrectStringsWriteStream.write(randomBinaryString + '\n');
+				dfaIncorrectStringsWriteStream.write(
+					randomBinaryString + ' ' + dfaTestResult + ' ' + logicTestResult + '\n'
+				);
 			}
 			dfaInputStringsWriteStream.write(randomBinaryString + '\n');
 
-			const { withoutColors, withColors } = generateCaseMessage(
+			const { withoutColors } = generateCaseMessage(
 				isWrong,
 				randomBinaryString,
 				dfaTestResult,
 				logicTestResult
 			);
 			dfaWriteStream.write(withoutColors + '\n');
-			if (SHOW_EACH_CASE) {
-				console.log(withColors);
-			}
 		}
 
 		const { withoutColors, withColors } = generateAggregateMessage(

@@ -4,6 +4,10 @@ function percentageUptoPrecision(numerator: number, denominator: number, precisi
 	return Number(((numerator / denominator) * 100).toFixed(precision));
 }
 
+function percentagesUptoPrecision(numerators: number[], denominator: number, precision: number) {
+	return numerators.map((numerator) => percentageUptoPrecision(numerator, denominator, precision));
+}
+
 export default function generateAggregateMessage(
 	dfaLabel: string,
 	falsePositives: number,
@@ -16,15 +20,21 @@ export default function generateAggregateMessage(
 	const totalStrings = totalCorrect + totalIncorrect;
 	const correctPercentage = percentageUptoPrecision(totalCorrect, totalStrings, 5);
 	const incorrectPercentage = (100 - correctPercentage).toFixed(5);
-	const falsePositivesPercentage = percentageUptoPrecision(falsePositives, totalStrings, 5);
-	const falseNegativesPercentage = percentageUptoPrecision(falseNegatives, totalStrings, 5);
-	const truePositivesPercentage = percentageUptoPrecision(truePositives, totalStrings, 5);
-	const trueNegativesPercentage = percentageUptoPrecision(trueNegatives, totalStrings, 5);
+	const [
+		falsePositivesPercentage,
+		falseNegativesPercentage,
+		truePositivesPercentage,
+		trueNegativesPercentage,
+	] = percentagesUptoPrecision(
+		[falsePositives, falseNegatives, truePositives, trueNegatives],
+		totalStrings,
+		5
+	);
 
 	return {
 		withColors: [
 			colors.blue.bold(dfaLabel),
-			`Total: ` + colors.blue.bold((totalIncorrect + totalCorrect).toString()) + '\n',
+			`Total: ` + colors.blue.bold(totalStrings.toString()) + '\n',
 			`Incorrect: ` + colors.red.bold(totalIncorrect.toString()),
 			`Incorrect(%): ` + colors.red.bold(incorrectPercentage.toString() + '%'),
 			`False Positives: ` + colors.red.bold(falsePositives.toString()),
@@ -40,7 +50,7 @@ export default function generateAggregateMessage(
 		].join('\n'),
 		withoutColors: [
 			dfaLabel,
-			`Total: ` + totalIncorrect + totalCorrect + '\n',
+			`Total: ` + totalStrings + '\n',
 			`Incorrect: ` + totalIncorrect,
 			`Incorrect(%): ` + incorrectPercentage.toString() + '%',
 			`False Positives: ` + falsePositives.toString(),

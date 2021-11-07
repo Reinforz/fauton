@@ -1,5 +1,6 @@
 export interface IBinaryDFA {
 	label: string;
+	description?: string;
 	start_state: string;
 	final_states: string[];
 	transitions: Record<string, [string, string] | 'loop'>;
