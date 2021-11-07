@@ -1,5 +1,5 @@
 import colors from 'colors';
-import { IBinaryDFA } from '../types';
+import { IBinaryDFA, IDfaModule } from '../types';
 
 export class DfaModule {
 	testLogic: (binaryString: string) => boolean;
@@ -111,5 +111,70 @@ export class DfaModule {
 		});
 
 		return errors;
+	}
+
+	merge(
+		dfaModule: DfaModule,
+		operation: 'and' | 'or' | 'not',
+		mergedDfaOptions: Partial<Pick<Pick<IDfaModule, 'DFA'>['DFA'], 'label' | 'description'>>
+	) {
+		const newStates: string[] = [];
+		const newTransitions: IDfaModule['DFA']['transitions'] = {};
+		const newStartState = dfaModule.DFA.start_state.toString() + this.DFA.start_state.toString();
+		const newFinalStates: string[] = [];
+
+		dfaModule.DFA.states.forEach((dfaState) => {
+			this.DFA.states.forEach((currentDfaState) => {
+				const newState = `${dfaState}${currentDfaState}`;
+				newStates.push(newState);
+				const newStateForSymbolZero =
+					dfaModule.DFA.transitions[dfaState][0].toString() +
+					this.DFA.transitions[currentDfaState][0].toString();
+				const newStateForSymbolOne =
+					dfaModule.DFA.transitions[dfaState][1].toString() +
+					this.DFA.transitions[currentDfaState][1].toString();
+				newTransitions[newState] = [newStateForSymbolZero, newStateForSymbolOne];
+				if (
+					operation === 'or' &&
+					(dfaModule.DFA.final_states.includes(dfaState) ||
+						this.DFA.final_states.includes(currentDfaState))
+				) {
+					newFinalStates.push(newState);
+				} else if (
+					operation === 'and' &&
+					dfaModule.DFA.final_states.includes(dfaState) &&
+					this.DFA.final_states.includes(currentDfaState)
+				) {
+					newFinalStates.push(newState);
+				} else if (
+					operation === 'not' &&
+					!dfaModule.DFA.final_states.includes(dfaState) &&
+					!this.DFA.final_states.includes(currentDfaState)
+				) {
+					newFinalStates.push(newState);
+				}
+			});
+		});
+
+		return new DfaModule(
+			(binaryString) => {
+				if (operation === 'or') {
+					return dfaModule.testLogic(binaryString) || this.testLogic(binaryString);
+				} else if (operation === 'and') {
+					return dfaModule.testLogic(binaryString) && this.testLogic(binaryString);
+				} else {
+					return !dfaModule.testLogic(binaryString) && !this.testLogic(binaryString);
+				}
+			},
+			{
+				final_states: newFinalStates,
+				label: mergedDfaOptions.label ?? `${dfaModule.DFA.label} - ${this.DFA.label}`,
+				description:
+					mergedDfaOptions.description ?? `${dfaModule.DFA.description} - ${this.DFA.description}`,
+				start_state: newStartState,
+				states: newStates,
+				transitions: newTransitions,
+			}
+		);
 	}
 }

@@ -1,8 +1,10 @@
-const dfaTest = {
-	testLogic(randomBinaryString) {
+const { DfaModule } = require('dfa-test');
+
+module.exports = new DfaModule(
+	(randomBinaryString) => {
 		return randomBinaryString.startsWith('01') && randomBinaryString.endsWith('10');
 	},
-	DFA: {
+	{
 		label: 'DFA 1',
 		description: 'A DFA that accepts the set of binary strings that start with 01 and end with 10.',
 		start_state: '1',
@@ -15,7 +17,5 @@ const dfaTest = {
 			5: ['6', '4'],
 			6: ['6', '4'],
 		},
-	},
-};
-
-module.exports = dfaTest;
+	}
+);
