@@ -10,10 +10,9 @@ import {
 } from './utils';
 
 const SHOW_EACH_CASE = false,
-	TOTAL_RANDOM_BINARY_STRINGS = 100,
-	BITS_LIMIT = 10,
-	GENERATE_RANDOM_BINARY_STRINGS = true,
-	MIX_RANDOM_WITH_RANGE = true;
+	TOTAL_RANDOM_BINARY_STRINGS = 1_000_000,
+	BITS_LIMIT = 20,
+	GENERATE_RANDOM_BINARY_STRINGS = false;
 
 function createFileWriteStreams(dfaLabel: string) {
 	const logPath = path.resolve(__dirname, 'logs');
@@ -24,17 +23,8 @@ function createFileWriteStreams(dfaLabel: string) {
 
 function main() {
 	let generatedBinaryStrings: string[] = [];
-	if (MIX_RANDOM_WITH_RANGE) {
-		// Mix between random and range binary strings
-		generatedBinaryStrings = Array.from(
-			new Set(
-				generateRandomBinaryStrings(TOTAL_RANDOM_BINARY_STRINGS, 1, 20).concat(
-					generateBinaryStrings(BITS_LIMIT, { withoutPadding: true })
-				)
-			)
-		);
-	} else if (GENERATE_RANDOM_BINARY_STRINGS) {
-		generatedBinaryStrings = generateRandomBinaryStrings(TOTAL_RANDOM_BINARY_STRINGS, 1, 20);
+	if (GENERATE_RANDOM_BINARY_STRINGS) {
+		generatedBinaryStrings = generateRandomBinaryStrings(TOTAL_RANDOM_BINARY_STRINGS, 5, 20);
 	} else {
 		generatedBinaryStrings = generateBinaryStrings(BITS_LIMIT, { withoutPadding: true });
 	}
