@@ -147,13 +147,13 @@ export class DfaModule {
 		dfaModule?: DfaModule
 	) {
 		this.DFA.states.forEach((currentDfaState) => {
-			const newState = `${dfaState}${currentDfaState}`;
+			const newState = `${dfaModule ? dfaState + '.' : dfaState}${currentDfaState}`;
 			newStates.push(newState);
 			const newStateForSymbolZero =
-				(dfaModule ? dfaModule.DFA.transitions[dfaState][0].toString() : '') +
+				(dfaModule ? dfaModule.DFA.transitions[dfaState][0].toString() + '.' : '') +
 				this.DFA.transitions[currentDfaState][0].toString();
 			const newStateForSymbolOne =
-				(dfaModule ? dfaModule.DFA.transitions[dfaState][1].toString() : '') +
+				(dfaModule ? dfaModule.DFA.transitions[dfaState][1].toString() + '.' : '') +
 				this.DFA.transitions[currentDfaState][1].toString();
 			newTransitions[newState] = [newStateForSymbolZero, newStateForSymbolOne];
 			if (
@@ -182,7 +182,8 @@ export class DfaModule {
 		const newStates: string[] = [];
 		const newTransitions: IDfaModule['DFA']['transitions'] = {};
 		const newStartState =
-			(dfaModule ? dfaModule.DFA.start_state.toString() : '') + this.DFA.start_state.toString();
+			(dfaModule ? dfaModule.DFA.start_state.toString() + '.' : '') +
+			this.DFA.start_state.toString();
 		const newFinalStates: string[] = [];
 
 		if (dfaModule) {
