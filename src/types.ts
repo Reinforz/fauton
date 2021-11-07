@@ -1,4 +1,5 @@
 export interface InputBinaryDFA {
+	append?: string;
 	label: string;
 	description?: string;
 	start_state: string | number;
@@ -8,6 +9,7 @@ export interface InputBinaryDFA {
 }
 
 export interface TransformedBinaryDFA {
+	append?: string;
 	label: string;
 	description?: string;
 	start_state: string;

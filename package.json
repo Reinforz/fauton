@@ -1,6 +1,6 @@
 {
   "name": "dfa-test",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A small library to get an insight and test any Deterministic finite automaton(DFA) with binary alphabets",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

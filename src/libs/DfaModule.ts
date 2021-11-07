@@ -14,14 +14,21 @@ export class DfaModule {
 	}
 
 	#normalize(DFA: InputBinaryDFA) {
-		DFA.final_states = DFA.final_states.map((finalState) => finalState.toString());
-		DFA.start_state = DFA.start_state.toString();
-		DFA.states = DFA.states.map((state) => state.toString());
+		DFA.final_states = DFA.final_states.map(
+			(finalState) => (DFA.append ?? '') + finalState.toString()
+		);
+		DFA.start_state = (DFA.append ?? '') + DFA.start_state.toString();
+		DFA.states = DFA.states.map((state) => (DFA.append ?? '') + state.toString());
 		Object.entries(DFA.transitions).forEach(([transitionKey, transitionValues]) => {
-			DFA.transitions[transitionKey] =
+			const transformedTransitionValues =
 				typeof transitionValues !== 'string'
-					? transitionValues.map((transitionValue) => transitionValue.toString())
+					? transitionValues.map(
+							(transitionValue) => (DFA.append ?? '') + transitionValue.toString()
+					  )
 					: (transitionValues as any);
+
+			delete DFA.transitions[transitionKey];
+			DFA.transitions[(DFA.append ?? '') + transitionKey] = transformedTransitionValues;
 		});
 
 		return DFA as TransformedBinaryDFA;
@@ -110,17 +117,19 @@ export class DfaModule {
 			}
 
 			if (Array.isArray(transitionValues) && transitionValues.length !== 2) {
-				errors.push(`Dfa transitions value, when a tuple can contain only 2 items`);
+				errors.push(`Dfa transitions value when a tuple, can contain only 2 items`);
 			}
 
 			if (typeof transitionValues === 'string' && transitionValues !== 'loop') {
-				errors.push(`Dfa transitions value, when a string can only be "loop"`);
+				errors.push(`Dfa transitions value when a string, can only be "loop"`);
 			}
 
 			if (Array.isArray(transitionValues)) {
 				transitionValues.forEach((transitionValue) => {
 					if (!DFA.states.includes(transitionValue)) {
-						errors.push(`Dfa transitions value, when a tuple must reference a valid state`);
+						errors.push(
+							`Dfa transitions value (${transitionValue}) when a tuple, must reference a valid state`
+						);
 					}
 				});
 			}
