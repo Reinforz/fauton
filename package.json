@@ -1,14 +1,17 @@
 {
   "name": "dfa-test",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.0.1",
+  "description": "A small library to get an insight and test any Deterministic finite automaton(DFA) with binary alphabets",
+  "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
     "build": "tsc",
     "build:watch": "tsc -w"
   },
-  "keywords": [],
+  "keywords": [
+    "dfa",
+    "automaton"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {

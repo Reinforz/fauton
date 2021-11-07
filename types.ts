@@ -10,3 +10,10 @@ export interface IDfaModule {
 	testLogic: (binary: string) => boolean;
 	DFA: IBinaryDFA;
 }
+
+export interface IDfaModuleInfo {
+	falsePositives: number;
+	falseNegatives: number;
+	truePositives: number;
+	trueNegatives: number;
+}
