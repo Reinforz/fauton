@@ -12,9 +12,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cli-progress": "^3.9.1",
     "colors": "^1.4.0"
   },
   "devDependencies": {
+    "@types/cli-progress": "^3.9.2",
     "@types/node": "^16.11.6",
     "typescript": "^4.4.4"
   }
