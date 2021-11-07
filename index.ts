@@ -16,9 +16,19 @@ const SHOW_EACH_CASE = false,
 
 function createFileWriteStreams(dfaLabel: string) {
 	const logPath = path.resolve(__dirname, 'logs');
-	return [`${dfaLabel}.txt`, `${dfaLabel}.incorrect.txt`, `${dfaLabel}.correct.txt`].map(
-		(fileName) => fs.createWriteStream(path.resolve(logPath, fileName))
-	);
+	const generatedStreams = [
+		`${dfaLabel}.txt`,
+		`${dfaLabel}.incorrect.txt`,
+		`${dfaLabel}.correct.txt`,
+		`${dfaLabel}.input.txt`,
+	].map((fileName) => fs.createWriteStream(path.resolve(logPath, fileName)));
+
+	return {
+		streams: generatedStreams,
+		endStreams() {
+			generatedStreams.forEach((generatedStream) => generatedStream.end());
+		},
+	};
 }
 
 function main() {
@@ -26,7 +36,7 @@ function main() {
 	if (GENERATE_RANDOM_BINARY_STRINGS) {
 		generatedBinaryStrings = generateRandomBinaryStrings(TOTAL_RANDOM_BINARY_STRINGS, 5, 20);
 	} else {
-		generatedBinaryStrings = generateBinaryStrings(BITS_LIMIT, { withoutPadding: true });
+		generatedBinaryStrings = generateBinaryStrings(BITS_LIMIT);
 	}
 	// Create the log directory if it doesn't exist
 	const logPath = path.resolve(__dirname, 'logs');
@@ -36,8 +46,15 @@ function main() {
 
 	dfaTests.forEach((dfaTest) => {
 		// The log files are generated based on the label of the dfa
-		const [dfaWriteStream, dfaIncorrectStringsWriteStream, dfaCorrectStringsWriteStream] =
-			createFileWriteStreams(dfaTest.DFA.label);
+		const {
+			streams: [
+				dfaWriteStream,
+				dfaIncorrectStringsWriteStream,
+				dfaCorrectStringsWriteStream,
+				dfaInputStringsWriteStream,
+			],
+			endStreams,
+		} = createFileWriteStreams(dfaTest.DFA.label);
 
 		let totalCorrect = 0,
 			totalIncorrect = 0;
@@ -53,6 +70,7 @@ function main() {
 				totalIncorrect += 1;
 				dfaIncorrectStringsWriteStream.write(randomBinaryString + '\n');
 			}
+			dfaInputStringsWriteStream.write(randomBinaryString + '\n');
 
 			const { withoutColors, withColors } = generateCaseMessage(
 				isWrong,
@@ -76,9 +94,7 @@ function main() {
 		console.log(withColors);
 		dfaWriteStream.write(withoutColors);
 
-		dfaIncorrectStringsWriteStream.end();
-		dfaCorrectStringsWriteStream.end();
-		dfaWriteStream.end();
+		endStreams();
 	});
 }
 
