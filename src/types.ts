@@ -1,4 +1,4 @@
-export interface IBinaryDFA {
+export interface InputBinaryDFA {
 	label: string;
 	description?: string;
 	start_state: string | number;
@@ -7,9 +7,18 @@ export interface IBinaryDFA {
 	transitions: Record<string | number, [string | number, string | number] | 'loop'>;
 }
 
+export interface TransformedBinaryDFA {
+	label: string;
+	description?: string;
+	start_state: string;
+	final_states: string[];
+	states: string[];
+	transitions: Record<string, [string, string] | 'loop'>;
+}
+
 export interface IDfaModule {
 	testLogic: (binary: string) => boolean;
-	DFA: IBinaryDFA;
+	DFA: InputBinaryDFA;
 }
 
 export interface IDfaModuleInfo {

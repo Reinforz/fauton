@@ -1,19 +1,33 @@
 import colors from 'colors';
-import { IBinaryDFA, IDfaModule } from '../types';
+import { IDfaModule, InputBinaryDFA, TransformedBinaryDFA } from '../types';
 
 type IMergedDfaOptions = Partial<Pick<Pick<IDfaModule, 'DFA'>['DFA'], 'label' | 'description'>>;
 type TMergeOperation = 'or' | 'and' | 'not';
 export class DfaModule {
 	testLogic: (binaryString: string) => boolean;
-	DFA: IBinaryDFA;
+	DFA: TransformedBinaryDFA;
 
-	constructor(testLogic: (binaryString: string) => boolean, DFA: IBinaryDFA) {
+	constructor(testLogic: (binaryString: string) => boolean, DFA: InputBinaryDFA) {
 		this.testLogic = testLogic;
-		this.DFA = DFA;
-		this.validate();
+		this.DFA = this.#normalize(DFA);
+		this.#validate();
 	}
 
-	validate() {
+	#normalize(DFA: InputBinaryDFA) {
+		DFA.final_states = DFA.final_states.map((finalState) => finalState.toString());
+		DFA.start_state = DFA.start_state.toString();
+		DFA.states = DFA.states.map((state) => state.toString());
+		Object.entries(DFA.transitions).forEach(([transitionKey, transitionValues]) => {
+			DFA.transitions[transitionKey] =
+				typeof transitionValues !== 'string'
+					? transitionValues.map((transitionValue) => transitionValue.toString())
+					: (transitionValues as any);
+		});
+
+		return DFA as TransformedBinaryDFA;
+	}
+
+	#validate() {
 		const dfaModuleValidationErrors = this.generateErrors();
 		if (dfaModuleValidationErrors.length !== 0) {
 			console.log(
@@ -116,7 +130,7 @@ export class DfaModule {
 	}
 
 	#generateMergedDfaData(
-		dfaState: number | string,
+		dfaState: string,
 		newStates: string[],
 		newTransitions: IDfaModule['DFA']['transitions'],
 		newFinalStates: string[],
