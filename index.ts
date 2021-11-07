@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import dfa1Test from './dfa/dfa1';
 import { IDfaTest } from './types';
 import {
 	generateAggregateMessage,
@@ -13,7 +14,7 @@ const SHOW_EACH_CASE = false,
 	LIMIT = 10_000_000,
 	RANDOM_BINARY_STRINGS = true;
 
-const dfaTests: IDfaTest[] = [];
+const dfaTests: IDfaTest[] = [dfa1Test];
 
 function main() {
 	let generatedBinaryStrings: string[] = [];
@@ -31,9 +32,12 @@ function main() {
 	dfaTests.forEach((dfaTest) => {
 		// The log files are generated based on the label of the dfa
 		const dfaFilePath = path.resolve(logPath, `${dfaTest.DFA.label}.txt`);
+		const dfaIncorrectStringsFilePath = path.resolve(logPath, `${dfaTest.DFA.label}.incorrect.txt`);
+		const dfaCorrectStringsFilePath = path.resolve(logPath, `${dfaTest.DFA.label}.correct.txt`);
 		const dfaWriteStream = fs.createWriteStream(dfaFilePath);
-		const wrongStrings = [],
-			correctStrings = [];
+		const dfaIncorrectStringsWriteStream = fs.createWriteStream(dfaIncorrectStringsFilePath);
+		const dfaCorrectStringsWriteStream = fs.createWriteStream(dfaCorrectStringsFilePath);
+
 		let totalCorrect = 0,
 			totalIncorrect = 0;
 		for (let i = 0; i < generatedBinaryStrings.length; i++) {
@@ -43,10 +47,10 @@ function main() {
 			const isWrong = dfaTestResult !== logicTestResult;
 			if (!isWrong) {
 				totalCorrect += 1;
-				correctStrings.push(randomBinaryString);
+				dfaCorrectStringsWriteStream.write(randomBinaryString + '\n');
 			} else {
 				totalIncorrect += 1;
-				wrongStrings.push(randomBinaryString);
+				dfaIncorrectStringsWriteStream.write(randomBinaryString + '\n');
 			}
 
 			const { withoutColors, withColors } = generateCaseMessage(
@@ -68,23 +72,11 @@ function main() {
 			generatedBinaryStrings.length
 		);
 
-		dfaWriteStream.write(withoutColors);
 		console.log(withColors);
+		dfaWriteStream.write(withoutColors);
 
-		// Writing all the failed strings in separate file
-		const incorrectResultFileWriteStream = fs.createWriteStream(
-			path.resolve(logPath, `${dfaTest.DFA.label}.incorrect.txt`)
-		);
-		incorrectResultFileWriteStream.write(wrongStrings.join('\n'));
-		incorrectResultFileWriteStream.end();
-
-		// Writing all the correct strings in separate file
-		const correctResultFileWriteStream = fs.createWriteStream(
-			path.resolve(logPath, `${dfaTest.DFA.label}.correct.txt`)
-		);
-		correctResultFileWriteStream.write(correctStrings.join('\n'));
-		correctResultFileWriteStream.end();
-
+		dfaIncorrectStringsWriteStream.end();
+		dfaCorrectStringsWriteStream.end();
 		dfaWriteStream.end();
 	});
 }
