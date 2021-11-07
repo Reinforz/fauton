@@ -196,7 +196,116 @@ export class DfaTest {
 		endStreams();
 	}
 
+	#validateDfaModule(dfa: IDfaModule) {
+		const errors: string[] = [];
+		if (!dfa.testLogic) {
+			errors.push('testLogic function is required in dfa module');
+		}
+
+		if (!dfa.DFA.label) {
+			errors.push('Dfa label is required');
+		}
+
+		if (!dfa.DFA.states) {
+			errors.push('Dfa states is required');
+
+			// Required when checking final_states and transition tuple states
+			dfa.DFA.states = [];
+		}
+
+		if (!Array.isArray(dfa.DFA.states)) {
+			errors.push('Dfa states must be an array');
+		}
+
+		if (dfa.DFA.states.length === 0) {
+			errors.push('Dfa states must be an array of length > 0');
+		}
+
+		dfa.DFA.states.forEach((state) => {
+			if (!dfa.DFA.transitions[state]) {
+				errors.push(`Dfa states must reference a state (${state}) that is present in transitions`);
+			}
+		});
+
+		if (dfa.DFA.start_state === undefined || dfa.DFA.start_state === null) {
+			errors.push('Dfa start_state is required');
+		}
+
+		if (dfa.DFA.final_states === undefined || dfa.DFA.final_states === null) {
+			errors.push('Dfa final_states is required');
+			dfa.DFA.final_states = [];
+		}
+
+		if (!Array.isArray(dfa.DFA.final_states)) {
+			errors.push('Dfa final_states must be an array');
+		}
+
+		if (dfa.DFA.final_states.length === 0) {
+			errors.push('Dfa final_states must be an array of length > 0');
+		}
+
+		dfa.DFA.final_states.forEach((state) => {
+			if (!dfa.DFA.states.includes(state)) {
+				errors.push(`Dfa final_states must reference a state (${state}) that is present in states`);
+			}
+		});
+
+		Object.entries(dfa.DFA.transitions).forEach(([transitionKey, transitionValues]) => {
+			if (!dfa.DFA.states.includes(transitionKey)) {
+				errors.push(
+					`Dfa transitions must reference a state (${transitionKey}) that is present in states`
+				);
+			}
+
+			if (typeof transitionValues !== 'string' && !Array.isArray(transitionValues)) {
+				errors.push(`Dfa transitions value must either be string "loop" or a tuple`);
+			}
+
+			if (Array.isArray(transitionValues) && transitionValues.length !== 2) {
+				errors.push(`Dfa transitions value, when a tuple can contain only 2 items`);
+			}
+
+			if (typeof transitionValues === 'string' && transitionValues !== 'loop') {
+				errors.push(`Dfa transitions value, when a string can only be "loop"`);
+			}
+
+			if (Array.isArray(transitionValues)) {
+				transitionValues.forEach((transitionValue) => {
+					if (!dfa.DFA.states.includes(transitionValue)) {
+						errors.push(`Dfa transitions value, when a tuple must reference a valid state`);
+					}
+				});
+			}
+		});
+		return errors;
+	}
+
 	async test(configs: IConfigs) {
+		const dfaModulesValidationErrors: { label: string; errors: string[] }[] = [];
+		let totalDfaModulesValidationErrors = 0;
+		this.#dfas.forEach((dfaModule) => {
+			const dfaModuleValidationErrors = this.#validateDfaModule(dfaModule);
+			console.log(
+				`${colors.blue.bold(dfaModule.DFA.label)} ${colors.red.bold(
+					dfaModuleValidationErrors.length.toString()
+				)} Errors`
+			);
+			dfaModuleValidationErrors.forEach((dfaModuleValidationError) =>
+				console.log(colors.red.bold(dfaModuleValidationError))
+			);
+			totalDfaModulesValidationErrors += dfaModuleValidationErrors.length;
+			dfaModulesValidationErrors.push({
+				label: dfaModule.DFA.label,
+				errors: dfaModuleValidationErrors,
+			});
+			console.log();
+		});
+
+		if (dfaModulesValidationErrors.length !== 0) {
+			console.log(colors.bold.red(`Total errors ${totalDfaModulesValidationErrors}`));
+			throw new Error(`Error validating dfa modules`);
+		}
+
 		const writeStreams = this.#dfas.map((dfaModule) =>
 			this.#createFileWriteStreams(dfaModule.DFA.label)
 		);

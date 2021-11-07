@@ -1,9 +1,10 @@
 export interface IBinaryDFA {
 	label: string;
 	description?: string;
-	start_state: string;
-	final_states: string[];
-	transitions: Record<string, [string, string] | 'loop'>;
+	start_state: string | number;
+	final_states: (string | number)[];
+	states: (string | number)[];
+	transitions: Record<string | number, [string | number, string | number] | 'loop'>;
 }
 
 export interface IDfaModule {
