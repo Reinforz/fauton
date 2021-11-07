@@ -57,7 +57,9 @@ function main() {
 		} = createFileWriteStreams(dfaTest.DFA.label);
 
 		let totalCorrect = 0,
-			totalIncorrect = 0;
+			totalIncorrect = 0,
+			falsePositives = 0,
+			falseNegatives = 0;
 		for (let i = 0; i < generatedBinaryStrings.length; i++) {
 			const randomBinaryString = generatedBinaryStrings[i];
 			const logicTestResult = dfaTest.testLogic(randomBinaryString);
@@ -67,6 +69,11 @@ function main() {
 				totalCorrect += 1;
 				dfaCorrectStringsWriteStream.write(randomBinaryString + '\n');
 			} else {
+				if (dfaTestResult && !logicTestResult) {
+					falsePositives += 1;
+				} else {
+					falseNegatives += 1;
+				}
 				totalIncorrect += 1;
 				dfaIncorrectStringsWriteStream.write(randomBinaryString + '\n');
 			}
@@ -88,7 +95,9 @@ function main() {
 			totalCorrect,
 			totalIncorrect,
 			dfaTest.DFA.label,
-			generatedBinaryStrings.length
+			generatedBinaryStrings.length,
+			falsePositives,
+			falseNegatives
 		);
 
 		console.log(withColors);
