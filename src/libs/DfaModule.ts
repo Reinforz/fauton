@@ -115,7 +115,7 @@ export class DfaModule {
 
 	merge(
 		dfaModule: DfaModule,
-		operation: 'and' | 'or' | 'not',
+		operation: 'and' | 'or',
 		mergedDfaOptions: Partial<Pick<Pick<IDfaModule, 'DFA'>['DFA'], 'label' | 'description'>>
 	) {
 		const newStates: string[] = [];
@@ -146,12 +146,6 @@ export class DfaModule {
 					this.DFA.final_states.includes(currentDfaState)
 				) {
 					newFinalStates.push(newState);
-				} else if (
-					operation === 'not' &&
-					!dfaModule.DFA.final_states.includes(dfaState) &&
-					!this.DFA.final_states.includes(currentDfaState)
-				) {
-					newFinalStates.push(newState);
 				}
 			});
 		});
@@ -160,10 +154,8 @@ export class DfaModule {
 			(binaryString) => {
 				if (operation === 'or') {
 					return dfaModule.testLogic(binaryString) || this.testLogic(binaryString);
-				} else if (operation === 'and') {
-					return dfaModule.testLogic(binaryString) && this.testLogic(binaryString);
 				} else {
-					return !dfaModule.testLogic(binaryString) && !this.testLogic(binaryString);
+					return dfaModule.testLogic(binaryString) && this.testLogic(binaryString);
 				}
 			},
 			{

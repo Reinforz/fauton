@@ -125,15 +125,13 @@ export class DfaTest {
 						}
 						correctWriteStream &&
 							correctWriteStream.write(
-								dfaModuleResult === true
-									? 'T'
-									: 'F' +
-											' ' +
-											(logicTestResult === true ? 'T' : 'F') +
-											' ' +
-											binaryString +
-											' ' +
-											'\n'
+								(dfaModuleResult === true ? 'T' : 'F') +
+									' ' +
+									(logicTestResult === true ? 'T' : 'F') +
+									' ' +
+									binaryString +
+									' ' +
+									'\n'
 							);
 					} else {
 						if (dfaModuleResult && !logicTestResult) {
@@ -143,15 +141,13 @@ export class DfaTest {
 						}
 						incorrectWriteStream &&
 							incorrectWriteStream.write(
-								dfaModuleResult === true
-									? 'T'
-									: 'F' +
-											' ' +
-											(logicTestResult === true ? 'T' : 'F') +
-											' ' +
-											binaryString +
-											' ' +
-											'\n'
+								(dfaModuleResult === true ? 'T' : 'F') +
+									' ' +
+									(logicTestResult === true ? 'T' : 'F') +
+									' ' +
+									binaryString +
+									' ' +
+									'\n'
 							);
 					}
 					inputWriteStream && inputWriteStream.write(binaryString + '\n');
