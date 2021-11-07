@@ -285,20 +285,22 @@ export class DfaTest {
 		let totalDfaModulesValidationErrors = 0;
 		this.#dfas.forEach((dfaModule) => {
 			const dfaModuleValidationErrors = this.#validateDfaModule(dfaModule);
-			console.log(
-				`${colors.blue.bold(dfaModule.DFA.label)} ${colors.red.bold(
-					dfaModuleValidationErrors.length.toString()
-				)} Errors`
-			);
-			dfaModuleValidationErrors.forEach((dfaModuleValidationError) =>
-				console.log(colors.red.bold(dfaModuleValidationError))
-			);
-			totalDfaModulesValidationErrors += dfaModuleValidationErrors.length;
-			dfaModulesValidationErrors.push({
-				label: dfaModule.DFA.label,
-				errors: dfaModuleValidationErrors,
-			});
-			console.log();
+			if (dfaModuleValidationErrors.length !== 0) {
+				console.log(
+					`${colors.blue.bold(dfaModule.DFA.label)} ${colors.red.bold(
+						dfaModuleValidationErrors.length.toString()
+					)} Errors`
+				);
+				dfaModuleValidationErrors.forEach((dfaModuleValidationError) =>
+					console.log(colors.red.bold(dfaModuleValidationError))
+				);
+				totalDfaModulesValidationErrors += dfaModuleValidationErrors.length;
+				dfaModulesValidationErrors.push({
+					label: dfaModule.DFA.label,
+					errors: dfaModuleValidationErrors,
+				});
+				console.log();
+			}
 		});
 
 		if (dfaModulesValidationErrors.length !== 0) {
