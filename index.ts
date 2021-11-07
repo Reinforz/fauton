@@ -10,7 +10,7 @@ import {
 } from './utils';
 
 const TOTAL_RANDOM_BINARY_STRINGS = 1_000_000,
-	BITS_LIMIT = 20,
+	BITS_LIMIT = 3,
 	GENERATE_RANDOM_BINARY_STRINGS = false;
 
 function createFileWriteStreams(dfaLabel: string) {
@@ -96,6 +96,7 @@ function main() {
 
 		const { withoutColors, withColors } = generateAggregateMessage(
 			dfaTest.DFA.label,
+			dfaTest.DFA.description,
 			falsePositives,
 			falseNegatives,
 			truePositives,

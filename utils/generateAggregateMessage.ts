@@ -10,6 +10,7 @@ function percentagesUptoPrecision(numerators: number[], denominator: number, pre
 
 export default function generateAggregateMessage(
 	dfaLabel: string,
+	dfaDescription: string | undefined,
 	falsePositives: number,
 	falseNegatives: number,
 	truePositives: number,
@@ -31,10 +32,12 @@ export default function generateAggregateMessage(
 		5
 	);
 
+	const descriptionStringWithColors = dfaDescription ? colors.bold(dfaDescription) + '\n' : '';
+	const descriptionString = dfaDescription ? dfaDescription + '\n' : '';
 	return {
 		withColors: [
 			colors.blue.bold(dfaLabel),
-			`Total: ` + colors.blue.bold(totalStrings.toString()) + '\n',
+			descriptionStringWithColors + `Total: ` + colors.blue.bold(totalStrings.toString()) + '\n',
 			`Incorrect: ` + colors.red.bold(totalIncorrect.toString()),
 			`Incorrect(%): ` + colors.red.bold(incorrectPercentage.toString() + '%'),
 			`False Positives: ` + colors.red.bold(falsePositives.toString()),
@@ -50,7 +53,7 @@ export default function generateAggregateMessage(
 		].join('\n'),
 		withoutColors: [
 			dfaLabel,
-			`Total: ` + totalStrings + '\n',
+			descriptionString + `Total: ` + totalStrings + '\n',
 			`Incorrect: ` + totalIncorrect,
 			`Incorrect(%): ` + incorrectPercentage.toString() + '%',
 			`False Positives: ` + falsePositives.toString(),
