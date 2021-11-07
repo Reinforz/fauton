@@ -1,4 +1,4 @@
-const { DfaTest } = require('dfa-test');
+const { DfaTest, BinaryString } = require('dfa-test');
 const path = require('path');
 
 // Check out this file to see how to write a dfa module
@@ -32,6 +32,15 @@ async function main() {
 			maxLength: 20,
 		},
 	});
+
+	// Generate all combination of binary strings from 1 to 20 bit and write to input.txt file, required for the next one
+	const writeStream = fs.createWriteStream(path.resolve(__dirname, 'input.txt'));
+	BinaryString.generateAllCombosWithinBitLimit(20, {
+		cb: (binaryString) => {
+			writeStream.write(binaryString + '\n');
+		},
+	});
+	writeStream.end();
 
 	// Read a file that already has binary strings
 	await dfaTest.test({
