@@ -2,84 +2,97 @@ import cliProgress from 'cli-progress';
 import colors from 'colors';
 import fs from 'fs';
 import path from 'path';
-import dfaTests from './dfa';
-import { generateAggregateMessage, generateCaseMessage, testDfa } from './utils';
+import { IDfaModule } from './types';
+import {
+	generateAggregateMessage,
+	generateBinaryStrings,
+	generateCaseMessage,
+	generateRandomBinaryStrings,
+	testDfa,
+} from './utils';
 
-/* 
-const TOTAL_RANDOM_BINARY_STRINGS = 1_000_000,
-	BITS_LIMIT = 3,
-	GENERATE_RANDOM_BINARY_STRINGS = false; */
+type IConfigs =
+	| {
+			type: 'generate';
+			random?: {
+				total: number;
+				minLength: number;
+				maxLength: number;
+			};
+			range?: undefined | null;
+	  }
+	| {
+			type: 'generate';
+			range: {
+				bits: number;
+			};
+			random?: undefined | null;
+	  }
+	| {
+			type: 'file';
+			filePath?: string;
+	  };
 
-function createFileWriteStreams(dfaLabel: string) {
-	const logPath = path.resolve(__dirname, 'logs');
-	const generatedStreams = [
-		`${dfaLabel}.txt`,
-		`${dfaLabel}.incorrect.txt`,
-		`${dfaLabel}.correct.txt`,
-		`${dfaLabel}.input.txt`,
-	].map((fileName) => fs.createWriteStream(path.resolve(logPath, fileName)));
+export class DfaTest {
+	dfas: IDfaModule[];
+	cliProgressBar: cliProgress.SingleBar;
+	logPath: string;
 
-	return {
-		streams: generatedStreams,
-		endStreams() {
-			generatedStreams.forEach((generatedStream) => generatedStream.end());
-		},
-	};
-}
-
-const cliProgressBar = new cliProgress.SingleBar(
-	{
-		format: colors.green('{bar}') + '| {percentage}% || {value}/{total} Chunks',
-	},
-	cliProgress.Presets.shades_classic
-);
-
-async function main() {
-	/* let generatedBinaryStrings: string[] = [];
-	if (GENERATE_RANDOM_BINARY_STRINGS) {
-		generatedBinaryStrings = generateRandomBinaryStrings(TOTAL_RANDOM_BINARY_STRINGS, 5, 20);
-	} else {
-		generatedBinaryStrings = generateBinaryStrings(BITS_LIMIT);
-	} */
-	// Create the log directory if it doesn't exist
-	const logPath = path.resolve(__dirname, 'logs');
-	if (!fs.existsSync(logPath)) {
-		fs.mkdirSync(logPath);
+	constructor(dfas: IDfaModule[]) {
+		this.dfas = dfas;
+		this.cliProgressBar = new cliProgress.SingleBar(
+			{
+				format: colors.green('{bar}') + '| {percentage}% || {value}/{total} Chunks',
+			},
+			cliProgress.Presets.shades_classic
+		);
+		this.logPath = path.resolve(__dirname, 'logs');
+		if (!fs.existsSync(this.logPath)) {
+			fs.mkdirSync(this.logPath);
+		}
 	}
 
-	cliProgressBar.start(2097712 * dfaTests.length, 0, {
-		speed: 'N/A',
-	});
+	#createFileWriteStreams(dfaLabel: string) {
+		const generatedStreams = [
+			`${dfaLabel}.txt`,
+			`${dfaLabel}.incorrect.txt`,
+			`${dfaLabel}.correct.txt`,
+			`${dfaLabel}.input.txt`,
+		].map((fileName) => fs.createWriteStream(path.resolve(this.logPath, fileName)));
 
-	const writeStreams = dfaTests.map((dfaTest) => createFileWriteStreams(dfaTest.DFA.label));
+		return {
+			streams: generatedStreams,
+			endStreams() {
+				generatedStreams.forEach((generatedStream) => generatedStream.end());
+			},
+		};
+	}
 
-	const readableStream = fs.createReadStream(path.resolve(__dirname, 'input.txt'));
-	const dfaTestInfos = dfaTests.map(() => ({
-		falsePositives: 0,
-		falseNegatives: 0,
-		truePositives: 0,
-		trueNegatives: 0,
-	}));
-
-	for await (const chunks of readableStream) {
-		const generatedBinaryStrings = chunks.toString().split('\n') as string[];
-		dfaTests.forEach((dfaTest, dfaTestIndex) => {
+	#testDfas(
+		dfaTestInfos: {
+			falsePositives: number;
+			falseNegatives: number;
+			truePositives: number;
+			trueNegatives: number;
+		}[],
+		writeStreams: Array<fs.WriteStream[]>,
+		binaryStrings: string[]
+	) {
+		this.dfas.forEach((dfaTest, dfaTestIndex) => {
 			// The log files are generated based on the label of the dfa
-			const {
-				streams: [
-					dfaWriteStream,
-					dfaIncorrectStringsWriteStream,
-					dfaCorrectStringsWriteStream,
-					dfaInputStringsWriteStream,
-				],
-			} = writeStreams[dfaTestIndex];
+			const [
+				dfaWriteStream,
+				dfaIncorrectStringsWriteStream,
+				dfaCorrectStringsWriteStream,
+				dfaInputStringsWriteStream,
+			] = writeStreams[dfaTestIndex];
 
 			const dfaTestInfo = dfaTestInfos[dfaTestIndex];
 
-			for (let i = 0; i < generatedBinaryStrings.length; i++) {
-				const randomBinaryString = generatedBinaryStrings[i].replace('\r', '');
-				const logicTestResult = dfaTest.testLogic(randomBinaryString);
-				const dfaTestResult = testDfa(dfaTest.DFA, randomBinaryString);
+			for (let i = 0; i < binaryStrings.length; i++) {
+				const binaryString = binaryStrings[i].replace('\r', '');
+				const logicTestResult = dfaTest.testLogic(binaryString);
+				const dfaTestResult = testDfa(dfaTest.DFA, binaryString);
 				const isWrong = dfaTestResult !== logicTestResult;
 				if (!isWrong) {
 					if (dfaTestResult === false && logicTestResult === false) {
@@ -88,7 +101,7 @@ async function main() {
 						dfaTestInfo.truePositives += 1;
 					}
 					dfaCorrectStringsWriteStream.write(
-						randomBinaryString + ' ' + dfaTestResult + ' ' + logicTestResult + '\n'
+						binaryString + ' ' + dfaTestResult + ' ' + logicTestResult + '\n'
 					);
 				} else {
 					if (dfaTestResult && !logicTestResult) {
@@ -97,44 +110,92 @@ async function main() {
 						dfaTestInfo.falseNegatives += 1;
 					}
 					dfaIncorrectStringsWriteStream.write(
-						randomBinaryString + ' ' + dfaTestResult + ' ' + logicTestResult + '\n'
+						binaryString + ' ' + dfaTestResult + ' ' + logicTestResult + '\n'
 					);
 				}
-				dfaInputStringsWriteStream.write(randomBinaryString + '\n');
+				dfaInputStringsWriteStream.write(binaryString + '\n');
 
 				const { withoutColors } = generateCaseMessage(
 					isWrong,
-					randomBinaryString,
+					binaryString,
 					dfaTestResult,
 					logicTestResult
 				);
 				dfaWriteStream.write(withoutColors + '\n');
 			}
-			cliProgressBar.increment(generatedBinaryStrings.length);
+			this.cliProgressBar.increment(binaryStrings.length);
 		});
 	}
 
-	cliProgressBar.stop();
-
-	dfaTests.forEach((dfaTest, dfaTestIndex) => {
-		const {
-			streams: [dfaWriteStream],
-		} = writeStreams[dfaTestIndex];
-		const dfaTestInfo = dfaTestInfos[dfaTestIndex];
-		const { withoutColors, withColors } = generateAggregateMessage(
-			dfaTest.DFA.label,
-			dfaTest.DFA.description,
-			dfaTestInfo.falsePositives,
-			dfaTestInfo.falseNegatives,
-			dfaTestInfo.truePositives,
-			dfaTestInfo.trueNegatives
+	async test(configs: IConfigs) {
+		const writeStreams = this.dfas.map((dfaTest) =>
+			this.#createFileWriteStreams(dfaTest.DFA.label)
 		);
+		const readStream =
+			configs.type === 'file'
+				? fs.createReadStream(configs.filePath ?? path.resolve(__dirname, 'input.txt'))
+				: null;
 
-		console.log(withColors);
-		dfaWriteStream.write(withoutColors);
+		const dfaTestInfos = this.dfas.map(() => ({
+			falsePositives: 0,
+			falseNegatives: 0,
+			truePositives: 0,
+			trueNegatives: 0,
+		}));
 
-		writeStreams[dfaTestIndex].endStreams();
-	});
+		if (configs.type === 'file' && readStream) {
+			this.cliProgressBar.start(2097712 * this.dfas.length, 0, {
+				speed: 'N/A',
+			});
+			for await (const chunks of readStream) {
+				const binaryStrings = chunks.toString().split('\n') as string[];
+				this.#testDfas(
+					dfaTestInfos,
+					writeStreams.map(({ streams }) => streams),
+					binaryStrings
+				);
+			}
+		} else if (configs.type === 'generate') {
+			let binaryStrings: string[] = [];
+			if (configs.random) {
+				binaryStrings = generateRandomBinaryStrings(
+					configs.random.total,
+					configs.random.minLength,
+					configs.random.maxLength
+				);
+			} else if (configs.range) {
+				binaryStrings = generateBinaryStrings(configs.range.bits);
+			}
+			this.cliProgressBar.start(binaryStrings.length * this.dfas.length, 0, {
+				speed: 'N/A',
+			});
+			this.#testDfas(
+				dfaTestInfos,
+				writeStreams.map(({ streams }) => streams),
+				binaryStrings
+			);
+		}
+
+		this.cliProgressBar.stop();
+
+		this.dfas.forEach((dfaTest, dfaTestIndex) => {
+			const {
+				streams: [dfaWriteStream],
+			} = writeStreams[dfaTestIndex];
+			const dfaTestInfo = dfaTestInfos[dfaTestIndex];
+			const { withoutColors, withColors } = generateAggregateMessage(
+				dfaTest.DFA.label,
+				dfaTest.DFA.description,
+				dfaTestInfo.falsePositives,
+				dfaTestInfo.falseNegatives,
+				dfaTestInfo.truePositives,
+				dfaTestInfo.trueNegatives
+			);
+
+			console.log(withColors);
+			dfaWriteStream.write(withoutColors);
+
+			writeStreams[dfaTestIndex].endStreams();
+		});
+	}
 }
-
-main();

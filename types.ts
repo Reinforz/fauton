@@ -6,7 +6,7 @@ export interface IBinaryDFA {
 	transitions: Record<string, [string, string] | 'loop'>;
 }
 
-export interface IDfaTest {
+export interface IDfaModule {
 	testLogic: (binary: string) => boolean;
 	DFA: IBinaryDFA;
 }
