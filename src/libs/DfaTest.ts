@@ -3,14 +3,8 @@ import colors from 'colors';
 import fs from 'fs';
 import path from 'path';
 import { IDfaModule, IDfaModuleInfo } from '../types';
-import {
-	countFileLines,
-	generateAggregateMessage,
-	generateBinaryStrings,
-	generateCaseMessage,
-	generateRandomBinaryStrings,
-	testDfa,
-} from '../utils';
+import { countFileLines, generateAggregateMessage, generateCaseMessage, testDfa } from '../utils';
+import { BinaryString } from './BinaryString';
 
 type IConfigs =
 	| {
@@ -186,13 +180,13 @@ export class DfaTest {
 		} else if (configs.type === 'generate') {
 			let binaryStrings: string[] = [];
 			if (configs.random) {
-				binaryStrings = generateRandomBinaryStrings(
+				binaryStrings = BinaryString.generateRandomUnique(
 					configs.random.total,
 					configs.random.minLength,
 					configs.random.maxLength
 				);
 			} else if (configs.range) {
-				binaryStrings = generateBinaryStrings(configs.range.bitLimit);
+				binaryStrings = BinaryString.generateAllCombosWithinBitLimit(configs.range.bitLimit);
 			}
 			this.#cliProgressBar.start(binaryStrings.length * this.#dfas.length, 0, {
 				speed: 'N/A',
