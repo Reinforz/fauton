@@ -1,4 +1,5 @@
 import colors from 'colors';
+import shortid from 'shortid';
 import { IDfaModule, InputBinaryDFA, TransformedBinaryDFA } from '../types';
 
 type IMergedDfaOptions = Partial<Pick<Pick<IDfaModule, 'DFA'>['DFA'], 'label' | 'description'>>;
@@ -6,11 +7,13 @@ type TMergeOperation = 'or' | 'and' | 'not';
 export class DfaModule {
 	testLogic: (binaryString: string) => boolean;
 	DFA: TransformedBinaryDFA;
+	dfaId: string;
 
-	constructor(testLogic: (binaryString: string) => boolean, DFA: InputBinaryDFA) {
+	constructor(testLogic: (binaryString: string) => boolean, DFA: InputBinaryDFA, dfaId?: string) {
 		this.testLogic = testLogic;
 		this.DFA = this.#normalize(DFA);
 		this.#validate();
+		this.dfaId = dfaId ?? shortid();
 	}
 
 	#normalize(DFA: InputBinaryDFA) {
@@ -142,34 +145,55 @@ export class DfaModule {
 		dfaState: string,
 		newStates: string[],
 		newTransitions: IDfaModule['DFA']['transitions'],
-		newFinalStates: string[],
+		newFinalStates: Set<string>,
 		mergeOperation: TMergeOperation,
-		dfaModule?: DfaModule
+		dfaModule: DfaModule | undefined,
+		isComposite: boolean
 	) {
 		this.DFA.states.forEach((currentDfaState) => {
-			const newState = `${dfaModule ? dfaState + '.' : dfaState}${currentDfaState}`;
-			newStates.push(newState);
-			const newStateForSymbolZero =
-				(dfaModule ? dfaModule.DFA.transitions[dfaState][0].toString() + '.' : '') +
-				this.DFA.transitions[currentDfaState][0].toString();
-			const newStateForSymbolOne =
-				(dfaModule ? dfaModule.DFA.transitions[dfaState][1].toString() + '.' : '') +
-				this.DFA.transitions[currentDfaState][1].toString();
-			newTransitions[newState] = [newStateForSymbolZero, newStateForSymbolOne];
-			if (
-				mergeOperation === 'or' &&
-				((dfaModule ? dfaModule.DFA.final_states.includes(dfaState) : true) ||
-					this.DFA.final_states.includes(currentDfaState))
-			) {
-				newFinalStates.push(newState);
-			} else if (
-				mergeOperation === 'and' &&
-				(dfaModule ? dfaModule.DFA.final_states.includes(dfaState) : true) &&
-				this.DFA.final_states.includes(currentDfaState)
-			) {
-				newFinalStates.push(newState);
-			} else if (mergeOperation === 'not' && !this.DFA.final_states.includes(currentDfaState)) {
-				newFinalStates.push(newState);
+			const newState = isComposite
+				? `${dfaModule ? dfaState + '.' : dfaState}${currentDfaState}`
+				: currentDfaState;
+			if (isComposite) {
+				newStates.push(newState);
+				const newStateForSymbolZero =
+					(dfaModule ? dfaModule.DFA.transitions[dfaState][0].toString() + '.' : '') +
+					this.DFA.transitions[currentDfaState][0].toString();
+				const newStateForSymbolOne =
+					(dfaModule ? dfaModule.DFA.transitions[dfaState][1].toString() + '.' : '') +
+					this.DFA.transitions[currentDfaState][1].toString();
+				newTransitions[newState] = [newStateForSymbolZero, newStateForSymbolOne];
+				if (
+					mergeOperation === 'or' &&
+					((dfaModule ? dfaModule.DFA.final_states.includes(dfaState) : true) ||
+						this.DFA.final_states.includes(currentDfaState))
+				) {
+					newFinalStates.add(newState);
+				} else if (
+					mergeOperation === 'and' &&
+					(dfaModule ? dfaModule.DFA.final_states.includes(dfaState) : true) &&
+					this.DFA.final_states.includes(currentDfaState)
+				) {
+					newFinalStates.add(newState);
+				} else if (mergeOperation === 'not' && !this.DFA.final_states.includes(currentDfaState)) {
+					newFinalStates.add(newState);
+				}
+			} else {
+				if (
+					mergeOperation === 'or' &&
+					((dfaModule ? dfaModule.DFA.final_states.includes(newState) : true) ||
+						this.DFA.final_states.includes(newState))
+				) {
+					newFinalStates.add(newState);
+				} else if (
+					mergeOperation === 'and' &&
+					(dfaModule ? dfaModule.DFA.final_states.includes(newState) : true) &&
+					this.DFA.final_states.includes(newState)
+				) {
+					newFinalStates.add(newState);
+				} else if (mergeOperation === 'not' && !this.DFA.final_states.includes(newState)) {
+					newFinalStates.add(newState);
+				}
 			}
 		});
 	}
@@ -181,10 +205,15 @@ export class DfaModule {
 	) {
 		const newStates: string[] = [];
 		const newTransitions: IDfaModule['DFA']['transitions'] = {};
+		// If we have two different dfa's we are in composite mode
+		const isComposite = (dfaModule ? dfaModule.dfaId : '') !== this.dfaId;
+		const newDfaId = isComposite && dfaModule ? dfaModule.dfaId + '.' + this.dfaId : this.dfaId;
+
+		// Only create a new state if its not composite
 		const newStartState =
-			(dfaModule ? dfaModule.DFA.start_state.toString() + '.' : '') +
+			(isComposite ? (dfaModule ? dfaModule.DFA.start_state.toString() + '.' : '') : '') +
 			this.DFA.start_state.toString();
-		const newFinalStates: string[] = [];
+		const newFinalStates: Set<string> = new Set();
 
 		if (dfaModule) {
 			dfaModule.DFA.states.forEach((dfaState) => {
@@ -194,7 +223,8 @@ export class DfaModule {
 					newTransitions,
 					newFinalStates,
 					mergeOperation,
-					dfaModule
+					dfaModule,
+					isComposite
 				);
 			});
 		} else {
@@ -204,8 +234,12 @@ export class DfaModule {
 				newTransitions,
 				newFinalStates,
 				mergeOperation,
-				dfaModule
+				dfaModule,
+				isComposite
 			);
+		}
+
+		if (!isComposite) {
 		}
 
 		return new DfaModule(
@@ -223,7 +257,7 @@ export class DfaModule {
 				}
 			},
 			{
-				final_states: newFinalStates,
+				final_states: Array.from(newFinalStates),
 				label:
 					mergedDfaOptions?.label ??
 					`${dfaModule ? dfaModule.DFA.label + ' - ' : ''}${this.DFA.label}`,
@@ -233,10 +267,11 @@ export class DfaModule {
 						'(' +
 						`${dfaModule ? dfaModule.DFA.description + ', ' : ''}${this.DFA.description}` +
 						')',
-				start_state: newStartState,
-				states: newStates,
-				transitions: newTransitions,
-			}
+				start_state: isComposite ? newStartState : this.DFA.start_state,
+				states: isComposite ? newStates : this.DFA.states,
+				transitions: isComposite ? newTransitions : this.DFA.transitions,
+			},
+			isComposite ? newDfaId : this.dfaId
 		);
 	}
 
