@@ -1,4 +1,5 @@
-export interface InputBinaryDFA {
+export interface InputFiniteAutomaton {
+	// Append a string to all the states
 	append?: string;
 	label: string;
 	description?: string;
@@ -8,7 +9,7 @@ export interface InputBinaryDFA {
 	transitions: Record<string | number, [string | number, string | number] | 'loop'>;
 }
 
-export interface TransformedBinaryDFA {
+export interface TransformedFiniteAutomaton {
 	append?: string;
 	label: string;
 	description?: string;
@@ -20,7 +21,7 @@ export interface TransformedBinaryDFA {
 
 export interface IDfaModule {
 	testLogic: (binary: string) => boolean;
-	DFA: InputBinaryDFA;
+	DFA: InputFiniteAutomaton;
 }
 
 export interface IDfaModuleInfo {

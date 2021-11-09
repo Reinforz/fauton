@@ -1,22 +1,26 @@
 import colors from 'colors';
 import shortid from 'shortid';
-import { IDfaModule, InputBinaryDFA, TransformedBinaryDFA } from '../types';
+import { IDfaModule, InputFiniteAutomaton, TransformedFiniteAutomaton } from '../types';
 
 type IMergedDfaOptions = Partial<Pick<Pick<IDfaModule, 'DFA'>['DFA'], 'label' | 'description'>>;
 type TMergeOperation = 'or' | 'and' | 'not';
 export class DfaModule {
 	testLogic: (binaryString: string) => boolean;
-	DFA: TransformedBinaryDFA;
+	DFA: TransformedFiniteAutomaton;
 	dfaId: string;
 
-	constructor(testLogic: (binaryString: string) => boolean, DFA: InputBinaryDFA, dfaId?: string) {
+	constructor(
+		testLogic: (binaryString: string) => boolean,
+		DFA: InputFiniteAutomaton,
+		dfaId?: string
+	) {
 		this.testLogic = testLogic;
 		this.DFA = this.#normalize(DFA);
 		this.#validate();
 		this.dfaId = dfaId ?? shortid();
 	}
 
-	#normalize(DFA: InputBinaryDFA) {
+	#normalize(DFA: InputFiniteAutomaton) {
 		DFA.final_states = DFA.final_states.map(
 			(finalState) => (DFA.append ?? '') + finalState.toString()
 		);
@@ -34,7 +38,7 @@ export class DfaModule {
 			DFA.transitions[(DFA.append ?? '') + transitionKey] = transformedTransitionValues;
 		});
 
-		return DFA as TransformedBinaryDFA;
+		return DFA as TransformedFiniteAutomaton;
 	}
 
 	#validate() {

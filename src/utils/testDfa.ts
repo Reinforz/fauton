@@ -1,6 +1,6 @@
-import { TransformedBinaryDFA } from '../types';
+import { TransformedFiniteAutomaton } from '../types';
 
-export default function testDfa(DFA: TransformedBinaryDFA, randomBinaryString: string) {
+export default function testDfa(DFA: TransformedFiniteAutomaton, randomBinaryString: string) {
 	let state = DFA.start_state;
 	for (let i = 0; i < randomBinaryString.length; i++) {
 		const binaryChar = randomBinaryString[i];
