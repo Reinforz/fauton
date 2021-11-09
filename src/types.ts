@@ -20,10 +20,10 @@ export interface TransformedFiniteAutomaton {
 	final_states: string[];
 	states: string[];
 	// each key of transitions indicate a state, which in turn represents alphabets
-	transitions: Record<string, Record<string, string[]> | 'loop'>;
+	transitions: Record<string, Record<string, string[]>>;
 }
 
-export interface FiniteAutomatonModule {
+export interface IFiniteAutomaton {
 	testLogic: (binary: string) => boolean;
 	automaton: InputFiniteAutomaton;
 }

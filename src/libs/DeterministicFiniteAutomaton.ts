@@ -1,8 +1,8 @@
-import { FiniteAutomatonModule, InputFiniteAutomaton } from '../types';
+import { IFiniteAutomaton, InputFiniteAutomaton, TransformedFiniteAutomaton } from '../types';
 import { FiniteAutomaton } from './FiniteAutomaton';
 
 type IMergedDfaOptions = Partial<
-	Pick<Pick<FiniteAutomatonModule, 'automaton'>['automaton'], 'label' | 'description'> & {
+	Pick<Pick<IFiniteAutomaton, 'automaton'>['automaton'], 'label' | 'description'> & {
 		separator: string;
 	}
 >;
@@ -11,16 +11,16 @@ type TMergeOperation = 'or' | 'and' | 'not';
 export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 	constructor(
 		testLogic: (binaryString: string) => boolean,
-		automaton: InputFiniteAutomaton,
+		automaton: InputFiniteAutomaton | TransformedFiniteAutomaton,
 		automatonId?: string
 	) {
 		super(testLogic, automaton, 'deterministic', automatonId);
 	}
 
 	#generateMergedDfaData(
-		dfaState: string,
+		state: string,
 		newStates: string[],
-		newTransitions: FiniteAutomatonModule['automaton']['transitions'],
+		newTransitions: IFiniteAutomaton['automaton']['transitions'],
 		newFinalStates: Set<string>,
 		mergeOperation: TMergeOperation,
 		dfaModule: DeterministicFiniteAutomaton | undefined,
@@ -29,26 +29,26 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 	) {
 		this.automaton.states.forEach((currentDfaState) => {
 			const newState = isComposite
-				? `${dfaModule ? dfaState + separator : dfaState}${currentDfaState}`
+				? `${dfaModule ? state + separator : state}${currentDfaState}`
 				: currentDfaState;
 			if (isComposite) {
 				newStates.push(newState);
 				const newStateForSymbolZero =
-					(dfaModule ? dfaModule.automaton.transitions[dfaState][0].toString() + separator : '') +
+					(dfaModule ? dfaModule.automaton.transitions[state]['0'].toString() + separator : '') +
 					this.automaton.transitions[currentDfaState][0].toString();
 				const newStateForSymbolOne =
-					(dfaModule ? dfaModule.automaton.transitions[dfaState][1].toString() + separator : '') +
+					(dfaModule ? dfaModule.automaton.transitions[state][1].toString() + separator : '') +
 					this.automaton.transitions[currentDfaState][1].toString();
 				newTransitions[newState] = [newStateForSymbolZero, newStateForSymbolOne];
 				if (
 					mergeOperation === 'or' &&
-					((dfaModule ? dfaModule.automaton.final_states.includes(dfaState) : true) ||
+					((dfaModule ? dfaModule.automaton.final_states.includes(state) : true) ||
 						this.automaton.final_states.includes(currentDfaState))
 				) {
 					newFinalStates.add(newState);
 				} else if (
 					mergeOperation === 'and' &&
-					(dfaModule ? dfaModule.automaton.final_states.includes(dfaState) : true) &&
+					(dfaModule ? dfaModule.automaton.final_states.includes(state) : true) &&
 					this.automaton.final_states.includes(currentDfaState)
 				) {
 					newFinalStates.add(newState);
@@ -79,35 +79,37 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 	}
 
 	#merge(
-		dfaModule: DeterministicFiniteAutomaton | undefined,
+		finiteAutomaton: DeterministicFiniteAutomaton | undefined,
 		mergeOperation: TMergeOperation,
 		mergedDfaOptions?: IMergedDfaOptions
 	) {
 		const { separator = '.', label, description } = mergedDfaOptions ?? ({} as IMergedDfaOptions);
 		const newStates: string[] = [];
-		const newTransitions: FiniteAutomatonModule['automaton']['transitions'] = {};
+		const newTransitions: IFiniteAutomaton['automaton']['transitions'] = {};
 		// If we have two different dfa's we are in composite mode
-		const isComposite = (dfaModule ? dfaModule.getAutomatonId() : '') !== this.getAutomatonId();
+		const isComposite =
+			(finiteAutomaton ? finiteAutomaton.getAutomatonId() : '') !== this.getAutomatonId();
 		const newDfaId =
-			isComposite && dfaModule
-				? dfaModule.getAutomatonId() + separator + this.getAutomatonId()
+			isComposite && finiteAutomaton
+				? finiteAutomaton.getAutomatonId() + separator + this.getAutomatonId()
 				: this.getAutomatonId();
 
 		// Only create a new state if its not composite
 		const newStartState =
-			(isComposite && dfaModule ? dfaModule.automaton.start_state.toString() + separator : '') +
-			this.automaton.start_state.toString();
+			(isComposite && finiteAutomaton
+				? finiteAutomaton.automaton.start_state.toString() + separator
+				: '') + this.automaton.start_state.toString();
 		const newFinalStates: Set<string> = new Set();
 
-		if (dfaModule) {
-			dfaModule.automaton.states.forEach((dfaState) => {
+		if (finiteAutomaton) {
+			finiteAutomaton.automaton.states.forEach((state) => {
 				this.#generateMergedDfaData(
-					dfaState,
+					state,
 					newStates,
 					newTransitions,
 					newFinalStates,
 					mergeOperation,
-					dfaModule,
+					finiteAutomaton,
 					isComposite,
 					separator
 				);
@@ -119,7 +121,7 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 				newTransitions,
 				newFinalStates,
 				mergeOperation,
-				dfaModule,
+				finiteAutomaton,
 				isComposite,
 				separator
 			);
@@ -132,11 +134,13 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 			(binaryString) => {
 				if (mergeOperation === 'or') {
 					return (
-						(dfaModule ? dfaModule.testLogic(binaryString) : true) || this.testLogic(binaryString)
+						(finiteAutomaton ? finiteAutomaton.testLogic(binaryString) : true) ||
+						this.testLogic(binaryString)
 					);
 				} else if (mergeOperation === 'and') {
 					return (
-						(dfaModule ? dfaModule.testLogic(binaryString) : true) && this.testLogic(binaryString)
+						(finiteAutomaton ? finiteAutomaton.testLogic(binaryString) : true) &&
+						this.testLogic(binaryString)
 					);
 				} else {
 					return !this.testLogic(binaryString);
@@ -145,18 +149,25 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 			{
 				final_states: Array.from(newFinalStates),
 				label:
-					label ?? `${dfaModule ? dfaModule.automaton.label + ' - ' : ''}${this.automaton.label}`,
+					label ??
+					`${finiteAutomaton ? finiteAutomaton.automaton.label + ' - ' : ''}${
+						this.automaton.label
+					}`,
 				description:
 					description ??
 					mergeOperation.toUpperCase() +
 						'(' +
-						`${dfaModule ? dfaModule.automaton.description + ', ' : ''}${
+						`${finiteAutomaton ? finiteAutomaton.automaton.description + ', ' : ''}${
 							this.automaton.description
 						}` +
 						')',
 				start_state: isComposite ? newStartState : this.automaton.start_state,
 				states: isComposite ? newStates : this.automaton.states,
 				transitions: isComposite ? newTransitions : this.automaton.transitions,
+				alphabets:
+					isComposite && finiteAutomaton
+						? this.automaton.alphabets.concat(finiteAutomaton.automaton.alphabets)
+						: this.automaton.alphabets,
 			},
 			isComposite ? newDfaId : this.getAutomatonId()
 		);

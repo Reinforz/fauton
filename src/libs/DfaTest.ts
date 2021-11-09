@@ -2,7 +2,7 @@ import cliProgress from 'cli-progress';
 import colors from 'colors';
 import fs from 'fs';
 import path from 'path';
-import { FiniteAutomatonModule, FiniteAutomatonTestInfo } from '../types';
+import { FiniteAutomatonTestInfo, TransformedFiniteAutomaton } from '../types';
 import { countFileLines, generateAggregateMessage, generateCaseMessage, testDfa } from '../utils';
 import { BinaryString } from './BinaryString';
 import { DeterministicFiniteAutomaton } from './DeterministicFiniteAutomaton';
@@ -106,9 +106,9 @@ export class DfaTest {
 		dfaModuleInfos: FiniteAutomatonTestInfo[],
 		writeStreams: Array<IWriteStreams>,
 		binaryStrings: string[],
-		post?: (dfaModule: FiniteAutomatonModule, dfaModuleIndex: number) => void
+		post?: (finiteAutomaton: TransformedFiniteAutomaton, dfaModuleIndex: number) => void
 	) {
-		this.#automata.forEach((dfaModule, dfaModuleIndex) => {
+		this.#automata.forEach((finiteAutomaton, dfaModuleIndex) => {
 			// The log files are generated based on the label of the dfa
 			const { caseWriteStream, correctWriteStream, incorrectWriteStream, inputWriteStream } =
 				writeStreams[dfaModuleIndex];
@@ -118,8 +118,8 @@ export class DfaTest {
 			for (let i = 0; i < binaryStrings.length; i++) {
 				const binaryString = binaryStrings[i].replace('\r', '').replace('\n', '');
 				if (binaryString.length !== 0) {
-					const logicTestResult = dfaModule.testLogic(binaryString);
-					const dfaModuleResult = testDfa(dfaModule.automaton, binaryString);
+					const logicTestResult = finiteAutomaton.testLogic(binaryString);
+					const dfaModuleResult = testDfa(finiteAutomaton.automaton, binaryString);
 					const isWrong = dfaModuleResult !== logicTestResult;
 					if (!isWrong) {
 						if (dfaModuleResult === false && logicTestResult === false) {
@@ -166,13 +166,13 @@ export class DfaTest {
 					this.#cliProgressBar.increment(1);
 				}
 			}
-			post && post(dfaModule, dfaModuleIndex);
+			post && post(finiteAutomaton.automaton, dfaModuleIndex);
 		});
 	}
 
 	#postTest(
-		dfaModule: FiniteAutomatonModule,
-		dfaModuleInfo: FiniteAutomatonTestInfo,
+		finiteAutomaton: TransformedFiniteAutomaton,
+		finiteAutomatonTestInfo: FiniteAutomatonTestInfo,
 		dfaModuleWriteStreams: {
 			writeStreams: IWriteStreams;
 			endStreams(): void;
@@ -183,12 +183,12 @@ export class DfaTest {
 			endStreams,
 		} = dfaModuleWriteStreams;
 		const { withoutColors, withColors } = generateAggregateMessage(
-			dfaModule.automaton.label,
-			dfaModule.automaton.description,
-			dfaModuleInfo.falsePositives,
-			dfaModuleInfo.falseNegatives,
-			dfaModuleInfo.truePositives,
-			dfaModuleInfo.trueNegatives
+			finiteAutomaton.label,
+			finiteAutomaton.description,
+			finiteAutomatonTestInfo.falsePositives,
+			finiteAutomatonTestInfo.falseNegatives,
+			finiteAutomatonTestInfo.truePositives,
+			finiteAutomatonTestInfo.trueNegatives
 		);
 
 		console.log('\n' + withColors);
@@ -225,7 +225,11 @@ export class DfaTest {
 			}
 
 			this.#automata.forEach((dfaModule, dfaModuleIndex) => {
-				this.#postTest(dfaModule, dfaModuleInfos[dfaModuleIndex], writeStreams[dfaModuleIndex]);
+				this.#postTest(
+					dfaModule.automaton,
+					dfaModuleInfos[dfaModuleIndex],
+					writeStreams[dfaModuleIndex]
+				);
 			});
 		} else if (configs.type === 'generate') {
 			let binaryStrings: string[] = [];

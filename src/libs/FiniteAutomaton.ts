@@ -15,7 +15,7 @@ export class FiniteAutomaton {
 
 	constructor(
 		testLogic: (inputString: string) => boolean,
-		finiteAutomaton: InputFiniteAutomaton,
+		finiteAutomaton: InputFiniteAutomaton | TransformedFiniteAutomaton,
 		automatonType: TFiniteAutomatonType,
 		automatonId?: string
 	) {
@@ -26,7 +26,7 @@ export class FiniteAutomaton {
 		this.#validate();
 	}
 
-	#normalize(finiteAutomaton: InputFiniteAutomaton) {
+	#normalize(finiteAutomaton: InputFiniteAutomaton | TransformedFiniteAutomaton) {
 		const appendedString = finiteAutomaton.append ?? '';
 		finiteAutomaton.final_states = finiteAutomaton.final_states.map(
 			(finalState) => appendedString + finalState.toString()
@@ -51,7 +51,7 @@ export class FiniteAutomaton {
 		Object.entries(finiteAutomaton.transitions).forEach(([transitionKey, transitionStates]) => {
 			const transitionStateRecord: Record<string, string[]> = {};
 			// When its not string 'loop', we need to convert all the transition states to string
-			if (typeof transitionStates !== 'string') {
+			if (typeof transitionStates !== 'string' && Array.isArray(transitionStates)) {
 				transitionStates.forEach((transitionState, transitionStateIndex) => {
 					// For dealing with 1: [ [2, 3] ] => 1: [ ["2", "3"] ]
 					if (Array.isArray(transitionState)) {
@@ -79,8 +79,6 @@ export class FiniteAutomaton {
 				delete finiteAutomaton.transitions[transitionKey];
 			}
 		});
-
-		console.log(JSON.stringify(finiteAutomaton, null, 2));
 
 		return finiteAutomaton as TransformedFiniteAutomaton;
 	}

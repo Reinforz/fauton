@@ -1,20 +1,15 @@
 import { TransformedFiniteAutomaton } from '../types';
 
-export default function testDfa(DFA: TransformedFiniteAutomaton, randomBinaryString: string) {
-	let state = DFA.start_state;
-	for (let i = 0; i < randomBinaryString.length; i++) {
-		const binaryChar = randomBinaryString[i];
-		const currentState = DFA.transitions[state];
-		const isTrap = currentState === 'loop';
-		if (isTrap === true) {
+export default function testDfa(finiteAutomaton: TransformedFiniteAutomaton, inputString: string) {
+	let state = finiteAutomaton.start_state;
+	for (let i = 0; i < inputString.length; i++) {
+		const inputChar = inputString[i];
+		const symbolStateRecord = finiteAutomaton.transitions[state];
+		if (!symbolStateRecord[inputChar]) {
 			break;
-		} else {
-			if (binaryChar === '0') {
-				state = currentState[0][0];
-			} else if (binaryChar === '1') {
-				state = currentState[1][0];
-			}
 		}
+		// ! this only supports deterministic, as we are only extracting the 1 state
+		state = symbolStateRecord[inputChar][0];
 	}
-	return DFA.final_states.includes(state);
+	return finiteAutomaton.final_states.includes(state);
 }
