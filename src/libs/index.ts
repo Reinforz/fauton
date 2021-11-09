@@ -1,5 +1,5 @@
 export * from './DeterministicFiniteAutomaton';
-export * from './DfaTest';
+export * from './FiniteAutomataTest';
 export * from './FiniteAutomaton';
 export * from './GenerateString';
 export * from './NonDeterministicFiniteAutomaton';

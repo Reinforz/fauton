@@ -6,7 +6,7 @@ export class GenerateString {
 		maxLength: number,
 		cb?: (generatedString: string) => void
 	) {
-		const generatedStrings = new Set();
+		const generatedStrings: Set<string> = new Set();
 
 		for (let length = 1; length <= maxLength; length++) {
 			generateAllKLength('', length);
