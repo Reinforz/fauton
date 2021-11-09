@@ -22,24 +22,33 @@ export class FiniteAutomaton {
 	}
 
 	#normalize(finiteAutomaton: InputFiniteAutomaton) {
+		const appendedString = finiteAutomaton.append ?? '';
 		finiteAutomaton.final_states = finiteAutomaton.final_states.map(
-			(finalState) => (finiteAutomaton.append ?? '') + finalState.toString()
+			(finalState) => appendedString + finalState.toString()
 		);
-		finiteAutomaton.start_state =
-			(finiteAutomaton.append ?? '') + finiteAutomaton.start_state.toString();
+		finiteAutomaton.start_state = appendedString + finiteAutomaton.start_state.toString();
 		finiteAutomaton.states = finiteAutomaton.states.map(
-			(state) => (finiteAutomaton.append ?? '') + state.toString()
+			(state) => appendedString + state.toString()
 		);
 		Object.entries(finiteAutomaton.transitions).forEach(([transitionKey, transitionStates]) => {
-			const transformedTransitionValues =
-				typeof transitionStates !== 'string'
-					? transitionStates.map(
-							(transitionState) => (finiteAutomaton.append ?? '') + transitionState.toString()
-					  )
-					: (transitionStates as any);
+			// When its not string 'loop', we need to convert all the transition states to string
+			if (typeof transitionStates !== 'string') {
+				transitionStates.forEach((transitionState, transitionStateIndex) => {
+					// For dealing with 1: [ [2, 3] ] => 1: [ ["2", "3"] ]
+					if (Array.isArray(transitionState)) {
+						transitionState.forEach((state, stateIndex) => {
+							transitionState[stateIndex] = appendedString + state.toString();
+						});
+					}
+					// For dealing with 1: [ 2, 3 ] => 1: [ ["2"], ["3"] ]
+					else {
+						transitionStates[transitionStateIndex] = [appendedString + transitionState.toString()];
+					}
+				});
+			}
+			finiteAutomaton.transitions[appendedString + transitionKey] =
+				finiteAutomaton.transitions[transitionKey];
 			delete finiteAutomaton.transitions[transitionKey];
-			finiteAutomaton.transitions[(finiteAutomaton.append ?? '') + transitionKey] =
-				transformedTransitionValues;
 		});
 
 		return finiteAutomaton as TransformedFiniteAutomaton;
@@ -68,6 +77,8 @@ export class FiniteAutomaton {
 	#generateErrors() {
 		const errors: string[] = [];
 		const { testLogic, automaton } = this;
+
+		const automatonStates: Set<string> = new Set(automaton.states);
 
 		if (!testLogic) {
 			errors.push('testLogic function is required in Automaton');
@@ -121,46 +132,48 @@ export class FiniteAutomaton {
 		}
 
 		automaton.final_states.forEach((state) => {
-			if (!automaton.states.includes(state)) {
+			if (!automatonStates.has(state)) {
 				errors.push(
 					`Automaton final_states must reference a state (${state}) that is present in states`
 				);
 			}
 		});
 
-		Object.entries(automaton.transitions).forEach(([transitionKey, transitionValues]) => {
+		Object.entries(automaton.transitions).forEach(([transitionKey, transitionStates]) => {
 			// The transition record keys must point to a valid state
-			if (!automaton.states.includes(transitionKey)) {
+			if (!automatonStates.has(transitionKey)) {
 				errors.push(
 					`Automaton transitions must reference a state (${transitionKey}) that is present in states`
 				);
 			}
 
-			const isTransitionValuesAnArray = Array.isArray(transitionValues);
+			const isTransitionValuesAnArray = Array.isArray(transitionStates);
 
 			if (this.#automatonType === 'deterministic') {
-				if (typeof transitionValues !== 'string' && !isTransitionValuesAnArray) {
+				if (typeof transitionStates !== 'string' && !isTransitionValuesAnArray) {
 					errors.push(`Automaton transitions value must either be string "loop" or a tuple`);
 				}
 				// ! the length should be equal to the alphabets of the FA
 				// ! rather than constant 2, as it is only applicable for binary languages
-				if (isTransitionValuesAnArray && transitionValues.length !== 2) {
+				if (isTransitionValuesAnArray && transitionStates.length !== 2) {
 					errors.push(`Automaton transitions value when a tuple, can contain only 2 items`);
 				}
 
 				// ! Completely disable loop for non-deterministic automaton
-				if (typeof transitionValues === 'string' && transitionValues !== 'loop') {
+				if (typeof transitionStates === 'string' && transitionStates !== 'loop') {
 					errors.push(`Automaton transitions value when a string, can only be "loop"`);
 				}
 			}
 
 			if (isTransitionValuesAnArray) {
-				transitionValues.forEach((transitionValue) => {
-					if (!automaton.states.includes(transitionValue)) {
-						errors.push(
-							`Automaton transitions value (${transitionValue}) when a tuple, must reference a valid state`
-						);
-					}
+				transitionStates.forEach((transitionState) => {
+					transitionState.forEach((state) => {
+						if (!automatonStates.has(state)) {
+							errors.push(
+								`Automaton transitions value (${state}) when a tuple, must reference a valid state`
+							);
+						}
+					});
 				});
 			}
 		});

@@ -6,7 +6,8 @@ export interface InputFiniteAutomaton {
 	start_state: string | number;
 	final_states: (string | number)[];
 	states: (string | number)[];
-	transitions: Record<string | number, [string | number, string | number] | 'loop'>;
+	// each key of transitions indicate a state
+	transitions: Record<string | number, (Array<string | number> | (string | number))[] | 'loop'>;
 }
 
 export interface TransformedFiniteAutomaton {
@@ -16,7 +17,7 @@ export interface TransformedFiniteAutomaton {
 	start_state: string;
 	final_states: string[];
 	states: string[];
-	transitions: Record<string, [string, string] | 'loop'>;
+	transitions: Record<string, Array<string>[] | 'loop'>;
 }
 
 export interface FiniteAutomatonModule {
