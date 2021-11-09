@@ -10,7 +10,7 @@ type IMergedDfaOptions = Partial<
 type TMergeOperation = 'or' | 'and' | 'not';
 export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 	constructor(
-		testLogic: (inputString: string) => boolean,
+		testLogic: (inputString: string, automatonTestResult: boolean) => boolean,
 		automaton: InputFiniteAutomaton | TransformedFiniteAutomaton,
 		automatonId?: string
 	) {
@@ -131,19 +131,21 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 		}
 
 		return new DeterministicFiniteAutomaton(
-			(inputString) => {
+			(inputString, automatonTestResult) => {
 				if (mergeOperation === 'or') {
 					return (
-						(finiteAutomaton ? finiteAutomaton.testLogic(inputString) : true) ||
-						this.testLogic(inputString)
+						(finiteAutomaton
+							? finiteAutomaton.testLogic(inputString, automatonTestResult)
+							: true) || this.testLogic(inputString, automatonTestResult)
 					);
 				} else if (mergeOperation === 'and') {
 					return (
-						(finiteAutomaton ? finiteAutomaton.testLogic(inputString) : true) &&
-						this.testLogic(inputString)
+						(finiteAutomaton
+							? finiteAutomaton.testLogic(inputString, automatonTestResult)
+							: true) && this.testLogic(inputString, automatonTestResult)
 					);
 				} else {
-					return !this.testLogic(inputString);
+					return !this.testLogic(inputString, automatonTestResult);
 				}
 			},
 			{

@@ -8,13 +8,13 @@ import {
 } from '../types';
 
 export class FiniteAutomaton {
-	testLogic: (inputString: string) => boolean;
+	testLogic: (inputString: string, automatonTestResult: boolean) => boolean;
 	automaton: TransformedFiniteAutomaton;
 	#automatonId: string;
 	#automatonType: TFiniteAutomatonType;
 
 	constructor(
-		testLogic: (inputString: string) => boolean,
+		testLogic: (inputString: string, automatonTestResult: boolean) => boolean,
 		finiteAutomaton: InputFiniteAutomaton | TransformedFiniteAutomaton,
 		automatonType: TFiniteAutomatonType,
 		automatonId?: string

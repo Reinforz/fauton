@@ -114,8 +114,8 @@ export class FiniteAutomataTest {
 		for (let i = 0; i < inputStrings.length; i++) {
 			const inputString = inputStrings[i].replace('\r', '').replace('\n', '');
 			if (inputString.length !== 0) {
-				const logicTestResult = finiteAutomaton.testLogic(inputString);
 				const { automatonTestResult } = finiteAutomaton.generateGraphFromString(inputString);
+				const logicTestResult = finiteAutomaton.testLogic(inputString, automatonTestResult);
 				const isWrong = automatonTestResult !== logicTestResult;
 
 				const testResultString =
