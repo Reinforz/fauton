@@ -19,12 +19,12 @@ export interface TransformedFiniteAutomaton {
 	transitions: Record<string, [string, string] | 'loop'>;
 }
 
-export interface IDfaModule {
+export interface FiniteAutomatonModule {
 	testLogic: (binary: string) => boolean;
-	DFA: InputFiniteAutomaton;
+	automaton: InputFiniteAutomaton;
 }
 
-export interface IDfaModuleInfo {
+export interface FiniteAutomatonModuleInfo {
 	falsePositives: number;
 	falseNegatives: number;
 	truePositives: number;

@@ -2,7 +2,7 @@ import cliProgress from 'cli-progress';
 import colors from 'colors';
 import fs from 'fs';
 import path from 'path';
-import { IDfaModule, IDfaModuleInfo } from '../types';
+import { FiniteAutomatonModule, FiniteAutomatonModuleInfo } from '../types';
 import { countFileLines, generateAggregateMessage, generateCaseMessage, testDfa } from '../utils';
 import { BinaryString } from './BinaryString';
 import { DfaModule } from './DfaModule';
@@ -99,10 +99,10 @@ export class DfaTest {
 	}
 
 	#testDfas(
-		dfaModuleInfos: IDfaModuleInfo[],
+		dfaModuleInfos: FiniteAutomatonModuleInfo[],
 		writeStreams: Array<IWriteStreams>,
 		binaryStrings: string[],
-		post?: (dfaModule: IDfaModule, dfaModuleIndex: number) => void
+		post?: (dfaModule: FiniteAutomatonModule, dfaModuleIndex: number) => void
 	) {
 		this.#dfas.forEach((dfaModule, dfaModuleIndex) => {
 			// The log files are generated based on the label of the dfa
@@ -115,7 +115,7 @@ export class DfaTest {
 				const binaryString = binaryStrings[i].replace('\r', '').replace('\n', '');
 				if (binaryString.length !== 0) {
 					const logicTestResult = dfaModule.testLogic(binaryString);
-					const dfaModuleResult = testDfa(dfaModule.DFA, binaryString);
+					const dfaModuleResult = testDfa(dfaModule.automaton, binaryString);
 					const isWrong = dfaModuleResult !== logicTestResult;
 					if (!isWrong) {
 						if (dfaModuleResult === false && logicTestResult === false) {
@@ -167,8 +167,8 @@ export class DfaTest {
 	}
 
 	#postTest(
-		dfaModule: IDfaModule,
-		dfaModuleInfo: IDfaModuleInfo,
+		dfaModule: FiniteAutomatonModule,
+		dfaModuleInfo: FiniteAutomatonModuleInfo,
 		dfaModuleWriteStreams: {
 			writeStreams: IWriteStreams;
 			endStreams(): void;
@@ -179,8 +179,8 @@ export class DfaTest {
 			endStreams,
 		} = dfaModuleWriteStreams;
 		const { withoutColors, withColors } = generateAggregateMessage(
-			dfaModule.DFA.label,
-			dfaModule.DFA.description,
+			dfaModule.automaton.label,
+			dfaModule.automaton.description,
 			dfaModuleInfo.falsePositives,
 			dfaModuleInfo.falseNegatives,
 			dfaModuleInfo.truePositives,
@@ -195,7 +195,7 @@ export class DfaTest {
 
 	async test(configs: IConfigs) {
 		const writeStreams = this.#dfas.map((dfaModule) =>
-			this.#createFileWriteStreams(dfaModule.DFA.label)
+			this.#createFileWriteStreams(dfaModule.automaton.label)
 		);
 		const readStream = configs.type === 'file' ? fs.createReadStream(configs.filePath) : null;
 

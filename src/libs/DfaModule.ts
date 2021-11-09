@@ -1,56 +1,29 @@
 import colors from 'colors';
-import shortid from 'shortid';
-import { IDfaModule, InputFiniteAutomaton, TransformedFiniteAutomaton } from '../types';
+import { FiniteAutomatonModule, InputFiniteAutomaton } from '../types';
+import FiniteAutomaton from './FiniteAutomaton';
 
 type IMergedDfaOptions = Partial<
-	Pick<Pick<IDfaModule, 'DFA'>['DFA'], 'label' | 'description'> & {
+	Pick<Pick<FiniteAutomatonModule, 'automaton'>['automaton'], 'label' | 'description'> & {
 		separator: string;
 	}
 >;
 
 type TMergeOperation = 'or' | 'and' | 'not';
-export class DfaModule {
-	testLogic: (binaryString: string) => boolean;
-	DFA: TransformedFiniteAutomaton;
-	#dfaId: string;
-
+export class DfaModule extends FiniteAutomaton {
 	constructor(
 		testLogic: (binaryString: string) => boolean,
-		DFA: InputFiniteAutomaton,
-		dfaId?: string
+		automaton: InputFiniteAutomaton,
+		automatonId?: string
 	) {
-		this.testLogic = testLogic;
-		this.DFA = this.#normalize(DFA);
+		super(testLogic, automaton, automatonId);
 		this.#validate();
-		this.#dfaId = dfaId ?? shortid();
-	}
-
-	#normalize(DFA: InputFiniteAutomaton) {
-		DFA.final_states = DFA.final_states.map(
-			(finalState) => (DFA.append ?? '') + finalState.toString()
-		);
-		DFA.start_state = (DFA.append ?? '') + DFA.start_state.toString();
-		DFA.states = DFA.states.map((state) => (DFA.append ?? '') + state.toString());
-		Object.entries(DFA.transitions).forEach(([transitionKey, transitionValues]) => {
-			const transformedTransitionValues =
-				typeof transitionValues !== 'string'
-					? transitionValues.map(
-							(transitionValue) => (DFA.append ?? '') + transitionValue.toString()
-					  )
-					: (transitionValues as any);
-
-			delete DFA.transitions[transitionKey];
-			DFA.transitions[(DFA.append ?? '') + transitionKey] = transformedTransitionValues;
-		});
-
-		return DFA as TransformedFiniteAutomaton;
 	}
 
 	#validate() {
 		const dfaModuleValidationErrors = this.generateErrors();
 		if (dfaModuleValidationErrors.length !== 0) {
 			console.log(
-				`${colors.blue.bold(this.DFA.label)} ${colors.red.bold(
+				`${colors.blue.bold(this.automaton.label)} ${colors.red.bold(
 					dfaModuleValidationErrors.length.toString()
 				)} Errors`
 			);
@@ -64,61 +37,61 @@ export class DfaModule {
 
 	generateErrors() {
 		const errors: string[] = [];
-		const { testLogic, DFA } = this;
+		const { testLogic, automaton } = this;
 		if (!testLogic) {
 			errors.push('testLogic function is required in dfa module');
 		}
 
-		if (!DFA.label) {
+		if (!automaton.label) {
 			errors.push('Dfa label is required');
 		}
 
-		if (!DFA.states) {
+		if (!automaton.states) {
 			errors.push('Dfa states is required');
 
 			// Required when checking final_states and transition tuple states
-			DFA.states = [];
+			automaton.states = [];
 		}
 
-		if (!Array.isArray(DFA.states)) {
+		if (!Array.isArray(automaton.states)) {
 			errors.push('Dfa states must be an array');
 		}
 
-		if (DFA.states.length === 0) {
+		if (automaton.states.length === 0) {
 			errors.push('Dfa states must be an array of length > 0');
 		}
 
-		DFA.states.forEach((state) => {
-			if (!DFA.transitions[state]) {
+		automaton.states.forEach((state) => {
+			if (!automaton.transitions[state]) {
 				errors.push(`Dfa states must reference a state (${state}) that is present in transitions`);
 			}
 		});
 
-		if (DFA.start_state === undefined || DFA.start_state === null) {
+		if (automaton.start_state === undefined || automaton.start_state === null) {
 			errors.push('Dfa start_state is required');
 		}
 
-		if (DFA.final_states === undefined || DFA.final_states === null) {
+		if (automaton.final_states === undefined || automaton.final_states === null) {
 			errors.push('Dfa final_states is required');
-			DFA.final_states = [];
+			automaton.final_states = [];
 		}
 
-		if (!Array.isArray(DFA.final_states)) {
+		if (!Array.isArray(automaton.final_states)) {
 			errors.push('Dfa final_states must be an array');
 		}
 
-		if (DFA.final_states.length === 0) {
+		if (automaton.final_states.length === 0) {
 			errors.push('Dfa final_states must be an array of length > 0');
 		}
 
-		DFA.final_states.forEach((state) => {
-			if (!DFA.states.includes(state)) {
+		automaton.final_states.forEach((state) => {
+			if (!automaton.states.includes(state)) {
 				errors.push(`Dfa final_states must reference a state (${state}) that is present in states`);
 			}
 		});
 
-		Object.entries(DFA.transitions).forEach(([transitionKey, transitionValues]) => {
-			if (!DFA.states.includes(transitionKey)) {
+		Object.entries(automaton.transitions).forEach(([transitionKey, transitionValues]) => {
+			if (!automaton.states.includes(transitionKey)) {
 				errors.push(
 					`Dfa transitions must reference a state (${transitionKey}) that is present in states`
 				);
@@ -138,7 +111,7 @@ export class DfaModule {
 
 			if (Array.isArray(transitionValues)) {
 				transitionValues.forEach((transitionValue) => {
-					if (!DFA.states.includes(transitionValue)) {
+					if (!automaton.states.includes(transitionValue)) {
 						errors.push(
 							`Dfa transitions value (${transitionValue}) when a tuple, must reference a valid state`
 						);
@@ -153,55 +126,58 @@ export class DfaModule {
 	#generateMergedDfaData(
 		dfaState: string,
 		newStates: string[],
-		newTransitions: IDfaModule['DFA']['transitions'],
+		newTransitions: FiniteAutomatonModule['automaton']['transitions'],
 		newFinalStates: Set<string>,
 		mergeOperation: TMergeOperation,
 		dfaModule: DfaModule | undefined,
 		isComposite: boolean,
 		separator: string
 	) {
-		this.DFA.states.forEach((currentDfaState) => {
+		this.automaton.states.forEach((currentDfaState) => {
 			const newState = isComposite
 				? `${dfaModule ? dfaState + separator : dfaState}${currentDfaState}`
 				: currentDfaState;
 			if (isComposite) {
 				newStates.push(newState);
 				const newStateForSymbolZero =
-					(dfaModule ? dfaModule.DFA.transitions[dfaState][0].toString() + separator : '') +
-					this.DFA.transitions[currentDfaState][0].toString();
+					(dfaModule ? dfaModule.automaton.transitions[dfaState][0].toString() + separator : '') +
+					this.automaton.transitions[currentDfaState][0].toString();
 				const newStateForSymbolOne =
-					(dfaModule ? dfaModule.DFA.transitions[dfaState][1].toString() + separator : '') +
-					this.DFA.transitions[currentDfaState][1].toString();
+					(dfaModule ? dfaModule.automaton.transitions[dfaState][1].toString() + separator : '') +
+					this.automaton.transitions[currentDfaState][1].toString();
 				newTransitions[newState] = [newStateForSymbolZero, newStateForSymbolOne];
 				if (
 					mergeOperation === 'or' &&
-					((dfaModule ? dfaModule.DFA.final_states.includes(dfaState) : true) ||
-						this.DFA.final_states.includes(currentDfaState))
+					((dfaModule ? dfaModule.automaton.final_states.includes(dfaState) : true) ||
+						this.automaton.final_states.includes(currentDfaState))
 				) {
 					newFinalStates.add(newState);
 				} else if (
 					mergeOperation === 'and' &&
-					(dfaModule ? dfaModule.DFA.final_states.includes(dfaState) : true) &&
-					this.DFA.final_states.includes(currentDfaState)
+					(dfaModule ? dfaModule.automaton.final_states.includes(dfaState) : true) &&
+					this.automaton.final_states.includes(currentDfaState)
 				) {
 					newFinalStates.add(newState);
-				} else if (mergeOperation === 'not' && !this.DFA.final_states.includes(currentDfaState)) {
+				} else if (
+					mergeOperation === 'not' &&
+					!this.automaton.final_states.includes(currentDfaState)
+				) {
 					newFinalStates.add(newState);
 				}
 			} else {
 				if (
 					mergeOperation === 'or' &&
-					((dfaModule ? dfaModule.DFA.final_states.includes(newState) : true) ||
-						this.DFA.final_states.includes(newState))
+					((dfaModule ? dfaModule.automaton.final_states.includes(newState) : true) ||
+						this.automaton.final_states.includes(newState))
 				) {
 					newFinalStates.add(newState);
 				} else if (
 					mergeOperation === 'and' &&
-					(dfaModule ? dfaModule.DFA.final_states.includes(newState) : true) &&
-					this.DFA.final_states.includes(newState)
+					(dfaModule ? dfaModule.automaton.final_states.includes(newState) : true) &&
+					this.automaton.final_states.includes(newState)
 				) {
 					newFinalStates.add(newState);
-				} else if (mergeOperation === 'not' && !this.DFA.final_states.includes(newState)) {
+				} else if (mergeOperation === 'not' && !this.automaton.final_states.includes(newState)) {
 					newFinalStates.add(newState);
 				}
 			}
@@ -213,22 +189,24 @@ export class DfaModule {
 		mergeOperation: TMergeOperation,
 		mergedDfaOptions?: IMergedDfaOptions
 	) {
-		const { separator = '.' } = mergedDfaOptions ?? {};
+		const { separator = '.', label, description } = mergedDfaOptions ?? ({} as IMergedDfaOptions);
 		const newStates: string[] = [];
-		const newTransitions: IDfaModule['DFA']['transitions'] = {};
+		const newTransitions: FiniteAutomatonModule['automaton']['transitions'] = {};
 		// If we have two different dfa's we are in composite mode
-		const isComposite = (dfaModule ? dfaModule.#dfaId : '') !== this.#dfaId;
+		const isComposite = (dfaModule ? dfaModule.getAutomatonId() : '') !== this.getAutomatonId();
 		const newDfaId =
-			isComposite && dfaModule ? dfaModule.#dfaId + separator + this.#dfaId : this.#dfaId;
+			isComposite && dfaModule
+				? dfaModule.getAutomatonId() + separator + this.getAutomatonId()
+				: this.getAutomatonId();
 
 		// Only create a new state if its not composite
 		const newStartState =
-			(isComposite && dfaModule ? dfaModule.DFA.start_state.toString() + separator : '') +
-			this.DFA.start_state.toString();
+			(isComposite && dfaModule ? dfaModule.automaton.start_state.toString() + separator : '') +
+			this.automaton.start_state.toString();
 		const newFinalStates: Set<string> = new Set();
 
 		if (dfaModule) {
-			dfaModule.DFA.states.forEach((dfaState) => {
+			dfaModule.automaton.states.forEach((dfaState) => {
 				this.#generateMergedDfaData(
 					dfaState,
 					newStates,
@@ -273,19 +251,20 @@ export class DfaModule {
 			{
 				final_states: Array.from(newFinalStates),
 				label:
-					mergedDfaOptions?.label ??
-					`${dfaModule ? dfaModule.DFA.label + ' - ' : ''}${this.DFA.label}`,
+					label ?? `${dfaModule ? dfaModule.automaton.label + ' - ' : ''}${this.automaton.label}`,
 				description:
-					mergedDfaOptions?.description ??
+					description ??
 					mergeOperation.toUpperCase() +
 						'(' +
-						`${dfaModule ? dfaModule.DFA.description + ', ' : ''}${this.DFA.description}` +
+						`${dfaModule ? dfaModule.automaton.description + ', ' : ''}${
+							this.automaton.description
+						}` +
 						')',
-				start_state: isComposite ? newStartState : this.DFA.start_state,
-				states: isComposite ? newStates : this.DFA.states,
-				transitions: isComposite ? newTransitions : this.DFA.transitions,
+				start_state: isComposite ? newStartState : this.automaton.start_state,
+				states: isComposite ? newStates : this.automaton.states,
+				transitions: isComposite ? newTransitions : this.automaton.transitions,
 			},
-			isComposite ? newDfaId : this.#dfaId
+			isComposite ? newDfaId : this.getAutomatonId()
 		);
 	}
 
