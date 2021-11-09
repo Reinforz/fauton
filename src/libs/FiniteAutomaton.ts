@@ -1,14 +1,11 @@
 import colors from 'colors';
 import shortid from 'shortid';
-import { InputFiniteAutomaton, TFiniteAutomatonType, TransformedFiniteAutomaton } from '../types';
-
-interface GraphNode {
-	state: string;
-	symbol: null | string;
-	children: GraphNode[];
-	index: number;
-	string: string;
-}
+import {
+	GraphNode,
+	InputFiniteAutomaton,
+	TFiniteAutomatonType,
+	TransformedFiniteAutomaton,
+} from '../types';
 
 export class FiniteAutomaton {
 	testLogic: (inputString: string) => boolean;
@@ -175,6 +172,7 @@ export class FiniteAutomaton {
 				}
 			}
 
+			// 1: [ [1, 2, 3], [2, 3] ] all of these must refer to valid states
 			if (isTransitionValuesAnArray) {
 				transitionStates.forEach((transitionState) => {
 					transitionState.forEach((state) => {
@@ -194,6 +192,7 @@ export class FiniteAutomaton {
 	generateGraphFromString(inputString: string) {
 		let currentParents: GraphNode[] = [
 			{
+				name: `${this.automaton.start_state}`,
 				state: this.automaton.start_state,
 				string: '',
 				index: 0,
@@ -212,6 +211,7 @@ export class FiniteAutomaton {
 				if (Array.isArray(transitionStates)) {
 					transitionStates.forEach((transitionState) => {
 						const parentGraphNode = {
+							name: transitionState + `(${symbol})`,
 							state: transitionState,
 							string: inputString.slice(0, index + 1),
 							index: index + 1,

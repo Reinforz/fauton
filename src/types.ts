@@ -33,3 +33,11 @@ export interface FiniteAutomatonModuleInfo {
 }
 
 export type TFiniteAutomatonType = 'deterministic' | 'non-deterministic';
+export interface GraphNode {
+	name: string;
+	state: string;
+	symbol: null | string;
+	children: GraphNode[];
+	index: number;
+	string: string;
+}
