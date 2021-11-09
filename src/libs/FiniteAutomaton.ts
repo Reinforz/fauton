@@ -35,28 +35,52 @@ export class FiniteAutomaton {
 		finiteAutomaton.states = finiteAutomaton.states.map(
 			(state) => appendedString + state.toString()
 		);
+
+		function attachToStateRecord(
+			transitionStateRecord: Record<string, string[]>,
+			alphabetIndex: number,
+			state: string
+		) {
+			if (!transitionStateRecord[finiteAutomaton.alphabets[alphabetIndex]]) {
+				transitionStateRecord[finiteAutomaton.alphabets[alphabetIndex]] = [state];
+			} else {
+				transitionStateRecord[finiteAutomaton.alphabets[alphabetIndex]].push(state);
+			}
+		}
+
 		Object.entries(finiteAutomaton.transitions).forEach(([transitionKey, transitionStates]) => {
+			const transitionStateRecord: Record<string, string[]> = {};
 			// When its not string 'loop', we need to convert all the transition states to string
 			if (typeof transitionStates !== 'string') {
 				transitionStates.forEach((transitionState, transitionStateIndex) => {
 					// For dealing with 1: [ [2, 3] ] => 1: [ ["2", "3"] ]
 					if (Array.isArray(transitionState)) {
-						transitionState.forEach((state, stateIndex) => {
-							transitionState[stateIndex] = appendedString + state.toString();
+						transitionState.forEach((state) => {
+							attachToStateRecord(
+								transitionStateRecord,
+								transitionStateIndex,
+								appendedString + state.toString()
+							);
 						});
 					}
 					// For dealing with 1: [ 2, 3 ] => 1: [ ["2"], ["3"] ]
 					else {
-						transitionStates[transitionStateIndex] = [appendedString + transitionState.toString()];
+						attachToStateRecord(
+							transitionStateRecord,
+							transitionStateIndex,
+							appendedString + transitionState.toString()
+						);
 					}
 				});
 			}
-			finiteAutomaton.transitions[appendedString + transitionKey] =
-				finiteAutomaton.transitions[transitionKey];
+			(finiteAutomaton as TransformedFiniteAutomaton).transitions[appendedString + transitionKey] =
+				transitionStateRecord;
 			if (appendedString) {
 				delete finiteAutomaton.transitions[transitionKey];
 			}
 		});
+
+		console.log(JSON.stringify(finiteAutomaton, null, 2));
 
 		return finiteAutomaton as TransformedFiniteAutomaton;
 	}
@@ -86,6 +110,7 @@ export class FiniteAutomaton {
 		const { testLogic, automaton } = this;
 
 		const automatonStates: Set<string> = new Set(automaton.states);
+		const automatonAlphabets: Set<string> = new Set(automaton.alphabets);
 
 		if (!testLogic) {
 			errors.push('testLogic function is required in Automaton');
@@ -98,8 +123,14 @@ export class FiniteAutomaton {
 		if (!automaton.states) {
 			errors.push('Automaton states is required');
 
-			// Required when checking final_states and transition tuple states
+			// Required when checking final_states and transition states
 			automaton.states = [];
+		}
+
+		if (!automaton.alphabets) {
+			errors.push('Automaton alphabets is required');
+			// Required when checking transition states
+			automaton.alphabets = [];
 		}
 
 		if (!Array.isArray(automaton.states)) {
@@ -146,7 +177,7 @@ export class FiniteAutomaton {
 			}
 		});
 
-		Object.entries(automaton.transitions).forEach(([transitionKey, transitionStates]) => {
+		Object.entries(automaton.transitions).forEach(([transitionKey, transitionStatesRecord]) => {
 			// The transition record keys must point to a valid state
 			if (!automatonStates.has(transitionKey)) {
 				errors.push(
@@ -154,35 +185,44 @@ export class FiniteAutomaton {
 				);
 			}
 
-			const isTransitionValuesAnArray = Array.isArray(transitionStates);
+			// Checking if the transition record is a POJO
+			const isTransitionValuesARecord =
+				typeof transitionStatesRecord === 'object' &&
+				Object.getPrototypeOf(transitionStatesRecord) === Object.prototype;
 
 			if (this.#automatonType === 'deterministic') {
-				if (typeof transitionStates !== 'string' && !isTransitionValuesAnArray) {
+				if (typeof transitionStatesRecord !== 'string' && !isTransitionValuesARecord) {
 					errors.push(`Automaton transitions value must either be string "loop" or a tuple`);
 				}
-				// ! the length should be equal to the alphabets of the FA
-				// ! rather than constant 2, as it is only applicable for binary languages
-				if (isTransitionValuesAnArray && transitionStates.length !== 2) {
-					errors.push(`Automaton transitions value when a tuple, can contain only 2 items`);
-				}
-
 				// ! Completely disable loop for non-deterministic automaton
-				if (typeof transitionStates === 'string' && transitionStates !== 'loop') {
+				if (typeof transitionStatesRecord === 'string' && transitionStatesRecord !== 'loop') {
 					errors.push(`Automaton transitions value when a string, can only be "loop"`);
 				}
 			}
 
-			// 1: [ [1, 2, 3], [2, 3] ] all of these must refer to valid states
-			if (isTransitionValuesAnArray) {
-				transitionStates.forEach((transitionState) => {
-					transitionState.forEach((state) => {
-						if (!automatonStates.has(state)) {
+			// all of these must refer to valid states
+			/* 
+      1: {
+        0: ["1", "2", "3"],
+        1: ["2", "3"]
+      } */
+			if (transitionStatesRecord && typeof transitionStatesRecord !== 'string') {
+				Object.entries(transitionStatesRecord).forEach(
+					([transitionStateSymbol, transitionStateResultantStates]) => {
+						if (!automatonAlphabets.has(transitionStateSymbol)) {
 							errors.push(
-								`Automaton transitions value (${state}) when a tuple, must reference a valid state`
+								`Automaton transitions symbol (${transitionStateSymbol}), must reference a valid alphabet`
 							);
 						}
-					});
-				});
+						transitionStateResultantStates.forEach((transitionStateResultantState) => {
+							if (!automatonStates.has(transitionStateResultantState)) {
+								errors.push(
+									`Automaton transitions value (${transitionStateResultantState}) when a tuple, must reference a valid state`
+								);
+							}
+						});
+					}
+				);
 			}
 		});
 
@@ -207,7 +247,9 @@ export class FiniteAutomaton {
 			const newChildren: GraphNode[] = [];
 			const symbol = inputString[index];
 			currentParents.forEach((currentParent) => {
-				const transitionStates = this.automaton.transitions[currentParent.state][parseInt(symbol)];
+				const transitionStates = (
+					this.automaton.transitions[currentParent.state] as Record<string, string[]>
+				)[symbol];
 				if (Array.isArray(transitionStates)) {
 					transitionStates.forEach((transitionState) => {
 						const parentGraphNode = {

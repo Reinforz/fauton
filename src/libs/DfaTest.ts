@@ -2,7 +2,7 @@ import cliProgress from 'cli-progress';
 import colors from 'colors';
 import fs from 'fs';
 import path from 'path';
-import { FiniteAutomatonModule, FiniteAutomatonModuleInfo } from '../types';
+import { FiniteAutomatonModule, FiniteAutomatonTestInfo } from '../types';
 import { countFileLines, generateAggregateMessage, generateCaseMessage, testDfa } from '../utils';
 import { BinaryString } from './BinaryString';
 import { DeterministicFiniteAutomaton } from './DeterministicFiniteAutomaton';
@@ -103,7 +103,7 @@ export class DfaTest {
 	}
 
 	#testAutomata(
-		dfaModuleInfos: FiniteAutomatonModuleInfo[],
+		dfaModuleInfos: FiniteAutomatonTestInfo[],
 		writeStreams: Array<IWriteStreams>,
 		binaryStrings: string[],
 		post?: (dfaModule: FiniteAutomatonModule, dfaModuleIndex: number) => void
@@ -172,7 +172,7 @@ export class DfaTest {
 
 	#postTest(
 		dfaModule: FiniteAutomatonModule,
-		dfaModuleInfo: FiniteAutomatonModuleInfo,
+		dfaModuleInfo: FiniteAutomatonTestInfo,
 		dfaModuleWriteStreams: {
 			writeStreams: IWriteStreams;
 			endStreams(): void;

@@ -1,6 +1,7 @@
 export interface InputFiniteAutomaton {
 	// Append a string to all the states
 	append?: string;
+	alphabets: string[];
 	label: string;
 	description?: string;
 	start_state: string | number;
@@ -12,12 +13,14 @@ export interface InputFiniteAutomaton {
 
 export interface TransformedFiniteAutomaton {
 	append?: string;
+	alphabets: string[];
 	label: string;
 	description?: string;
 	start_state: string;
 	final_states: string[];
 	states: string[];
-	transitions: Record<string, Array<string>[] | 'loop'>;
+	// each key of transitions indicate a state, which in turn represents alphabets
+	transitions: Record<string, Record<string, string[]> | 'loop'>;
 }
 
 export interface FiniteAutomatonModule {
@@ -25,7 +28,7 @@ export interface FiniteAutomatonModule {
 	automaton: InputFiniteAutomaton;
 }
 
-export interface FiniteAutomatonModuleInfo {
+export interface FiniteAutomatonTestInfo {
 	falsePositives: number;
 	falseNegatives: number;
 	truePositives: number;
