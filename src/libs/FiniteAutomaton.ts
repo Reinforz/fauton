@@ -2,6 +2,14 @@ import colors from 'colors';
 import shortid from 'shortid';
 import { InputFiniteAutomaton, TFiniteAutomatonType, TransformedFiniteAutomaton } from '../types';
 
+interface GraphNode {
+	state: string;
+	symbol: null | string;
+	children: GraphNode[];
+	index: number;
+	string: string;
+}
+
 export class FiniteAutomaton {
 	testLogic: (inputString: string) => boolean;
 	automaton: TransformedFiniteAutomaton;
@@ -48,7 +56,9 @@ export class FiniteAutomaton {
 			}
 			finiteAutomaton.transitions[appendedString + transitionKey] =
 				finiteAutomaton.transitions[transitionKey];
-			delete finiteAutomaton.transitions[transitionKey];
+			if (appendedString) {
+				delete finiteAutomaton.transitions[transitionKey];
+			}
 		});
 
 		return finiteAutomaton as TransformedFiniteAutomaton;
@@ -179,5 +189,49 @@ export class FiniteAutomaton {
 		});
 
 		return errors;
+	}
+
+	generateGraphFromString(inputString: string) {
+		let currentParents: GraphNode[] = [
+			{
+				state: this.automaton.start_state,
+				string: '',
+				index: 0,
+				symbol: null,
+				children: [],
+			},
+		];
+		const finalNodes: GraphNode[] = [];
+
+		const graph = currentParents;
+		for (let index = 0; index < inputString.length; index++) {
+			const newChildren: GraphNode[] = [];
+			const symbol = inputString[index];
+			currentParents.forEach((currentParent) => {
+				const transitionStates = this.automaton.transitions[currentParent.state][parseInt(symbol)];
+				if (Array.isArray(transitionStates)) {
+					transitionStates.forEach((transitionState) => {
+						const parentGraphNode = {
+							state: transitionState,
+							string: inputString.slice(0, index + 1),
+							index: index + 1,
+							symbol,
+							children: [],
+						};
+						currentParent.children.push(parentGraphNode);
+						newChildren.push(parentGraphNode);
+					});
+				}
+			});
+			// For the last symbol
+			if (index === inputString.length - 1) {
+				finalNodes.push(...newChildren);
+			}
+			currentParents = newChildren;
+		}
+		return {
+			finalNodes,
+			graph: graph[0],
+		};
 	}
 }
