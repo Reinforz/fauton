@@ -170,6 +170,7 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 					isComposite && finiteAutomaton
 						? this.automaton.alphabets.concat(finiteAutomaton.automaton.alphabets)
 						: this.automaton.alphabets,
+				epsilon_transitions: null,
 			},
 			isComposite ? newDfaId : this.getAutomatonId()
 		);

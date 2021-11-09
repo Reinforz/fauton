@@ -12,6 +12,7 @@ export interface InputFiniteAutomaton {
 		string | number,
 		(Array<string | number> | (string | number) | null)[] | 'loop'
 	>;
+	epsilon_transitions?: Record<string, string[]>;
 }
 
 export interface TransformedFiniteAutomaton {
@@ -24,6 +25,7 @@ export interface TransformedFiniteAutomaton {
 	states: string[];
 	// each key of transitions indicate a state, which in turn represents alphabets
 	transitions: Record<string, Record<string, string[]>>;
+	epsilon_transitions: null | Record<string, string[]>;
 }
 
 export interface IFiniteAutomaton {

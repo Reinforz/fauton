@@ -117,38 +117,29 @@ export class FiniteAutomataTest {
 				const logicTestResult = finiteAutomaton.testLogic(inputString);
 				const { automatonTestResult } = finiteAutomaton.generateGraphFromString(inputString);
 				const isWrong = automatonTestResult !== logicTestResult;
+
+				const testResultString =
+					automatonTestResult.toString().toUpperCase()[0] +
+					' ' +
+					logicTestResult.toString().toUpperCase()[0] +
+					' ' +
+					inputString +
+					' ' +
+					'\n';
 				if (!isWrong) {
 					if (automatonTestResult === false && logicTestResult === false) {
 						finiteAutomatonTestInfo.trueNegatives += 1;
 					} else {
 						finiteAutomatonTestInfo.truePositives += 1;
 					}
-					correctWriteStream &&
-						correctWriteStream.write(
-							automatonTestResult.toString().toUpperCase()[0] +
-								' ' +
-								logicTestResult.toString().toUpperCase()[0] +
-								' ' +
-								inputString +
-								' ' +
-								'\n'
-						);
+					correctWriteStream && correctWriteStream.write(testResultString);
 				} else {
 					if (automatonTestResult && !logicTestResult) {
 						finiteAutomatonTestInfo.falsePositives += 1;
 					} else {
 						finiteAutomatonTestInfo.falseNegatives += 1;
 					}
-					incorrectWriteStream &&
-						incorrectWriteStream.write(
-							automatonTestResult.toString().toUpperCase()[0] +
-								' ' +
-								logicTestResult.toString().toUpperCase()[0] +
-								' ' +
-								inputString +
-								' ' +
-								'\n'
-						);
+					incorrectWriteStream && incorrectWriteStream.write(testResultString);
 				}
 				inputWriteStream && inputWriteStream.write(inputString + '\n');
 

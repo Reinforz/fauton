@@ -24,6 +24,9 @@ export class FiniteAutomaton {
 		this.testLogic = testLogic;
 		this.automaton = this.#normalize(finiteAutomaton);
 		this.#validate();
+		/* if (automatonType === "non-deterministic" && this.automaton.epsilon_transitions) {
+      this.#expandEpsilonTransitions(this.automaton.epsilon_transitions, this.automaton.transitions)
+    } */
 	}
 
 	#normalize(finiteAutomaton: InputFiniteAutomaton | TransformedFiniteAutomaton) {
@@ -36,6 +39,17 @@ export class FiniteAutomaton {
 		finiteAutomaton.states = finiteAutomaton.states.map(
 			(state) => appendedString + state.toString()
 		);
+		// Convert all the epsilon transition values to string
+		if (finiteAutomaton.epsilon_transitions) {
+			Object.entries(finiteAutomaton.epsilon_transitions).forEach(
+				([epsilonTransitionState, epsilonTransitionStates]) => {
+					finiteAutomaton.epsilon_transitions![epsilonTransitionState] =
+						epsilonTransitionStates.map((epsilonTransitionState) =>
+							epsilonTransitionState.toString()
+						);
+				}
+			);
+		}
 
 		function attachToStateRecord(
 			transitionStateRecord: Record<string, string[]>,
@@ -159,6 +173,11 @@ export class FiniteAutomaton {
 					);
 				}
 			});
+
+			// Deterministic automaton can't have epsilon transitions
+			if (automaton.epsilon_transitions) {
+				errors.push(`Deterministic automaton can't contain epsilon transitions`);
+			}
 		}
 
 		if (automaton.start_state === undefined || automaton.start_state === null) {
@@ -186,11 +205,30 @@ export class FiniteAutomaton {
 			}
 		});
 
+		if (automaton.epsilon_transitions) {
+			Object.entries(automaton.epsilon_transitions).forEach(
+				([transitionState, transitionStates]) => {
+					if (!automatonStates.has(transitionState)) {
+						errors.push(
+							`Epsilon transition state ${transitionState} must reference a state that is present in states`
+						);
+					}
+					transitionStates.forEach((transitionState) => {
+						if (!automatonStates.has(transitionState)) {
+							errors.push(
+								`Epsilon transition state ${transitionState} must reference a state that is present in states`
+							);
+						}
+					});
+				}
+			);
+		}
+
 		Object.entries(automaton.transitions).forEach(([transitionKey, transitionStatesRecord]) => {
 			// The transition record keys must point to a valid state
 			if (!automatonStates.has(transitionKey)) {
 				errors.push(
-					`Automaton transitions must reference a state (${transitionKey}) that is present in states`
+					`Automaton transitions (${transitionKey}) must reference a state that is present in states`
 				);
 			}
 
