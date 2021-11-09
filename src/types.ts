@@ -24,7 +24,7 @@ export interface TransformedFiniteAutomaton {
 }
 
 export interface IFiniteAutomaton {
-	testLogic: (binary: string) => boolean;
+	testLogic: (inputString: string) => boolean;
 	automaton: InputFiniteAutomaton;
 }
 

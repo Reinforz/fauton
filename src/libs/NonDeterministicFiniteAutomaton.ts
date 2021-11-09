@@ -3,7 +3,7 @@ import { FiniteAutomaton } from './FiniteAutomaton';
 
 export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 	constructor(
-		testLogic: (binaryString: string) => boolean,
+		testLogic: (inputString: string) => boolean,
 		automaton: InputFiniteAutomaton,
 		automatonId?: string
 	) {

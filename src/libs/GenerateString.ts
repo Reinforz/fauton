@@ -30,21 +30,21 @@ export class GenerateString {
 		total: number,
 		minLength: number,
 		maxLength: number,
-		initialBinaryStrings?: string[]
+		initialInputStrings?: string[]
 	) {
-		// Using a set to store only unique binary strings
-		const uniqueRandomBinaryStrings: Set<string> = new Set(initialBinaryStrings ?? []);
-		while (uniqueRandomBinaryStrings.size + (initialBinaryStrings ?? []).length < total) {
-			const binaryStringLength = generateRandomNumber(minLength, maxLength);
-			let randomBinaryString = '';
-			for (let index = 0; index < binaryStringLength; index++) {
-				randomBinaryString += generateRandomNumber(0, 1);
+		// Using a set to store only unique input strings
+		const uniqueRandomInputStrings: Set<string> = new Set(initialInputStrings ?? []);
+		while (uniqueRandomInputStrings.size + (initialInputStrings ?? []).length < total) {
+			const inputStringLength = generateRandomNumber(minLength, maxLength);
+			let randomInputString = '';
+			for (let index = 0; index < inputStringLength; index++) {
+				randomInputString += generateRandomNumber(0, 1);
 			}
 
-			if (!uniqueRandomBinaryStrings.has(randomBinaryString)) {
-				uniqueRandomBinaryStrings.add(randomBinaryString);
+			if (!uniqueRandomInputStrings.has(randomInputString)) {
+				uniqueRandomInputStrings.add(randomInputString);
 			}
 		}
-		return Array.from(uniqueRandomBinaryStrings);
+		return Array.from(uniqueRandomInputStrings);
 	}
 }
