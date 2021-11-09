@@ -39,6 +39,11 @@ type IOption =
 			type: 'file';
 			filePath: string;
 			outputFiles?: Partial<IOutputFiles>;
+	  }
+	| {
+			type: 'custom';
+			inputs: string[];
+			outputFiles?: Partial<IOutputFiles>;
 	  };
 
 type IWriteStreams = Record<`${keyof IOutputFiles}WriteStream`, null | fs.WriteStream>;
@@ -120,9 +125,9 @@ export class FiniteAutomataTest {
 					}
 					correctWriteStream &&
 						correctWriteStream.write(
-							(automatonTestResult === true ? 'T' : 'F') +
+							automatonTestResult.toString().toUpperCase()[0] +
 								' ' +
-								(logicTestResult === true ? 'T' : 'F') +
+								logicTestResult.toString().toUpperCase()[0] +
 								' ' +
 								inputString +
 								' ' +
@@ -136,9 +141,9 @@ export class FiniteAutomataTest {
 					}
 					incorrectWriteStream &&
 						incorrectWriteStream.write(
-							(automatonTestResult === true ? 'T' : 'F') +
+							automatonTestResult.toString().toUpperCase()[0] +
 								' ' +
-								(logicTestResult === true ? 'T' : 'F') +
+								logicTestResult.toString().toUpperCase()[0] +
 								' ' +
 								inputString +
 								' ' +
@@ -212,19 +217,23 @@ export class FiniteAutomataTest {
 					const inputStrings = chunks.toString().split('\n') as string[];
 					this.#testAutomata(automaton, finiteAutomatonTestInfo, writeStreams.record, inputStrings);
 				}
-			} else if (options.type === 'generate') {
+			} else {
 				let generatedStrings: string[] = [];
-				if (options.random) {
-					generatedStrings = GenerateString.generateRandomUnique(
-						options.random.total,
-						options.random.minLength,
-						options.random.maxLength
-					);
-				} else if (options.range) {
-					generatedStrings = GenerateString.generateAllCombosWithinLength(
-						automaton.automaton.alphabets,
-						options.range.maxLength
-					);
+				if (options.type === 'generate') {
+					if (options.random) {
+						generatedStrings = GenerateString.generateRandomUnique(
+							options.random.total,
+							options.random.minLength,
+							options.random.maxLength
+						);
+					} else if (options.range) {
+						generatedStrings = GenerateString.generateAllCombosWithinLength(
+							automaton.automaton.alphabets,
+							options.range.maxLength
+						);
+					}
+				} else {
+					generatedStrings = options.inputs;
 				}
 
 				this.#cliProgressBar.start(generatedStrings.length, 0, {

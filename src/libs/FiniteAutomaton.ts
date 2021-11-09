@@ -54,24 +54,35 @@ export class FiniteAutomaton {
 			// When its not string 'loop', we need to convert all the transition states to string
 			if (typeof transitionStates !== 'string' && Array.isArray(transitionStates)) {
 				transitionStates.forEach((transitionState, transitionStateIndex) => {
-					// For dealing with 1: [ [2, 3] ] => 1: [ ["2", "3"] ]
-					if (Array.isArray(transitionState)) {
-						transitionState.forEach((state) => {
+					// Guarding against null values
+					if (transitionState) {
+						// For dealing with 1: [ [2, 3] ] => 1: [ ["2", "3"] ]
+						if (Array.isArray(transitionState)) {
+							transitionState.forEach((state) => {
+								attachToStateRecord(
+									transitionStateRecord,
+									transitionStateIndex,
+									appendedString + state.toString()
+								);
+							});
+						}
+						// For dealing with 1: [ 2, 3 ] => 1: [ ["2"], ["3"] ]
+						else {
 							attachToStateRecord(
 								transitionStateRecord,
 								transitionStateIndex,
-								appendedString + state.toString()
+								appendedString + transitionState.toString()
 							);
-						});
+						}
 					}
-					// For dealing with 1: [ 2, 3 ] => 1: [ ["2"], ["3"] ]
-					else {
-						attachToStateRecord(
-							transitionStateRecord,
-							transitionStateIndex,
-							appendedString + transitionState.toString()
-						);
-					}
+				});
+			} else {
+				finiteAutomaton.alphabets.forEach((_, alphabetIndex) => {
+					attachToStateRecord(
+						transitionStateRecord,
+						alphabetIndex,
+						appendedString + transitionKey.toString()
+					);
 				});
 			}
 			(finiteAutomaton as TransformedFiniteAutomaton).transitions[appendedString + transitionKey] =
@@ -80,7 +91,6 @@ export class FiniteAutomaton {
 				delete finiteAutomaton.transitions[transitionKey];
 			}
 		});
-
 		return finiteAutomaton as TransformedFiniteAutomaton;
 	}
 
@@ -234,7 +244,7 @@ export class FiniteAutomaton {
 				name: `${this.automaton.start_state}`,
 				state: this.automaton.start_state,
 				string: '',
-				index: 0,
+				depth: 0,
 				symbol: null,
 				children: [],
 			},
@@ -257,7 +267,7 @@ export class FiniteAutomaton {
 							name: transitionState + `(${symbol})`,
 							state: transitionState,
 							string: inputString.slice(0, index + 1),
-							index: index + 1,
+							depth: index + 1,
 							symbol,
 							children: [],
 						};

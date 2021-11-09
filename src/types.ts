@@ -8,7 +8,10 @@ export interface InputFiniteAutomaton {
 	final_states: (string | number)[];
 	states: (string | number)[];
 	// each key of transitions indicate a state
-	transitions: Record<string | number, (Array<string | number> | (string | number))[] | 'loop'>;
+	transitions: Record<
+		string | number,
+		(Array<string | number> | (string | number) | null)[] | 'loop'
+	>;
 }
 
 export interface TransformedFiniteAutomaton {
@@ -41,6 +44,6 @@ export interface GraphNode {
 	state: string;
 	symbol: null | string;
 	children: GraphNode[];
-	index: number;
+	depth: number;
 	string: string;
 }
