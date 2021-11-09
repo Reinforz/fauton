@@ -2,12 +2,17 @@ import colors from 'colors';
 import shortid from 'shortid';
 import { IDfaModule, InputFiniteAutomaton, TransformedFiniteAutomaton } from '../types';
 
-type IMergedDfaOptions = Partial<Pick<Pick<IDfaModule, 'DFA'>['DFA'], 'label' | 'description'>>;
+type IMergedDfaOptions = Partial<
+	Pick<Pick<IDfaModule, 'DFA'>['DFA'], 'label' | 'description'> & {
+		separator: string;
+	}
+>;
+
 type TMergeOperation = 'or' | 'and' | 'not';
 export class DfaModule {
 	testLogic: (binaryString: string) => boolean;
 	DFA: TransformedFiniteAutomaton;
-	dfaId: string;
+	#dfaId: string;
 
 	constructor(
 		testLogic: (binaryString: string) => boolean,
@@ -17,7 +22,7 @@ export class DfaModule {
 		this.testLogic = testLogic;
 		this.DFA = this.#normalize(DFA);
 		this.#validate();
-		this.dfaId = dfaId ?? shortid();
+		this.#dfaId = dfaId ?? shortid();
 	}
 
 	#normalize(DFA: InputFiniteAutomaton) {
@@ -152,19 +157,20 @@ export class DfaModule {
 		newFinalStates: Set<string>,
 		mergeOperation: TMergeOperation,
 		dfaModule: DfaModule | undefined,
-		isComposite: boolean
+		isComposite: boolean,
+		separator: string
 	) {
 		this.DFA.states.forEach((currentDfaState) => {
 			const newState = isComposite
-				? `${dfaModule ? dfaState + '.' : dfaState}${currentDfaState}`
+				? `${dfaModule ? dfaState + separator : dfaState}${currentDfaState}`
 				: currentDfaState;
 			if (isComposite) {
 				newStates.push(newState);
 				const newStateForSymbolZero =
-					(dfaModule ? dfaModule.DFA.transitions[dfaState][0].toString() + '.' : '') +
+					(dfaModule ? dfaModule.DFA.transitions[dfaState][0].toString() + separator : '') +
 					this.DFA.transitions[currentDfaState][0].toString();
 				const newStateForSymbolOne =
-					(dfaModule ? dfaModule.DFA.transitions[dfaState][1].toString() + '.' : '') +
+					(dfaModule ? dfaModule.DFA.transitions[dfaState][1].toString() + separator : '') +
 					this.DFA.transitions[currentDfaState][1].toString();
 				newTransitions[newState] = [newStateForSymbolZero, newStateForSymbolOne];
 				if (
@@ -207,15 +213,17 @@ export class DfaModule {
 		mergeOperation: TMergeOperation,
 		mergedDfaOptions?: IMergedDfaOptions
 	) {
+		const { separator = '.' } = mergedDfaOptions ?? {};
 		const newStates: string[] = [];
 		const newTransitions: IDfaModule['DFA']['transitions'] = {};
 		// If we have two different dfa's we are in composite mode
-		const isComposite = (dfaModule ? dfaModule.dfaId : '') !== this.dfaId;
-		const newDfaId = isComposite && dfaModule ? dfaModule.dfaId + '.' + this.dfaId : this.dfaId;
+		const isComposite = (dfaModule ? dfaModule.#dfaId : '') !== this.#dfaId;
+		const newDfaId =
+			isComposite && dfaModule ? dfaModule.#dfaId + separator + this.#dfaId : this.#dfaId;
 
 		// Only create a new state if its not composite
 		const newStartState =
-			(isComposite ? (dfaModule ? dfaModule.DFA.start_state.toString() + '.' : '') : '') +
+			(isComposite && dfaModule ? dfaModule.DFA.start_state.toString() + separator : '') +
 			this.DFA.start_state.toString();
 		const newFinalStates: Set<string> = new Set();
 
@@ -228,7 +236,8 @@ export class DfaModule {
 					newFinalStates,
 					mergeOperation,
 					dfaModule,
-					isComposite
+					isComposite,
+					separator
 				);
 			});
 		} else {
@@ -239,7 +248,8 @@ export class DfaModule {
 				newFinalStates,
 				mergeOperation,
 				dfaModule,
-				isComposite
+				isComposite,
+				separator
 			);
 		}
 
@@ -275,7 +285,7 @@ export class DfaModule {
 				states: isComposite ? newStates : this.DFA.states,
 				transitions: isComposite ? newTransitions : this.DFA.transitions,
 			},
-			isComposite ? newDfaId : this.dfaId
+			isComposite ? newDfaId : this.#dfaId
 		);
 	}
 
