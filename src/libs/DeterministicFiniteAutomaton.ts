@@ -163,7 +163,9 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 						')',
 				start_state: isComposite ? newStartState : this.automaton.start_state,
 				states: isComposite ? newStates : this.automaton.states,
-				transitions: isComposite ? newTransitions : this.automaton.transitions,
+				transitions: (isComposite
+					? newTransitions
+					: this.automaton.transitions) as TransformedFiniteAutomaton['transitions'],
 				alphabets:
 					isComposite && finiteAutomaton
 						? this.automaton.alphabets.concat(finiteAutomaton.automaton.alphabets)
