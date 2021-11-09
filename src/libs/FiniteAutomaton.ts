@@ -240,6 +240,8 @@ export class FiniteAutomaton {
 			},
 		];
 		const finalNodes: GraphNode[] = [];
+		let automatonTestResult = false;
+		const finalStates = new Set(this.automaton.final_states);
 
 		const graph = currentParents;
 		for (let index = 0; index < inputString.length; index++) {
@@ -264,13 +266,21 @@ export class FiniteAutomaton {
 					});
 				}
 			});
-			// For the last symbol
+			// Last symbol
 			if (index === inputString.length - 1) {
+				for (let index = 0; index < newChildren.length; index++) {
+					const newChild = newChildren[index];
+					if (finalStates.has(newChild.state)) {
+						automatonTestResult = true;
+						break;
+					}
+				}
 				finalNodes.push(...newChildren);
 			}
 			currentParents = newChildren;
 		}
 		return {
+			automatonTestResult,
 			finalNodes,
 			graph: graph[0],
 		};

@@ -3,7 +3,7 @@ import colors from 'colors';
 import fs from 'fs';
 import path from 'path';
 import { FiniteAutomatonTestInfo, TransformedFiniteAutomaton } from '../types';
-import { countFileLines, generateAggregateMessage, generateCaseMessage, testDfa } from '../utils';
+import { countFileLines, generateAggregateMessage, generateCaseMessage } from '../utils';
 import { DeterministicFiniteAutomaton } from './DeterministicFiniteAutomaton';
 import { FiniteAutomaton } from './FiniteAutomaton';
 import { GenerateString } from './GenerateString';
@@ -110,7 +110,7 @@ export class FiniteAutomataTest {
 			const inputString = inputStrings[i].replace('\r', '').replace('\n', '');
 			if (inputString.length !== 0) {
 				const logicTestResult = finiteAutomaton.testLogic(inputString);
-				const automatonTestResult = testDfa(finiteAutomaton.automaton, inputString);
+				const { automatonTestResult } = finiteAutomaton.generateGraphFromString(inputString);
 				const isWrong = automatonTestResult !== logicTestResult;
 				if (!isWrong) {
 					if (automatonTestResult === false && logicTestResult === false) {
