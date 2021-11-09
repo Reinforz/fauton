@@ -5,7 +5,7 @@ import path from 'path';
 import { FiniteAutomatonModule, FiniteAutomatonModuleInfo } from '../types';
 import { countFileLines, generateAggregateMessage, generateCaseMessage, testDfa } from '../utils';
 import { BinaryString } from './BinaryString';
-import { DfaModule } from './DfaModule';
+import { DeterministicFiniteAutomaton } from './DeterministicFiniteAutomaton';
 
 type IConfigs =
 	| {
@@ -39,13 +39,17 @@ interface IOutputFiles {
 type IWriteStreams = Record<`${keyof IOutputFiles}WriteStream`, null | fs.WriteStream>;
 
 export class DfaTest {
-	#dfas: DfaModule[];
+	#automata: DeterministicFiniteAutomaton[];
 	#cliProgressBar: cliProgress.SingleBar;
 	#logsPath: string;
 	#outputFiles: IOutputFiles;
 
-	constructor(dfas: DfaModule[], logsPath: string, outputFiles: Partial<IOutputFiles>) {
-		this.#dfas = dfas;
+	constructor(
+		automata: DeterministicFiniteAutomaton[],
+		logsPath: string,
+		outputFiles: Partial<IOutputFiles>
+	) {
+		this.#automata = automata;
 		this.#outputFiles = {
 			case: outputFiles.case ?? true,
 			aggregate: outputFiles.aggregate ?? true,
@@ -98,13 +102,13 @@ export class DfaTest {
 		};
 	}
 
-	#testDfas(
+	#testAutomata(
 		dfaModuleInfos: FiniteAutomatonModuleInfo[],
 		writeStreams: Array<IWriteStreams>,
 		binaryStrings: string[],
 		post?: (dfaModule: FiniteAutomatonModule, dfaModuleIndex: number) => void
 	) {
-		this.#dfas.forEach((dfaModule, dfaModuleIndex) => {
+		this.#automata.forEach((dfaModule, dfaModuleIndex) => {
 			// The log files are generated based on the label of the dfa
 			const { caseWriteStream, correctWriteStream, incorrectWriteStream, inputWriteStream } =
 				writeStreams[dfaModuleIndex];
@@ -194,12 +198,12 @@ export class DfaTest {
 	}
 
 	async test(configs: IConfigs) {
-		const writeStreams = this.#dfas.map((dfaModule) =>
-			this.#createFileWriteStreams(dfaModule.automaton.label)
+		const writeStreams = this.#automata.map(({ automaton }) =>
+			this.#createFileWriteStreams(automaton.label)
 		);
 		const readStream = configs.type === 'file' ? fs.createReadStream(configs.filePath) : null;
 
-		const dfaModuleInfos = this.#dfas.map(() => ({
+		const dfaModuleInfos = this.#automata.map(() => ({
 			falsePositives: 0,
 			falseNegatives: 0,
 			truePositives: 0,
@@ -208,19 +212,19 @@ export class DfaTest {
 
 		if (configs.type === 'file' && readStream) {
 			const fileLines = await countFileLines(configs.filePath);
-			this.#cliProgressBar.start(fileLines * this.#dfas.length, 0, {
+			this.#cliProgressBar.start(fileLines * this.#automata.length, 0, {
 				speed: 'N/A',
 			});
 			for await (const chunks of readStream) {
 				const binaryStrings = chunks.toString().split('\n') as string[];
-				this.#testDfas(
+				this.#testAutomata(
 					dfaModuleInfos,
 					writeStreams.map(({ writeStreams }) => writeStreams),
 					binaryStrings
 				);
 			}
 
-			this.#dfas.forEach((dfaModule, dfaModuleIndex) => {
+			this.#automata.forEach((dfaModule, dfaModuleIndex) => {
 				this.#postTest(dfaModule, dfaModuleInfos[dfaModuleIndex], writeStreams[dfaModuleIndex]);
 			});
 		} else if (configs.type === 'generate') {
@@ -234,10 +238,10 @@ export class DfaTest {
 			} else if (configs.range) {
 				binaryStrings = BinaryString.generateAllCombosWithinBitLimit(configs.range.bitLimit);
 			}
-			this.#cliProgressBar.start(binaryStrings.length * this.#dfas.length, 0, {
+			this.#cliProgressBar.start(binaryStrings.length * this.#automata.length, 0, {
 				speed: 'N/A',
 			});
-			this.#testDfas(
+			this.#testAutomata(
 				dfaModuleInfos,
 				writeStreams.map(({ writeStreams }) => writeStreams),
 				binaryStrings,

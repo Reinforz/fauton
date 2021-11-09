@@ -30,3 +30,5 @@ export interface FiniteAutomatonModuleInfo {
 	truePositives: number;
 	trueNegatives: number;
 }
+
+export type TFiniteAutomatonType = 'deterministic' | 'non-deterministic';

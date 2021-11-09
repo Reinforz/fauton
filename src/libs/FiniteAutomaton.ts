@@ -1,19 +1,24 @@
+import colors from 'colors';
 import shortid from 'shortid';
-import { InputFiniteAutomaton, TransformedFiniteAutomaton } from '../types';
+import { InputFiniteAutomaton, TFiniteAutomatonType, TransformedFiniteAutomaton } from '../types';
 
-export default class FiniteAutomaton {
+export class FiniteAutomaton {
 	testLogic: (inputString: string) => boolean;
 	automaton: TransformedFiniteAutomaton;
 	#automatonId: string;
+	#automatonType: TFiniteAutomatonType;
 
 	constructor(
 		testLogic: (inputString: string) => boolean,
 		finiteAutomaton: InputFiniteAutomaton,
+		automatonType: TFiniteAutomatonType,
 		automatonId?: string
 	) {
+		this.#automatonType = automatonType;
+		this.#automatonId = automatonId ?? shortid();
 		this.testLogic = testLogic;
 		this.automaton = this.#normalize(finiteAutomaton);
-		this.#automatonId = automatonId ?? shortid();
+		this.#validate();
 	}
 
 	#normalize(finiteAutomaton: InputFiniteAutomaton) {
@@ -42,5 +47,124 @@ export default class FiniteAutomaton {
 
 	getAutomatonId() {
 		return this.#automatonId;
+	}
+
+	#validate() {
+		const automatonValidationErrors = this.#generateErrors();
+		if (automatonValidationErrors.length !== 0) {
+			console.log(
+				`${colors.blue.bold(this.automaton.label)} ${colors.red.bold(
+					automatonValidationErrors.length.toString()
+				)} Errors`
+			);
+			automatonValidationErrors.forEach((automatonValidationError) =>
+				console.log(colors.red.bold(automatonValidationError))
+			);
+			console.log();
+			throw new Error(`Error validating automaton`);
+		}
+	}
+
+	#generateErrors() {
+		const errors: string[] = [];
+		const { testLogic, automaton } = this;
+
+		if (!testLogic) {
+			errors.push('testLogic function is required in Automaton');
+		}
+
+		if (!automaton.label) {
+			errors.push('Automaton label is required');
+		}
+
+		if (!automaton.states) {
+			errors.push('Automaton states is required');
+
+			// Required when checking final_states and transition tuple states
+			automaton.states = [];
+		}
+
+		if (!Array.isArray(automaton.states)) {
+			errors.push('Automaton states must be an array');
+		}
+
+		if (automaton.states.length === 0) {
+			errors.push('Automaton states must be an array of length > 0');
+		}
+
+		// Checking to see if all the states are present in the transition record
+		if (this.#automatonType === 'deterministic') {
+			automaton.states.forEach((state) => {
+				if (!automaton.transitions[state]) {
+					errors.push(
+						`Automaton states must reference a state (${state}) that is present in transitions`
+					);
+				}
+			});
+		}
+
+		if (automaton.start_state === undefined || automaton.start_state === null) {
+			errors.push('Automaton start_state is required');
+		}
+
+		if (automaton.final_states === undefined || automaton.final_states === null) {
+			errors.push('Automaton final_states is required');
+			automaton.final_states = [];
+		}
+
+		if (!Array.isArray(automaton.final_states)) {
+			errors.push('Automaton final_states must be an array');
+		}
+
+		if (automaton.final_states.length === 0) {
+			errors.push('Automaton final_states must be an array of length > 0');
+		}
+
+		automaton.final_states.forEach((state) => {
+			if (!automaton.states.includes(state)) {
+				errors.push(
+					`Automaton final_states must reference a state (${state}) that is present in states`
+				);
+			}
+		});
+
+		Object.entries(automaton.transitions).forEach(([transitionKey, transitionValues]) => {
+			// The transition record keys must point to a valid state
+			if (!automaton.states.includes(transitionKey)) {
+				errors.push(
+					`Automaton transitions must reference a state (${transitionKey}) that is present in states`
+				);
+			}
+
+			const isTransitionValuesAnArray = Array.isArray(transitionValues);
+
+			if (this.#automatonType === 'deterministic') {
+				if (typeof transitionValues !== 'string' && !isTransitionValuesAnArray) {
+					errors.push(`Automaton transitions value must either be string "loop" or a tuple`);
+				}
+				// ! the length should be equal to the alphabets of the FA
+				// ! rather than constant 2, as it is only applicable for binary languages
+				if (isTransitionValuesAnArray && transitionValues.length !== 2) {
+					errors.push(`Automaton transitions value when a tuple, can contain only 2 items`);
+				}
+
+				// ! Completely disable loop for non-deterministic automaton
+				if (typeof transitionValues === 'string' && transitionValues !== 'loop') {
+					errors.push(`Automaton transitions value when a string, can only be "loop"`);
+				}
+			}
+
+			if (isTransitionValuesAnArray) {
+				transitionValues.forEach((transitionValue) => {
+					if (!automaton.states.includes(transitionValue)) {
+						errors.push(
+							`Automaton transitions value (${transitionValue}) when a tuple, must reference a valid state`
+						);
+					}
+				});
+			}
+		});
+
+		return errors;
 	}
 }
