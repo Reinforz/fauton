@@ -1,6 +1,6 @@
 {
-  "name": "dfa-test",
-  "version": "0.0.5",
+  "name": "fauton",
+  "version": "0.0.1",
   "description": "A small library to get an insight and test any Deterministic finite automaton(DFA) with binary alphabets",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,13 +18,13 @@
     "dfa",
     "automaton"
   ],
-  "homepage": "https://github.com/Devorein/dfa-test/blob/master/README.md",
+  "homepage": "https://github.com/Devorein/fauton/blob/master/README.md",
   "bugs": {
-    "url": "https://github.com/Devorein/dfa-test/issues"
+    "url": "https://github.com/Devorein/fauton/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Devorein/dfa-test.git"
+    "url": "git+https://github.com/Devorein/fauton.git"
   },
   "author": "Safwan Shaheer <devorein00@gmail.com>",
   "license": "MIT",
