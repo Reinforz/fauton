@@ -49,7 +49,6 @@ interface IConfig {
 export class FiniteAutomataTest {
 	#cliProgressBar: cliProgress.SingleBar;
 	#logsPath: string;
-	#outputFiles: IOutputFiles;
 
 	constructor(logsPath: string) {
 		this.#cliProgressBar = new cliProgress.SingleBar(
@@ -66,21 +65,21 @@ export class FiniteAutomataTest {
 		}
 	}
 
-	#createFileWriteStreams(automatonLabel: string) {
+	#createFileWriteStreams(automatonLabel: string, outputFiles: Partial<IOutputFiles>) {
 		const writeStreamsRecord: IWriteStreams = {
-			caseWriteStream: this.#outputFiles.case
+			caseWriteStream: outputFiles.case
 				? fs.createWriteStream(path.resolve(this.#logsPath, `${automatonLabel}.case.txt`))
 				: null,
-			aggregateWriteStream: this.#outputFiles.case
+			aggregateWriteStream: outputFiles.case
 				? fs.createWriteStream(path.resolve(this.#logsPath, `${automatonLabel}.aggregate.txt`))
 				: null,
-			incorrectWriteStream: this.#outputFiles.incorrect
+			incorrectWriteStream: outputFiles.incorrect
 				? fs.createWriteStream(path.resolve(this.#logsPath, `${automatonLabel}.incorrect.txt`))
 				: null,
-			correctWriteStream: this.#outputFiles.correct
+			correctWriteStream: outputFiles.correct
 				? fs.createWriteStream(path.resolve(this.#logsPath, `${automatonLabel}.correct.txt`))
 				: null,
-			inputWriteStream: this.#outputFiles.input
+			inputWriteStream: outputFiles.input
 				? fs.createWriteStream(path.resolve(this.#logsPath, `${automatonLabel}.input.txt`))
 				: null,
 		};
@@ -196,7 +195,13 @@ export class FiniteAutomataTest {
 			const config = configs[index];
 			const finiteAutomatonTestInfo = finiteAutomatonTestInfos[index];
 			const { automaton, options } = config;
-			const writeStreams = this.#createFileWriteStreams(automaton.automaton.label);
+			const writeStreams = this.#createFileWriteStreams(automaton.automaton.label, {
+				aggregate: options.outputFiles?.aggregate ?? true,
+				case: options.outputFiles?.case ?? true,
+				correct: options.outputFiles?.correct ?? true,
+				incorrect: options.outputFiles?.incorrect ?? true,
+				input: options.outputFiles?.incorrect ?? true,
+			});
 			if (options.type === 'file') {
 				const readStream = fs.createReadStream(options.filePath);
 				const fileLines = await countFileLines(options.filePath);

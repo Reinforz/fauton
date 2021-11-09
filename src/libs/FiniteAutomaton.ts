@@ -31,6 +31,7 @@ export class FiniteAutomaton {
 		finiteAutomaton.final_states = finiteAutomaton.final_states.map(
 			(finalState) => appendedString + finalState.toString()
 		);
+		finiteAutomaton.alphabets = finiteAutomaton.alphabets.map((alphabet) => alphabet.toString());
 		finiteAutomaton.start_state = appendedString + finiteAutomaton.start_state.toString();
 		finiteAutomaton.states = finiteAutomaton.states.map(
 			(state) => appendedString + state.toString()
