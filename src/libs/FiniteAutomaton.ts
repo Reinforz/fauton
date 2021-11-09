@@ -24,9 +24,74 @@ export class FiniteAutomaton {
 		this.testLogic = testLogic;
 		this.automaton = this.#normalize(finiteAutomaton);
 		this.#validate();
-		/* if (automatonType === "non-deterministic" && this.automaton.epsilon_transitions) {
-      this.#expandEpsilonTransitions(this.automaton.epsilon_transitions, this.automaton.transitions)
-    } */
+		if (automatonType === 'non-deterministic' && this.automaton.epsilon_transitions) {
+			this.#expandEpsilonTransitions(
+				this.automaton.alphabets,
+				this.automaton.epsilon_transitions,
+				this.automaton.transitions
+			);
+		}
+	}
+
+	#expandEpsilonTransitions(
+		alphabets: string[],
+		epsilonTransitions: TransformedFiniteAutomaton['epsilon_transitions'],
+		transitions: TransformedFiniteAutomaton['transitions']
+	) {
+		/* transitions = {
+      A: {
+        0: ["B", "C"],
+        1: ["B", "C"]
+      }
+    }
+    */
+		alphabets.forEach((alphabet) => {
+			Object.entries(transitions).forEach(([transitionState, transitionsRecord]) => {
+				// transitionState = A
+				// transitionsRecord = { 0: ["B", "C"], 1: ["B", "C"]}
+				// alphabet = 0, 1
+				// transitionsRecordStates = ["B", "C"], ["B", "C"]
+				// Only if the state has a key on the epsilon transition record, we are gonna expand it
+				if (epsilonTransitions![transitionState]) {
+					const firstPhaseSet = this.#traverseEpsilon(epsilonTransitions, transitionState);
+					const secondPhaseSet = new Set<string>();
+					firstPhaseSet.forEach((state) => {
+						transitions[state][alphabet]?.forEach((transitionRecordState) => {
+							secondPhaseSet.add(transitionRecordState);
+						});
+					});
+
+					const thirdPhaseSet: Set<string> = new Set();
+					secondPhaseSet.forEach((secondPhaseState) => {
+						this.#traverseEpsilon(epsilonTransitions, secondPhaseState).forEach((state) => {
+							thirdPhaseSet.add(state);
+						});
+					});
+
+					transitionsRecord[alphabet] = Array.from(thirdPhaseSet);
+				}
+			});
+		});
+	}
+
+	#traverseEpsilon(
+		epsilonTransition: TransformedFiniteAutomaton['epsilon_transitions'],
+		state: string
+	) {
+		const stack: string[] = [];
+		const allEpsilonStates: Set<string> = new Set(state);
+		stack.push(state);
+		while (stack.length !== 0) {
+			const currentState = stack.pop()!;
+			epsilonTransition![currentState]?.forEach((epsilonTransitionState) => {
+				if (!allEpsilonStates.has(epsilonTransitionState)) {
+					stack.push(epsilonTransitionState);
+					allEpsilonStates.add(epsilonTransitionState);
+				}
+			});
+		}
+
+		return allEpsilonStates;
 	}
 
 	#normalize(finiteAutomaton: InputFiniteAutomaton | TransformedFiniteAutomaton) {
