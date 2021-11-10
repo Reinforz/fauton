@@ -14,6 +14,8 @@ interface IOutputFiles {
 	correct: boolean;
 	input: boolean;
 	aggregate: boolean;
+	accepted: boolean;
+	rejected: boolean;
 }
 
 type IOption =
@@ -87,6 +89,12 @@ export class FiniteAutomataTest {
 			inputWriteStream: outputFiles.input
 				? fs.createWriteStream(path.resolve(this.#logsPath, `${automatonLabel}.input.txt`))
 				: null,
+			acceptedWriteStream: outputFiles.correct
+				? fs.createWriteStream(path.resolve(this.#logsPath, `${automatonLabel}.accepted.txt`))
+				: null,
+			rejectedWriteStream: outputFiles.input
+				? fs.createWriteStream(path.resolve(this.#logsPath, `${automatonLabel}.rejected.txt`))
+				: null,
 		};
 
 		return {
@@ -108,8 +116,14 @@ export class FiniteAutomataTest {
 		inputStrings: string[]
 	) {
 		// The log files are generated based on the label of the automaton
-		const { caseWriteStream, correctWriteStream, incorrectWriteStream, inputWriteStream } =
-			writeStreams;
+		const {
+			caseWriteStream,
+			correctWriteStream,
+			acceptedWriteStream,
+			rejectedWriteStream,
+			incorrectWriteStream,
+			inputWriteStream,
+		} = writeStreams;
 
 		for (let i = 0; i < inputStrings.length; i++) {
 			const inputString = inputStrings[i].replace('\r', '').replace('\n', '');
@@ -126,6 +140,11 @@ export class FiniteAutomataTest {
 					inputString +
 					' ' +
 					'\n';
+				if (!automatonTestResult) {
+					rejectedWriteStream && rejectedWriteStream.write(inputString + '\n');
+				} else {
+					acceptedWriteStream && acceptedWriteStream.write(inputString + '\n');
+				}
 				if (!isWrong) {
 					if (automatonTestResult === false && logicTestResult === false) {
 						finiteAutomatonTestInfo.trueNegatives += 1;
@@ -196,7 +215,9 @@ export class FiniteAutomataTest {
 				case: options.outputFiles?.case ?? true,
 				correct: options.outputFiles?.correct ?? true,
 				incorrect: options.outputFiles?.incorrect ?? true,
-				input: options.outputFiles?.incorrect ?? true,
+				input: options.outputFiles?.input ?? true,
+				accepted: options.outputFiles?.accepted ?? true,
+				rejected: options.outputFiles?.rejected ?? true,
 			});
 			if (options.type === 'file') {
 				const readStream = fs.createReadStream(options.filePath);
