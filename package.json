@@ -1,7 +1,7 @@
 {
   "name": "fauton",
-  "version": "0.0.1",
-  "description": "A small library to get an insight and test any Deterministic finite automaton(DFA) with binary alphabets",
+  "version": "0.0.2",
+  "description": "A library to test any finite automaton(FA) with arbitrary alphabets",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -16,6 +16,11 @@
   ],
   "keywords": [
     "dfa",
+    "nfa",
+    "nfa-to-dfa-conversion",
+    "finite-automata",
+    "automaton-testing",
+    "epsilon-nfa",
     "automaton"
   ],
   "homepage": "https://github.com/Devorein/fauton/blob/master/README.md",
