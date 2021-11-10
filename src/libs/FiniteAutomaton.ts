@@ -162,6 +162,9 @@ export class FiniteAutomaton {
 				(finiteAutomaton as TransformedFiniteAutomaton).transitions[
 					appendedString + transitionKey
 				] = transitionStateRecord;
+				if (appendedString) {
+					delete finiteAutomaton.transitions[transitionKey];
+				}
 			} else if (transitionStates === 'loop') {
 				finiteAutomaton.alphabets.forEach((_, alphabetIndex) => {
 					attachToStateRecord(
@@ -173,9 +176,9 @@ export class FiniteAutomaton {
 				(finiteAutomaton as TransformedFiniteAutomaton).transitions[
 					appendedString + transitionKey
 				] = transitionStateRecord;
-			}
-			if (appendedString) {
-				delete finiteAutomaton.transitions[transitionKey];
+				if (appendedString) {
+					delete finiteAutomaton.transitions[transitionKey];
+				}
 			}
 		});
 

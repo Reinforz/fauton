@@ -30,7 +30,7 @@ export interface TransformedFiniteAutomaton {
 
 export interface IFiniteAutomaton {
 	testLogic: (inputString: string) => boolean;
-	automaton: InputFiniteAutomaton;
+	automaton: TransformedFiniteAutomaton;
 }
 
 export interface FiniteAutomatonTestInfo {

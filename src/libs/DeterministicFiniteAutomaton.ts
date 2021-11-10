@@ -38,15 +38,15 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 				: currentDfaState;
 			if (isComposite) {
 				newStates.push(newState);
-				const newStateForSymbolZero =
-					(inputAutomaton
-						? inputAutomaton.automaton.transitions[state]['0'].toString() + separator
-						: '') + this.automaton.transitions[currentDfaState][0].toString();
-				const newStateForSymbolOne =
-					(inputAutomaton
-						? inputAutomaton.automaton.transitions[state][1].toString() + separator
-						: '') + this.automaton.transitions[currentDfaState][1].toString();
-				newTransitions[newState] = [newStateForSymbolZero, newStateForSymbolOne];
+				newTransitions[newState] = {};
+				this.automaton.alphabets.forEach((automatonAlphabet) => {
+					newTransitions[newState][automatonAlphabet] = [
+						(inputAutomaton
+							? inputAutomaton.automaton.transitions[state][automatonAlphabet].toString() +
+							  separator
+							: '') + this.automaton.transitions[currentDfaState][automatonAlphabet].toString(),
+					];
+				});
 				if (
 					mergeOperation === 'or' &&
 					((inputAutomaton ? inputAutomatonFinalStates.has(state) : true) ||
@@ -124,7 +124,7 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 				);
 			});
 		}
-		// If we dont have an input dfa, for operations like NOT
+		// If we dont have an input dfa, for operations like NOT, which acts on the dfa itself
 		else {
 			this.#generateMergedDfaData(
 				'',
