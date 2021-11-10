@@ -158,13 +158,15 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 					label ??
 					mergeOperation +
 						'(' +
-						`${this.automaton.label}, ${finiteAutomaton ? finiteAutomaton.automaton.label : ''}` +
+						`${this.automaton.label}${mergeOperation !== 'not' ? ', ' : ''}${
+							finiteAutomaton ? finiteAutomaton.automaton.label : ''
+						}` +
 						')',
 				description:
 					description ??
 					mergeOperation.toUpperCase() +
 						'(' +
-						`${this.automaton.description}, ${
+						`${this.automaton.description}${mergeOperation !== 'not' ? ', ' : ''}${
 							finiteAutomaton ? finiteAutomaton.automaton.description : ''
 						}` +
 						')',

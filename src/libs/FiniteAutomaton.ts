@@ -46,18 +46,17 @@ export class FiniteAutomaton {
     */
 		alphabets.forEach((alphabet) => {
 			Object.entries(transitions).forEach(([transitionState, transitionsRecord]) => {
-				// transitionState = A
-				// transitionsRecord = { 0: ["B", "C"], 1: ["B", "C"]}
-				// alphabet = 0, 1
-				// transitionsRecordStates = ["B", "C"], ["B", "C"]
 				// Only if the state has a key on the epsilon transition record, we are gonna expand it
 				if (epsilonTransitions![transitionState]) {
 					const firstPhaseSet = this.#traverseEpsilon(epsilonTransitions, transitionState);
 					const secondPhaseSet = new Set<string>();
 					firstPhaseSet.forEach((state) => {
-						transitions[state][alphabet]?.forEach((transitionRecordState) => {
-							secondPhaseSet.add(transitionRecordState);
-						});
+						// Some states might be null, and thus have no transitions
+						if (transitions[state]) {
+							transitions[state][alphabet]?.forEach((transitionRecordState) => {
+								secondPhaseSet.add(transitionRecordState);
+							});
+						}
 					});
 
 					const thirdPhaseSet: Set<string> = new Set();
@@ -66,8 +65,9 @@ export class FiniteAutomaton {
 							thirdPhaseSet.add(state);
 						});
 					});
-
-					transitionsRecord[alphabet] = Array.from(thirdPhaseSet);
+					if (transitionsRecord) {
+						transitionsRecord[alphabet] = Array.from(thirdPhaseSet);
+					}
 				}
 			});
 		});
@@ -319,6 +319,7 @@ export class FiniteAutomaton {
 
 			// Checking if the transition record is a POJO
 			const isTransitionValuesARecord =
+				transitionStatesRecord &&
 				typeof transitionStatesRecord === 'object' &&
 				Object.getPrototypeOf(transitionStatesRecord) === Object.prototype;
 
@@ -385,22 +386,23 @@ export class FiniteAutomaton {
 			const newChildren: GraphNode[] = [];
 			const symbol = inputString[index];
 			currentParents.forEach((currentParent) => {
-				const transitionStates = (
-					this.automaton.transitions[currentParent.state] as Record<string, string[]>
-				)[symbol];
-				if (Array.isArray(transitionStates)) {
-					transitionStates.forEach((transitionState) => {
-						const parentGraphNode = {
-							name: transitionState + `(${symbol})`,
-							state: transitionState,
-							string: inputString.slice(0, index + 1),
-							depth: index + 1,
-							symbol,
-							children: [],
-						};
-						currentParent.children.push(parentGraphNode);
-						newChildren.push(parentGraphNode);
-					});
+				const transitionState = this.automaton.transitions[currentParent.state];
+				if (transitionState) {
+					const transitionStates = transitionState[symbol];
+					if (Array.isArray(transitionStates)) {
+						transitionStates.forEach((transitionState) => {
+							const parentGraphNode = {
+								name: transitionState + `(${symbol})`,
+								state: transitionState,
+								string: inputString.slice(0, index + 1),
+								depth: index + 1,
+								symbol,
+								children: [],
+							};
+							currentParent.children.push(parentGraphNode);
+							newChildren.push(parentGraphNode);
+						});
+					}
 				}
 			});
 			// Last symbol
