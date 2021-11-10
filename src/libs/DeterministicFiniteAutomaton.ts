@@ -23,55 +23,59 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 		newTransitions: IFiniteAutomaton['automaton']['transitions'],
 		newFinalStates: Set<string>,
 		mergeOperation: TMergeOperation,
-		dfaModule: DeterministicFiniteAutomaton | undefined,
+		inputAutomaton: DeterministicFiniteAutomaton | undefined,
 		isComposite: boolean,
 		separator: string
 	) {
+		const currentAutomatonFinalStates = new Set(this.automaton.final_states);
+		const inputAutomatonFinalStates = new Set(
+			inputAutomaton ? inputAutomaton.automaton.final_states : []
+		);
+
 		this.automaton.states.forEach((currentDfaState) => {
 			const newState = isComposite
-				? `${dfaModule ? state + separator : state}${currentDfaState}`
+				? `${inputAutomaton ? state + separator : state}${currentDfaState}`
 				: currentDfaState;
 			if (isComposite) {
 				newStates.push(newState);
 				const newStateForSymbolZero =
-					(dfaModule ? dfaModule.automaton.transitions[state]['0'].toString() + separator : '') +
-					this.automaton.transitions[currentDfaState][0].toString();
+					(inputAutomaton
+						? inputAutomaton.automaton.transitions[state]['0'].toString() + separator
+						: '') + this.automaton.transitions[currentDfaState][0].toString();
 				const newStateForSymbolOne =
-					(dfaModule ? dfaModule.automaton.transitions[state][1].toString() + separator : '') +
-					this.automaton.transitions[currentDfaState][1].toString();
+					(inputAutomaton
+						? inputAutomaton.automaton.transitions[state][1].toString() + separator
+						: '') + this.automaton.transitions[currentDfaState][1].toString();
 				newTransitions[newState] = [newStateForSymbolZero, newStateForSymbolOne];
 				if (
 					mergeOperation === 'or' &&
-					((dfaModule ? dfaModule.automaton.final_states.includes(state) : true) ||
-						this.automaton.final_states.includes(currentDfaState))
+					((inputAutomaton ? inputAutomatonFinalStates.has(state) : true) ||
+						currentAutomatonFinalStates.has(currentDfaState))
 				) {
 					newFinalStates.add(newState);
 				} else if (
 					mergeOperation === 'and' &&
-					(dfaModule ? dfaModule.automaton.final_states.includes(state) : true) &&
-					this.automaton.final_states.includes(currentDfaState)
+					(inputAutomaton ? inputAutomatonFinalStates.has(state) : true) &&
+					currentAutomatonFinalStates.has(currentDfaState)
 				) {
 					newFinalStates.add(newState);
-				} else if (
-					mergeOperation === 'not' &&
-					!this.automaton.final_states.includes(currentDfaState)
-				) {
+				} else if (mergeOperation === 'not' && !currentAutomatonFinalStates.has(currentDfaState)) {
 					newFinalStates.add(newState);
 				}
 			} else {
 				if (
 					mergeOperation === 'or' &&
-					((dfaModule ? dfaModule.automaton.final_states.includes(newState) : true) ||
-						this.automaton.final_states.includes(newState))
+					((inputAutomaton ? inputAutomatonFinalStates.has(newState) : true) ||
+						currentAutomatonFinalStates.has(newState))
 				) {
 					newFinalStates.add(newState);
 				} else if (
 					mergeOperation === 'and' &&
-					(dfaModule ? dfaModule.automaton.final_states.includes(newState) : true) &&
-					this.automaton.final_states.includes(newState)
+					(inputAutomaton ? inputAutomatonFinalStates.has(newState) : true) &&
+					currentAutomatonFinalStates.has(newState)
 				) {
 					newFinalStates.add(newState);
-				} else if (mergeOperation === 'not' && !this.automaton.final_states.includes(newState)) {
+				} else if (mergeOperation === 'not' && !currentAutomatonFinalStates.has(newState)) {
 					newFinalStates.add(newState);
 				}
 			}
@@ -87,8 +91,12 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 		const newStates: string[] = [];
 		const newTransitions: IFiniteAutomaton['automaton']['transitions'] = {};
 		// If we have two different dfa's we are in composite mode
-		const isComposite =
-			(finiteAutomaton ? finiteAutomaton.getAutomatonId() : '') !== this.getAutomatonId();
+		const isComposite = Boolean(
+			finiteAutomaton &&
+				(finiteAutomaton ? finiteAutomaton.getAutomatonId() : '') !== this.getAutomatonId()
+		);
+
+		// If we are in composite mode, we need to generate a new id for the new dfa, by merging the ids of two input dfs separated by a separator
 		const newDfaId =
 			isComposite && finiteAutomaton
 				? finiteAutomaton.getAutomatonId() + separator + this.getAutomatonId()
@@ -101,6 +109,7 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 				: '') + this.automaton.start_state.toString();
 		const newFinalStates: Set<string> = new Set();
 
+		// If we have a input dfa, for operations like AND and OR
 		if (finiteAutomaton) {
 			finiteAutomaton.automaton.states.forEach((state) => {
 				this.#generateMergedDfaData(
@@ -114,7 +123,9 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 					separator
 				);
 			});
-		} else {
+		}
+		// If we dont have an input dfa, for operations like NOT
+		else {
 			this.#generateMergedDfaData(
 				'',
 				newStates,
@@ -126,23 +137,17 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 				separator
 			);
 		}
-
-		if (!isComposite) {
-		}
-
 		return new DeterministicFiniteAutomaton(
 			(inputString, automatonTestResult) => {
 				if (mergeOperation === 'or') {
 					return (
-						(finiteAutomaton
-							? finiteAutomaton.testLogic(inputString, automatonTestResult)
-							: true) || this.testLogic(inputString, automatonTestResult)
+						finiteAutomaton!.testLogic(inputString, automatonTestResult) ||
+						this.testLogic(inputString, automatonTestResult)
 					);
 				} else if (mergeOperation === 'and') {
 					return (
-						(finiteAutomaton
-							? finiteAutomaton.testLogic(inputString, automatonTestResult)
-							: true) && this.testLogic(inputString, automatonTestResult)
+						finiteAutomaton!.testLogic(inputString, automatonTestResult) &&
+						this.testLogic(inputString, automatonTestResult)
 					);
 				} else {
 					return !this.testLogic(inputString, automatonTestResult);
@@ -152,9 +157,12 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 				final_states: Array.from(newFinalStates),
 				label:
 					label ??
-					`${finiteAutomaton ? finiteAutomaton.automaton.label + ' - ' : ''}${
-						this.automaton.label
-					}`,
+					mergeOperation +
+						'(' +
+						`${finiteAutomaton ? finiteAutomaton.automaton.label + ', ' : ''}${
+							this.automaton.label
+						}` +
+						')',
 				description:
 					description ??
 					mergeOperation.toUpperCase() +
@@ -164,14 +172,13 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 						}` +
 						')',
 				start_state: isComposite ? newStartState : this.automaton.start_state,
-				states: isComposite ? newStates : this.automaton.states,
+				states: isComposite ? newStates : JSON.parse(JSON.stringify(this.automaton.states)),
 				transitions: (isComposite
 					? newTransitions
-					: this.automaton.transitions) as TransformedFiniteAutomaton['transitions'],
-				alphabets:
-					isComposite && finiteAutomaton
-						? this.automaton.alphabets.concat(finiteAutomaton.automaton.alphabets)
-						: this.automaton.alphabets,
+					: JSON.parse(
+							JSON.stringify(this.automaton.transitions)
+					  )) as TransformedFiniteAutomaton['transitions'],
+				alphabets: this.automaton.alphabets,
 				epsilon_transitions: null,
 			},
 			isComposite ? newDfaId : this.getAutomatonId()

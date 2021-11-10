@@ -159,7 +159,10 @@ export class FiniteAutomaton {
 						}
 					}
 				});
-			} else {
+				(finiteAutomaton as TransformedFiniteAutomaton).transitions[
+					appendedString + transitionKey
+				] = transitionStateRecord;
+			} else if (transitionStates === 'loop') {
 				finiteAutomaton.alphabets.forEach((_, alphabetIndex) => {
 					attachToStateRecord(
 						transitionStateRecord,
@@ -167,9 +170,10 @@ export class FiniteAutomaton {
 						appendedString + transitionKey.toString()
 					);
 				});
+				(finiteAutomaton as TransformedFiniteAutomaton).transitions[
+					appendedString + transitionKey
+				] = transitionStateRecord;
 			}
-			(finiteAutomaton as TransformedFiniteAutomaton).transitions[appendedString + transitionKey] =
-				transitionStateRecord;
 			if (appendedString) {
 				delete finiteAutomaton.transitions[transitionKey];
 			}
