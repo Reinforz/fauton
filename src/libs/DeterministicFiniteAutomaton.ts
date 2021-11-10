@@ -33,18 +33,17 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 		);
 
 		this.automaton.states.forEach((currentDfaState) => {
-			const newState = isComposite
-				? `${inputAutomaton ? state + separator : state}${currentDfaState}`
-				: currentDfaState;
+			const newState = isComposite ? `${currentDfaState}${separator}${state}` : currentDfaState;
 			if (isComposite) {
 				newStates.push(newState);
 				newTransitions[newState] = {};
 				this.automaton.alphabets.forEach((automatonAlphabet) => {
 					newTransitions[newState][automatonAlphabet] = [
-						(inputAutomaton
-							? inputAutomaton.automaton.transitions[state][automatonAlphabet].toString() +
-							  separator
-							: '') + this.automaton.transitions[currentDfaState][automatonAlphabet].toString(),
+						this.automaton.transitions[currentDfaState][automatonAlphabet] +
+							separator +
+							(inputAutomaton
+								? inputAutomaton.automaton.transitions[state][automatonAlphabet]
+								: ''),
 					];
 				});
 				if (
@@ -99,14 +98,14 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 		// If we are in composite mode, we need to generate a new id for the new dfa, by merging the ids of two input dfs separated by a separator
 		const newDfaId =
 			isComposite && finiteAutomaton
-				? finiteAutomaton.getAutomatonId() + separator + this.getAutomatonId()
+				? this.getAutomatonId() + separator + finiteAutomaton.getAutomatonId()
 				: this.getAutomatonId();
 
 		// Only create a new state if its not composite
 		const newStartState =
-			(isComposite && finiteAutomaton
-				? finiteAutomaton.automaton.start_state.toString() + separator
-				: '') + this.automaton.start_state.toString();
+			isComposite && finiteAutomaton
+				? this.automaton.start_state + separator + finiteAutomaton.automaton.start_state
+				: this.automaton.start_state;
 		const newFinalStates: Set<string> = new Set();
 
 		// If we have a input dfa, for operations like AND and OR
@@ -159,16 +158,14 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 					label ??
 					mergeOperation +
 						'(' +
-						`${finiteAutomaton ? finiteAutomaton.automaton.label + ', ' : ''}${
-							this.automaton.label
-						}` +
+						`${this.automaton.label}, ${finiteAutomaton ? finiteAutomaton.automaton.label : ''}` +
 						')',
 				description:
 					description ??
 					mergeOperation.toUpperCase() +
 						'(' +
-						`${finiteAutomaton ? finiteAutomaton.automaton.description + ', ' : ''}${
-							this.automaton.description
+						`${this.automaton.description}, ${
+							finiteAutomaton ? finiteAutomaton.automaton.description : ''
 						}` +
 						')',
 				start_state: isComposite ? newStartState : this.automaton.start_state,
