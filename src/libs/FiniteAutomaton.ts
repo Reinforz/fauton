@@ -22,8 +22,7 @@ export class FiniteAutomaton {
 		this.#automatonType = automatonType;
 		this.#automatonId = automatonId ?? shortid();
 		this.testLogic = testLogic;
-		this.automaton = this.#normalize(finiteAutomaton);
-		this.#validate();
+		this.#normalize(finiteAutomaton);
 		if (automatonType === 'non-deterministic' && this.automaton.epsilon_transitions) {
 			this.#expandEpsilonTransitions(
 				this.automaton.alphabets,
@@ -95,6 +94,11 @@ export class FiniteAutomaton {
 	}
 
 	#normalize(finiteAutomaton: InputFiniteAutomaton | TransformedFiniteAutomaton) {
+		this.#validate(
+			finiteAutomaton.label ?? '',
+			this.#generatePreNormalizationErrors(finiteAutomaton)
+		);
+
 		const appendedString = finiteAutomaton.append ?? '';
 		finiteAutomaton.final_states = finiteAutomaton.final_states.map(
 			(finalState) => appendedString + finalState.toString()
@@ -170,18 +174,22 @@ export class FiniteAutomaton {
 				delete finiteAutomaton.transitions[transitionKey];
 			}
 		});
-		return finiteAutomaton as TransformedFiniteAutomaton;
+
+		this.#validate(
+			finiteAutomaton.label ?? '',
+			this.#generatePostNormalizationErrors(finiteAutomaton as TransformedFiniteAutomaton)
+		);
+		this.automaton = finiteAutomaton as TransformedFiniteAutomaton;
 	}
 
 	getAutomatonId() {
 		return this.#automatonId;
 	}
 
-	#validate() {
-		const automatonValidationErrors = this.#generateErrors();
+	#validate(automatonLabel: string, automatonValidationErrors: string[]) {
 		if (automatonValidationErrors.length !== 0) {
 			console.log(
-				`${colors.blue.bold(this.automaton.label)} ${colors.red.bold(
+				`${colors.blue.bold(automatonLabel)} ${colors.red.bold(
 					automatonValidationErrors.length.toString()
 				)} Errors`
 			);
@@ -193,47 +201,44 @@ export class FiniteAutomaton {
 		}
 	}
 
-	#generateErrors() {
-		const errors: string[] = [];
-		const { testLogic, automaton } = this;
-
-		const automatonStates: Set<string> = new Set(automaton.states);
-		const automatonAlphabets: Set<string> = new Set(automaton.alphabets);
+	#generatePreNormalizationErrors(automaton: InputFiniteAutomaton | TransformedFiniteAutomaton) {
+		const automatonValidationErrors: string[] = [];
+		const { testLogic } = this;
 
 		if (!testLogic) {
-			errors.push('testLogic function is required in Automaton');
+			automatonValidationErrors.push('testLogic function is required in Automaton');
 		}
 
 		if (!automaton.label) {
-			errors.push('Automaton label is required');
+			automatonValidationErrors.push('Automaton label is required');
 		}
 
 		if (!automaton.states) {
-			errors.push('Automaton states is required');
+			automatonValidationErrors.push('Automaton states is required');
 
 			// Required when checking final_states and transition states
 			automaton.states = [];
 		}
 
 		if (!automaton.alphabets) {
-			errors.push('Automaton alphabets is required');
+			automatonValidationErrors.push('Automaton alphabets is required');
 			// Required when checking transition states
 			automaton.alphabets = [];
 		}
 
 		if (!Array.isArray(automaton.states)) {
-			errors.push('Automaton states must be an array');
+			automatonValidationErrors.push('Automaton states must be an array');
 		}
 
 		if (automaton.states.length === 0) {
-			errors.push('Automaton states must be an array of length > 0');
+			automatonValidationErrors.push('Automaton states must be an array of length > 0');
 		}
 
 		// Checking to see if all the states are present in the transition record
 		if (this.#automatonType === 'deterministic') {
 			automaton.states.forEach((state) => {
 				if (!automaton.transitions[state]) {
-					errors.push(
+					automatonValidationErrors.push(
 						`Automaton states must reference a state (${state}) that is present in transitions`
 					);
 				}
@@ -241,30 +246,38 @@ export class FiniteAutomaton {
 
 			// Deterministic automaton can't have epsilon transitions
 			if (automaton.epsilon_transitions) {
-				errors.push(`Deterministic automaton can't contain epsilon transitions`);
+				automatonValidationErrors.push(`Deterministic automaton can't contain epsilon transitions`);
 			}
 		}
 
 		if (automaton.start_state === undefined || automaton.start_state === null) {
-			errors.push('Automaton start_state is required');
+			automatonValidationErrors.push('Automaton start_state is required');
 		}
 
 		if (automaton.final_states === undefined || automaton.final_states === null) {
-			errors.push('Automaton final_states is required');
+			automatonValidationErrors.push('Automaton final_states is required');
 			automaton.final_states = [];
 		}
 
 		if (!Array.isArray(automaton.final_states)) {
-			errors.push('Automaton final_states must be an array');
+			automatonValidationErrors.push('Automaton final_states must be an array');
 		}
 
 		if (automaton.final_states.length === 0) {
-			errors.push('Automaton final_states must be an array of length > 0');
+			automatonValidationErrors.push('Automaton final_states must be an array of length > 0');
 		}
+
+		return automatonValidationErrors;
+	}
+
+	#generatePostNormalizationErrors(automaton: TransformedFiniteAutomaton) {
+		const automatonValidationErrors: string[] = [];
+		const automatonStates: Set<string> = new Set(automaton.states);
+		const automatonAlphabets: Set<string> = new Set(automaton.alphabets);
 
 		automaton.final_states.forEach((state) => {
 			if (!automatonStates.has(state)) {
-				errors.push(
+				automatonValidationErrors.push(
 					`Automaton final_states must reference a state (${state}) that is present in states`
 				);
 			}
@@ -274,13 +287,13 @@ export class FiniteAutomaton {
 			Object.entries(automaton.epsilon_transitions).forEach(
 				([transitionState, transitionStates]) => {
 					if (!automatonStates.has(transitionState)) {
-						errors.push(
+						automatonValidationErrors.push(
 							`Epsilon transition state ${transitionState} must reference a state that is present in states`
 						);
 					}
 					transitionStates.forEach((transitionState) => {
 						if (!automatonStates.has(transitionState)) {
-							errors.push(
+							automatonValidationErrors.push(
 								`Epsilon transition state ${transitionState} must reference a state that is present in states`
 							);
 						}
@@ -292,7 +305,7 @@ export class FiniteAutomaton {
 		Object.entries(automaton.transitions).forEach(([transitionKey, transitionStatesRecord]) => {
 			// The transition record keys must point to a valid state
 			if (!automatonStates.has(transitionKey)) {
-				errors.push(
+				automatonValidationErrors.push(
 					`Automaton transitions (${transitionKey}) must reference a state that is present in states`
 				);
 			}
@@ -304,11 +317,15 @@ export class FiniteAutomaton {
 
 			if (this.#automatonType === 'deterministic') {
 				if (typeof transitionStatesRecord !== 'string' && !isTransitionValuesARecord) {
-					errors.push(`Automaton transitions value must either be string "loop" or a tuple`);
+					automatonValidationErrors.push(
+						`Automaton transitions value must either be string "loop" or a tuple`
+					);
 				}
 				// ! Completely disable loop for non-deterministic automaton
 				if (typeof transitionStatesRecord === 'string' && transitionStatesRecord !== 'loop') {
-					errors.push(`Automaton transitions value when a string, can only be "loop"`);
+					automatonValidationErrors.push(
+						`Automaton transitions value when a string, can only be "loop"`
+					);
 				}
 			}
 
@@ -322,13 +339,13 @@ export class FiniteAutomaton {
 				Object.entries(transitionStatesRecord).forEach(
 					([transitionStateSymbol, transitionStateResultantStates]) => {
 						if (!automatonAlphabets.has(transitionStateSymbol)) {
-							errors.push(
+							automatonValidationErrors.push(
 								`Automaton transitions symbol (${transitionStateSymbol}), must reference a valid alphabet`
 							);
 						}
 						transitionStateResultantStates.forEach((transitionStateResultantState) => {
 							if (!automatonStates.has(transitionStateResultantState)) {
-								errors.push(
+								automatonValidationErrors.push(
 									`Automaton transitions value (${transitionStateResultantState}) when a tuple, must reference a valid state`
 								);
 							}
@@ -338,7 +355,7 @@ export class FiniteAutomaton {
 			}
 		});
 
-		return errors;
+		return automatonValidationErrors;
 	}
 
 	generateGraphFromString(inputString: string) {
