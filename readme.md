@@ -1,4 +1,4 @@
-# Introduction
+# Fauton
 
 A library to test any finite automaton(FA) with arbitrary alphabets.
 
@@ -14,9 +14,11 @@ A library to test any finite automaton(FA) with arbitrary alphabets.
 8. Simple concise error messages for invalid finite automaton
 9. Generate full graph for ε-nfa given a string
 
-## Example
+## Example (A simple dfa)
 
-[A dfa that checks if a input string starts with bc](./public/starts_with_bc_dfa.png 'Dfa that starts with BC')
+Lets start out with a simple dfa, that checks whether an input string starts with `bc`. The alphabets of the dfa are `a, b, c`
+
+![A dfa that checks if a input string starts with bc](./public/starts_with_bc_dfa.png 'Dfa that starts with BC')
 
 ```js
 // import the class from the library
@@ -55,12 +57,43 @@ const startsWithBC = new DeterministicFiniteAutomaton(
 );
 ```
 
-Lets test the dfa we created above and see whether its actually correct or not. This is our file directory structure at the moment.
-
-[Pre dfa test file structure](./public/pre_dfa_test.png)
+Internally this is how the transitions map will be generated
 
 ```js
-// The constructor takes only one argument, the directory where the all the artifact files will be generated, if its not present, it will be created
+const transitions = {
+	Q0: {
+		a: 'Q2',
+		b: 'Q1',
+		c: 'Q2',
+	},
+	Q1: {
+		a: 'Q2',
+		b: 'Q2',
+		c: 'Q3',
+	},
+	// Due to 'loop'
+	Q2: {
+		a: 'Q2',
+		b: 'Q2',
+		c: 'Q2',
+	},
+	Q3: {
+		a: 'Q3',
+		b: 'Q3',
+		c: 'Q3',
+	},
+};
+```
+
+This is our file directory structure at the moment.
+
+Lets test the dfa we created above and see whether its actually correct or not.
+
+![Pre dfa test file structure](./public/pre_dfa_test.png)
+
+```js
+// The constructor takes only one argument, the directory where the all the artifact files will be generated
+// if its not present, it will be created
 const finiteAutomataTest = new FiniteAutomataTest(path.join(__dirname, 'logs'));
 
 // Call the test method to test out the automaton
@@ -80,11 +113,20 @@ finiteAutomataTest.test([
 ]);
 ```
 
-This is the file structure after running the script. It generates several artifact files for you to investigate each and every step of the process.
-[Post dfa test file structure](./public/post_dfa_test.png)
+This is the file structure after running the script. It generates several artifact files for you to investigate.
+
+![Post dfa test file structure](./public/post_dfa_test.png)
+
+1. `<dfa.label>.accepted.txt`: Will contain all the strings that will be accepted by the automaton
+2. `<dfa.label>.aggregate.txt`: Will contain an aggregated result of the test. Its similar to what is shown in the terminal
+3. `<dfa.label>.case.txt`: Contains the result for each input string test case.
+4. `<dfa.label>.correct.txt`: Contains all the strings that generated the same boolean result from the logic test callback and the automaton.
+5. `<dfa.label>.incorrect.txt`: Contains all the strings that generated different boolean result from the logic test callback and the automaton
+6. `<dfa.label>.input.txt`: Contains all the input strings. Useful when you are feeding random or ranged strings and want to reuse it for later
+7. `<dfa.label>.rejected.txt`: Contains all the strings that have been rejected bu the automaton
 
 And this is what will be shown in the terminal
-[Post dfa test terminal](./public/post_dfa_test_terminal.png)
+![Post dfa test terminal](./public/post_dfa_test_terminal.png)
 
 Better and more detailed api documentation coming soon very soon !!!
 
