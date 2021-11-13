@@ -1,6 +1,14 @@
-# Fauton
+<div align="center"> <h1>Fauton</h1> </div>
+<div align="center"><b>A library to test any finite automaton with arbitrary alphabets</b></div>
 
-A library to test any finite automaton(FA) with arbitrary alphabets.
+</br>
+
+<p align="center">
+  <a href="https://app.codecov.io/gh/Devorein/fauton/branch/master"><img src="https://img.shields.io/codecov/c/github/devorein/fauton?color=blue"/></a>
+  <img src="https://img.shields.io/github/commit-activity/m/devorein/fauton?color=yellow" />
+  <img src="https://img.shields.io/github/repo-size/devorein/fauton?style=flat-square&color=orange"/>
+  <img src="https://img.shields.io/github/contributors/devorein/fauton?label=contributors&color=red"/>
+</p>
 
 ## Features
 
@@ -123,10 +131,12 @@ This is the file structure after running the script. It generates several artifa
 4. `<dfa.label>.correct.txt`: Contains all the strings that generated the same boolean result from the logic test callback and the automaton.
 5. `<dfa.label>.incorrect.txt`: Contains all the strings that generated different boolean result from the logic test callback and the automaton
 6. `<dfa.label>.input.txt`: Contains all the input strings. Useful when you are feeding random or ranged strings and want to reuse it for later
-7. `<dfa.label>.rejected.txt`: Contains all the strings that have been rejected bu the automaton
+7. `<dfa.label>.rejected.txt`: Contains all the strings that have been rejected by the automaton
 
 And this is what will be shown in the terminal
 ![Post dfa test terminal](./public/post_dfa_test_terminal.png)
+
+### Breakdown
 
 Better and more detailed api documentation coming soon very soon !!!
 

@@ -1,6 +1,6 @@
 {
   "name": "fauton",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A library to test any finite automaton(FA) with arbitrary alphabets",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
