@@ -13,11 +13,12 @@
 - [Features](#features)
 - [Examples](#examples)
   - [Dfa for string that starts with bc](#dfa-for-string-that-starts-with-bc)
-  - [Generated artifact files](#generated-artifact-files)
-    - [Samples of artifact files](#samples-of-artifact-files)
-  - [Terminal Output](#terminal-output)
-    - [Incorrect Portion](#incorrect-portion)
-    - [Correct Portion](#correct-portion)
+  - [Binary string divisible by 2 or 3 but not both](#binary-string-divisible-by-2-or-3-but-not-both)
+- [Generated artifact files](#generated-artifact-files)
+  - [Samples of artifact files](#samples-of-artifact-files)
+- [Terminal Output](#terminal-output)
+  - [Incorrect Portion](#incorrect-portion)
+  - [Correct Portion](#correct-portion)
 
 # Features
 
@@ -103,9 +104,9 @@ const transitions = {
 
 This is our file directory structure at the moment.
 
-Lets test the dfa we created above and see whether its actually correct or not.
-
 ![Pre dfa test file structure](./public/pre_dfa_test.png)
+
+Lets test the dfa we created above and see whether its actually correct or not.
 
 ```js
 // The constructor takes only one argument, the directory where the all the artifact files will be generated, if its not present, it will be created
@@ -128,14 +129,106 @@ finiteAutomataTest.test([
 ]);
 ```
 
-This is the file structure after running the script. It generates several artifact files.
+This is the file structure after running the script. As you can see it generated several artifact files.
 
 ![Post dfa test file structure](./public/post_dfa_test.png)
 
 And this is what will be shown in the terminal
 ![Post dfa test terminal](./public/post_dfa_test_terminal.png 'A sample terminal output post dfa test')
 
-## Generated artifact files
+## Binary string divisible by 2 or 3 but not both
+
+In this case it will be better if we construct two dfa's and merge them together to form the final dfa.
+
+Let `D2` be the dfa responsible for checking divisibility by 2 and `D3` be responsible for divisibility by 3
+
+Our condition is `(D2 OR D3) AND NOT(D2 AND D3)`, meaning either the string passes through `D2` or `D3`, but not by both. So `2` will be accepted, `3` will be accepted but `6` will be rejected as its divisible by both `2` and `3`
+
+![A dfa that checks if a binary string is divisible 3](./public/divisible_by_3.png 'A dfa that checks if a binary string is divisible by 3')
+
+![A dfa that checks if a binary string is divisible 2](./public/divisible_by_2.png 'A dfa that checks if a binary string is divisible by 2')
+
+![A dfa that checks if a binary string is divisible by 2 or 3 but not both](./public/divisible_by_3_or_2_but_not_both.png 'A dfa that checks if a binary string is divisible by 2 or 3 but not both')
+
+Lets convert it to code !!!
+
+```js
+const { FiniteAutomataTest, DeterministicFiniteAutomaton } = require('fauton');
+const path = require('path');
+
+const DivisibleBy3 = new DeterministicFiniteAutomaton(
+	(inputString) => parseInt(inputString, 2) % 3 === 0,
+	{
+		alphabets: ['0', '1'],
+		final_states: ['A'],
+		label: 'divisible_by_3',
+		start_state: 'A',
+		states: ['A', 'B', 'C'],
+		transitions: {
+			A: ['A', 'B'],
+			B: ['C', 'A'],
+			C: ['B', 'C'],
+		},
+		description: 'Dfa to accept strings divisible by 3',
+	}
+);
+
+const DivisibleBy2 = new DeterministicFiniteAutomaton(
+	(inputString) => parseInt(inputString, 2) % 2 === 0,
+	{
+		alphabets: ['0', '1'],
+		final_states: ['X'],
+		label: 'divisible_by_2',
+		start_state: 'X',
+		states: ['X', 'Y'],
+		transitions: {
+			X: ['X', 'Y'],
+			Y: ['X', 'Y'],
+		},
+		description: 'Dfa to accept strings divisible by 2',
+	}
+);
+
+const DivisibleBy2Or3 = DivisibleBy2.OR(DivisibleBy3);
+const NotDivisibleBy2And3 = DivisibleBy2.AND(DivisibleBy3).NOT();
+
+const DivisibleBy3Or2ButNotByBoth = DivisibleBy2Or3.AND(NotDivisibleBy2And3);
+
+const finiteAutomataTest = new FiniteAutomataTest(path.resolve(__dirname, 'logs'));
+finiteAutomataTest.test([
+	{
+		automaton: DivisibleBy3Or2ButNotByBoth,
+		options: {
+			type: 'generate',
+			range: {
+				maxLength: 10,
+			},
+		},
+	},
+]);
+
+// Merged transitions
+console.log(DivisibleBy3Or2ButNotByBoth.automaton.transitions);
+// Merged start state
+console.log(DivisibleBy3Or2ButNotByBoth.automaton.start_state);
+// Merged final states
+console.log(DivisibleBy3Or2ButNotByBoth.automaton.final_states);
+```
+
+```sh
+> {
+  'X.A': { '0': [ 'X.A' ], '1': [ 'Y.B' ] },
+  'Y.A': { '0': [ 'X.A' ], '1': [ 'Y.B' ] },
+  'X.B': { '0': [ 'X.C' ], '1': [ 'Y.A' ] },
+  'Y.B': { '0': [ 'X.C' ], '1': [ 'Y.A' ] },
+  'X.C': { '0': [ 'X.B' ], '1': [ 'Y.C' ] },
+  'Y.C': { '0': [ 'X.B' ], '1': [ 'Y.C' ] }
+}
+> X.A
+> [ 'Y.A', 'X.B', 'X.C' ]
+```
+
+# Generated artifact files
 
 1. `<fa.label>.accepted.txt`: Contains all the strings that will be accepted by the automaton
 2. `<fa.label>.aggregate.txt`: Contains an aggregated result of the test. Its similar to what is shown in the terminal. See [Terminal Output](#terminal-output)
@@ -145,7 +238,7 @@ And this is what will be shown in the terminal
 6. `<fa.label>.input.txt`: Contains all the input strings. Useful when you are generating random or ranged strings and want to reuse it for later
 7. `<fa.label>.rejected.txt`: Contains all the strings that have been rejected by the automaton
 
-### Samples of artifact files
+## Samples of artifact files
 
 `<fa.label>.accepted.txt`
 
@@ -184,14 +277,14 @@ Same as `<fa.label>.accepted.txt`
 
 Same as `<fa.label>.accepted.txt`
 
-## Terminal Output
+# Terminal Output
 
 A detailed explanation of what is shown in the terminal and also in the aggregate file
 
 - `fa.result`: Indicates the result from the finite automata
 - `logic.result`: Indicates the result from the logic test
 
-### Incorrect Portion
+## Incorrect Portion
 
 - `Incorrect`: Total number of strings where the automaton and logic test gave different result. Conditions:-
   - `fa.result = false && logic.result = true`
@@ -204,7 +297,7 @@ A detailed explanation of what is shown in the terminal and also in the aggregat
   - `fa.result = false && logic.result = true`
 - `False Negatives(%)`: Total number of false negatives out of all strings
 
-### Correct Portion
+## Correct Portion
 
 - `Correct`: Total number of strings where the automaton and logic test gave same result. Conditions:-
   - `fa.result = true && logic.result = true`
