@@ -15,10 +15,19 @@
   - [Dfa for string that starts with bc](#dfa-for-string-that-starts-with-bc)
   - [Binary string divisible by 2 or 3 but not both](#binary-string-divisible-by-2-or-3-but-not-both)
 - [Generated artifact files](#generated-artifact-files)
-  - [Samples of artifact files](#samples-of-artifact-files)
+  - [Sample artifact files](#sample-artifact-files)
+  - [`<fa.label>.accepted.txt`](#falabelacceptedtxt)
+  - [`<fa.label>.aggregate.txt`](#falabelaggregatetxt)
+  - [`<fa.label>.case.txt`](#falabelcasetxt)
+  - [`<fa.label>.correct.txt`](#falabelcorrecttxt)
+  - [`<fa.label>.incorrect.txt`](#falabelincorrecttxt)
+  - [`<fa.label>.input.txt`](#falabelinputtxt)
+  - [`<fa.label>.rejected.txt`](#falabelrejectedtxt)
 - [Terminal Output](#terminal-output)
+  - [Sample terminal output](#sample-terminal-output)
   - [Incorrect Portion](#incorrect-portion)
   - [Correct Portion](#correct-portion)
+- [Contributors](#contributors)
 
 # Features
 
@@ -102,10 +111,6 @@ const transitions = {
 };
 ```
 
-This is our file directory structure at the moment.
-
-![Pre dfa test file structure](./public/pre_dfa_test.png)
-
 Lets test the dfa we created above and see whether its actually correct or not.
 
 ```js
@@ -128,13 +133,6 @@ finiteAutomataTest.test([
 	},
 ]);
 ```
-
-This is the file structure after running the script. As you can see it generated several artifact files.
-
-![Post dfa test file structure](./public/post_dfa_test.png)
-
-And this is what will be shown in the terminal
-![Post dfa test terminal](./public/post_dfa_test_terminal.png 'A sample terminal output post dfa test')
 
 ## Binary string divisible by 2 or 3 but not both
 
@@ -228,27 +226,33 @@ console.log(DivisibleBy3Or2ButNotByBoth.automaton.final_states);
 > [ 'Y.A', 'X.B', 'X.C' ]
 ```
 
+It automatically generates the merged transitions, new start and final states
+
 # Generated artifact files
 
-1. `<fa.label>.accepted.txt`: Contains all the strings that will be accepted by the automaton
-2. `<fa.label>.aggregate.txt`: Contains an aggregated result of the test. Its similar to what is shown in the terminal. See [Terminal Output](#terminal-output)
-3. `<fa.label>.case.txt`: Contains detailed results for each input string test case.
-4. `<fa.label>.correct.txt`: Contains all the strings that generated the same boolean result from the logic test callback and the automaton.
-5. `<fa.label>.incorrect.txt`: Contains all the strings that generated different boolean result from the logic test callback and the automaton
-6. `<fa.label>.input.txt`: Contains all the input strings. Useful when you are generating random or ranged strings and want to reuse it for later
-7. `<fa.label>.rejected.txt`: Contains all the strings that have been rejected by the automaton
+After running the test, artifact files will be generated in the folder specified in the `FiniteAutomataTest` class constructor. These files contain additional information about the test and starts with the label of the dfa.
 
-## Samples of artifact files
+## Sample artifact files
 
-`<fa.label>.accepted.txt`
+Sample artifact files shown inside `logs` directory
+
+![Post dfa test file structure](./public/post_dfa_test.png)
+
+## `<fa.label>.accepted.txt`
+
+Contains all the strings that will be accepted by the automaton
 
 ![Sample accepted artifact file](./public/sample_accepted_artifact_file.png)
 
-`<fa.label>.aggregate.txt`
+## `<fa.label>.aggregate.txt`
+
+Contains an aggregated result of the test. Its similar to what is shown in the terminal. See [Terminal Output](#terminal-output)
 
 ![Sample aggregate artifact file](./public/sample_aggregate_artifact_file.png)
 
-`<fa.label>.case.txt`
+## `<fa.label>.case.txt`
+
+Contains detailed results for each input string test case.
 
 ![Sample case artifact file](./public/sample_case_artifact_file.png)
 
@@ -257,7 +261,9 @@ console.log(DivisibleBy3Or2ButNotByBoth.automaton.final_states);
 - Logic: `logic.result`
 - FA: `fa.result`
 
-`<fa.label>.correct.txt`
+## `<fa.label>.correct.txt`
+
+Contains all the strings that generated the same boolean result from the logic test callback and the automaton.
 
 ![Sample correct artifact file](./public/sample_correct_artifact_file.png)
 
@@ -265,24 +271,36 @@ console.log(DivisibleBy3Or2ButNotByBoth.automaton.final_states);
 - Second column: `logic.result`
 - Third column: Input string
 
-`<fa.label>.incorrect.txt`
+## `<fa.label>.incorrect.txt`
+
+Contains all the strings that generated different boolean result from the logic test callback and the automaton
 
 Same as `<fa.label>.correct.txt`
 
-`<fa.label>.input.txt`
+## `<fa.label>.input.txt`
+
+Contains all the input strings. Useful when you are generating random or ranged strings and want to reuse it for later
 
 Same as `<fa.label>.accepted.txt`
 
-`<fa.label>.rejected.txt`
+## `<fa.label>.rejected.txt`
+
+Contains all the strings that have been rejected by the automaton
 
 Same as `<fa.label>.accepted.txt`
 
 # Terminal Output
 
-A detailed explanation of what is shown in the terminal and also in the aggregate file
+While the test is proceeding the progress will be shown in the terminal, and once its done an aggregated result of the test will be shown as below.
+
+## Sample terminal output
+
+![Post dfa test terminal](./public/post_dfa_test_terminal.png 'A sample terminal output post dfa test')
 
 - `fa.result`: Indicates the result from the finite automata
 - `logic.result`: Indicates the result from the logic test
+
+The progress bar shows the number of input strings that's been processed. Beneath that the label, description and the total number of input strings are shown
 
 ## Incorrect Portion
 
@@ -312,4 +330,10 @@ A detailed explanation of what is shown in the terminal and also in the aggregat
 
 Better and more detailed api documentation coming soon very soon !!!
 
-Take a look at the [examples](./examples) folder to understand how to write a dfa test and use this package.
+# Contributors
+
+1.  Safwan Shaheer [github](https://github.com/Devorein) Author, Maintainer
+
+Feel free to submit a pull request or open a new issue, contributions are more than welcome !!!
+
+Take a look at the [examples](./examples) folder or check out the documentation to learn more.
