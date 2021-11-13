@@ -1,28 +1,5 @@
-# Introduction
-
-A library to test any finite automaton(FA) with arbitrary alphabets.
-
-## Features
-
-1. Test any dfa/nfa/ε-nfa
-2. Supports arbitrary alphabets
-3. Easy to use api to generate input strings
-4. ε-nfa to nfa conversion
-5. Generate artifacts files for each automaton
-6. Highly customizable
-7. Full typescript support
-8. Simple concise error messages for invalid finite automaton
-9. Generate full graph for ε-nfa given a string
-
-## Example
-
-[A dfa that checks if a input string starts with bc](./public/starts_with_bc_dfa.png 'Dfa that starts with BC')
-
-```js
 // import the class from the library
 const { DeterministicFiniteAutomaton, FiniteAutomataTest } = require('fauton');
-const path = require('path');
-
 const startsWithBC = new DeterministicFiniteAutomaton(
 	// Callback that will be passed each of the input string to test whether its should be accepted by the dfa or not
 	(inputString) => inputString.startsWith('bc'),
@@ -53,13 +30,7 @@ const startsWithBC = new DeterministicFiniteAutomaton(
 		},
 	}
 );
-```
 
-Lets test the dfa we created above and see whether its actually correct or not. This is our file directory structure at the moment.
-
-[Pre dfa test file structure](./public/pre_dfa_test.png)
-
-```js
 // The constructor takes only one argument, the directory where the all the artifact files will be generated, if its not present, it will be created
 const finiteAutomataTest = new FiniteAutomataTest(path.join(__dirname, 'logs'));
 
@@ -78,14 +49,3 @@ finiteAutomataTest.test([
 		},
 	},
 ]);
-```
-
-This is the file structure after running the script. It generates several artifact files for you to investigate each and every step of the process.
-[Post dfa test file structure](./public/post_dfa_test.png)
-
-And this is what will be shown in the terminal
-[Post dfa test terminal](./public/post_dfa_test_terminal.png)
-
-Better and more detailed api documentation coming soon very soon !!!
-
-Take a look at the [examples](./examples) folder to understand how to write a dfa test and use this package.

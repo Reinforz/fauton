@@ -77,7 +77,7 @@ export class FiniteAutomataTest {
 			caseWriteStream: outputFiles.case
 				? fs.createWriteStream(path.resolve(this.#logsPath, `${automatonLabel}.case.txt`))
 				: null,
-			aggregateWriteStream: outputFiles.case
+			aggregateWriteStream: outputFiles.aggregate
 				? fs.createWriteStream(path.resolve(this.#logsPath, `${automatonLabel}.aggregate.txt`))
 				: null,
 			incorrectWriteStream: outputFiles.incorrect
@@ -89,10 +89,10 @@ export class FiniteAutomataTest {
 			inputWriteStream: outputFiles.input
 				? fs.createWriteStream(path.resolve(this.#logsPath, `${automatonLabel}.input.txt`))
 				: null,
-			acceptedWriteStream: outputFiles.correct
+			acceptedWriteStream: outputFiles.accepted
 				? fs.createWriteStream(path.resolve(this.#logsPath, `${automatonLabel}.accepted.txt`))
 				: null,
-			rejectedWriteStream: outputFiles.input
+			rejectedWriteStream: outputFiles.rejected
 				? fs.createWriteStream(path.resolve(this.#logsPath, `${automatonLabel}.rejected.txt`))
 				: null,
 		};
