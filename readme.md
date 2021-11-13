@@ -22,6 +22,11 @@
   - [dfa](#dfa)
   - [nfa](#nfa)
   - [ε-nfa](#ε-nfa)
+- [Input string generation](#input-string-generation)
+  - [Reading from a file](#reading-from-a-file)
+  - [Custom array of strings](#custom-array-of-strings)
+  - [Generating random strings](#generating-random-strings)
+  - [Generating all combinations of certain length](#generating-all-combinations-of-certain-length)
 - [Generated artifact files](#generated-artifact-files)
   - [Sample artifact files](#sample-artifact-files)
   - [`<fa.label>.accepted.txt`](#falabelacceptedtxt)
@@ -370,7 +375,7 @@ Render.graphToHtml(graph, path.join(__dirname, 'index.html'));
 
 Generated d3 graph
 
-![generated d3 graph](./public/generated_graph.png 'generated d3 graph')
+<img src="https://raw.githubusercontent.com/Devorein/fauton/main/public/generated_graph.png" width="250"/>
 
 Take a look at [examples](./examples) folder for more examples.
 
@@ -480,6 +485,90 @@ Transformed transitions record
   B: { b: [ 'C' ], a: [], c: [ 'C' ] },
   C: { c: [ 'C' ] }
 }
+```
+
+# Input string generation
+
+When testing the finite automaton using the `FiniteAutomataTest` class object's `test` method there are four ways to provide input strings to the automaton and the logic test callback
+
+## Reading from a file
+
+If you already have a file that contains a bunch of input strings made of valid symbols of the automata you can load that file and feed each strings (delimited by a newline) to the automata and logic test.
+
+```js
+finiteAutomataTest.test([
+	{
+		automaton,
+		options: {
+			type: 'file',
+			// Path to the input file
+			filePath: path.join(__dirname, 'input.txt'),
+		},
+	},
+]);
+```
+
+## Custom array of strings
+
+You can provide your own custom array of strings to feed to the automaton and logic test callback.
+
+```js
+finiteAutomataTest.test([
+	{
+		automaton,
+		options: {
+			type: 'custom',
+			inputs: ['101', '110', '00101'],
+		},
+	},
+]);
+```
+
+## Generating random strings
+
+You can feed automaton and logic test callback a set of unique randomly generated strings from the alphabet of the automaton
+
+```js
+finiteAutomataTest.test([
+	{
+		automaton,
+		options: {
+			type: 'generate',
+			random: {
+				// Maximum length of the random string
+				maxLength: 4,
+				// Minimum length of the random string
+				minLength: 2,
+				// Total unique random strings
+				total: 5,
+			},
+		},
+	},
+]);
+```
+
+## Generating all combinations of certain length
+
+You can feed automata and logic test callback a set of unique randomly generated strings from the alphabet of the automata
+
+```js
+finiteAutomataTest.test([
+	{
+		automaton,
+		options: {
+			type: 'generate',
+			range: {
+				maxLength: 3,
+			},
+		},
+	},
+]);
+```
+
+If you alphabet is `a,b` then it will generate the following set of strings
+
+```sh
+a, b, aa, bb, ab, ba, aaa, aab, aba, abb, bbb, bba, bab, baa
 ```
 
 # Generated artifact files
