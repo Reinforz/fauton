@@ -22,7 +22,7 @@
 8. Simple concise error messages for invalid finite automaton
 9. Generate full graph for ε-nfa given a string
 
-## Example (A simple dfa)
+## Example (string starts with bc)
 
 Lets start out with a simple dfa, that checks whether an input string starts with `bc`. The alphabets of the dfa are `a, b, c`
 
@@ -31,8 +31,6 @@ Lets start out with a simple dfa, that checks whether an input string starts wit
 ```js
 // import the class from the library
 const { DeterministicFiniteAutomaton, FiniteAutomataTest } = require('fauton');
-const path = require('path');
-
 const startsWithBC = new DeterministicFiniteAutomaton(
 	// Callback that will be passed each of the input string to test whether its should be accepted by the dfa or not
 	(inputString) => inputString.startsWith('bc'),
@@ -79,7 +77,6 @@ const transitions = {
 		b: 'Q2',
 		c: 'Q3',
 	},
-	// Due to 'loop'
 	Q2: {
 		a: 'Q2',
 		b: 'Q2',
@@ -100,8 +97,7 @@ Lets test the dfa we created above and see whether its actually correct or not.
 ![Pre dfa test file structure](./public/pre_dfa_test.png)
 
 ```js
-// The constructor takes only one argument, the directory where the all the artifact files will be generated
-// if its not present, it will be created
+// The constructor takes only one argument, the directory where the all the artifact files will be generated, if its not present, it will be created
 const finiteAutomataTest = new FiniteAutomataTest(path.join(__dirname, 'logs'));
 
 // Call the test method to test out the automaton
@@ -121,9 +117,14 @@ finiteAutomataTest.test([
 ]);
 ```
 
-This is the file structure after running the script. It generates several artifact files for you to investigate.
+This is the file structure after running the script. It generates several artifact files.
 
 ![Post dfa test file structure](./public/post_dfa_test.png)
+
+And this is what will be shown in the terminal
+![Post dfa test terminal](./public/post_dfa_test_terminal.png 'A sample terminal output post dfa test')
+
+### Generated artifact files
 
 1. `<dfa.label>.accepted.txt`: Will contain all the strings that will be accepted by the automaton
 2. `<dfa.label>.aggregate.txt`: Will contain an aggregated result of the test. Its similar to what is shown in the terminal
@@ -133,10 +134,33 @@ This is the file structure after running the script. It generates several artifa
 6. `<dfa.label>.input.txt`: Contains all the input strings. Useful when you are feeding random or ranged strings and want to reuse it for later
 7. `<dfa.label>.rejected.txt`: Contains all the strings that have been rejected by the automaton
 
-And this is what will be shown in the terminal
-![Post dfa test terminal](./public/post_dfa_test_terminal.png)
+### Terminal Output
 
-### Breakdown
+A detailed explanation of what is shown in the terminal and also in the aggregate file
+
+- `Incorrect`: Total number of strings where the automaton and logic test gave different result. Conditions:-
+  - `fa.result = false && logic.result = true`
+  - `fa.result = true && logic.result = false`
+- `Incorrect(%)`: Percentage of strings that are incorrect out of all strings
+- `False Positives`: Total number of strings that didn't pass the logic test but passed the automata test. Condition:-
+  - `fa.result = true && logic.result = false`
+- `False Positives(%)`: Total number of false positives out of all strings
+- `False Negatives`: Total number of strings that passed the logic test but didn't pass the automata test. Condition:-
+  - `fa.result = false && logic.result = true`
+- `False Negatives(%)`: Total number of false negatives out of all strings
+
+---
+
+- `Correct`: Total number of strings where the automaton and logic test gave same result. Conditions:-
+  - `fa.result = true && logic.result = true`
+  - `fa.result = false && logic.result = false`
+- `Correct(%)`: Percentage of strings that are correct out of all strings
+- `True Positives`: Total number of strings that passed both the logic and automata test. Condition:-
+  - `fa.result = true && logic.result = true`
+- `True Positives(%)`: Total number of true positives out of all strings
+- `True Negatives`: Total number of strings that didn't pass both the logic and automata test. Condition:-
+  - `fa.result = false && logic.result = false`
+- `True Negatives(%)`: Total number of true negatives out of all strings
 
 Better and more detailed api documentation coming soon very soon !!!
 
