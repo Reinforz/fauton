@@ -10,7 +10,16 @@
   <img src="https://img.shields.io/github/contributors/devorein/fauton?label=contributors&color=red"/>
 </p>
 
-## Features
+- [Features](#features)
+- [Examples](#examples)
+  - [Dfa for string that starts with bc](#dfa-for-string-that-starts-with-bc)
+  - [Generated artifact files](#generated-artifact-files)
+    - [Samples of artifact files](#samples-of-artifact-files)
+  - [Terminal Output](#terminal-output)
+    - [Incorrect Portion](#incorrect-portion)
+    - [Correct Portion](#correct-portion)
+
+# Features
 
 1. Test any dfa/nfa/ε-nfa
 2. Supports arbitrary alphabets
@@ -22,7 +31,9 @@
 8. Simple concise error messages for invalid finite automaton
 9. Generate full graph for ε-nfa given a string
 
-## Example (string starts with bc)
+# Examples
+
+## Dfa for string that starts with bc
 
 Lets start out with a simple dfa, that checks whether an input string starts with `bc`. The alphabets of the dfa are `a, b, c`
 
@@ -124,19 +135,63 @@ This is the file structure after running the script. It generates several artifa
 And this is what will be shown in the terminal
 ![Post dfa test terminal](./public/post_dfa_test_terminal.png 'A sample terminal output post dfa test')
 
-### Generated artifact files
+## Generated artifact files
 
-1. `<dfa.label>.accepted.txt`: Will contain all the strings that will be accepted by the automaton
-2. `<dfa.label>.aggregate.txt`: Will contain an aggregated result of the test. Its similar to what is shown in the terminal
-3. `<dfa.label>.case.txt`: Contains the result for each input string test case.
-4. `<dfa.label>.correct.txt`: Contains all the strings that generated the same boolean result from the logic test callback and the automaton.
-5. `<dfa.label>.incorrect.txt`: Contains all the strings that generated different boolean result from the logic test callback and the automaton
-6. `<dfa.label>.input.txt`: Contains all the input strings. Useful when you are feeding random or ranged strings and want to reuse it for later
-7. `<dfa.label>.rejected.txt`: Contains all the strings that have been rejected by the automaton
+1. `<fa.label>.accepted.txt`: Contains all the strings that will be accepted by the automaton
+2. `<fa.label>.aggregate.txt`: Contains an aggregated result of the test. Its similar to what is shown in the terminal. See [Terminal Output](#terminal-output)
+3. `<fa.label>.case.txt`: Contains detailed results for each input string test case.
+4. `<fa.label>.correct.txt`: Contains all the strings that generated the same boolean result from the logic test callback and the automaton.
+5. `<fa.label>.incorrect.txt`: Contains all the strings that generated different boolean result from the logic test callback and the automaton
+6. `<fa.label>.input.txt`: Contains all the input strings. Useful when you are generating random or ranged strings and want to reuse it for later
+7. `<fa.label>.rejected.txt`: Contains all the strings that have been rejected by the automaton
 
-### Terminal Output
+### Samples of artifact files
+
+`<fa.label>.accepted.txt`
+
+![Sample accepted artifact file](./public/sample_accepted_artifact_file.png)
+
+`<fa.label>.aggregate.txt`
+
+![Sample aggregate artifact file](./public/sample_aggregate_artifact_file.png)
+
+`<fa.label>.case.txt`
+
+![Sample case artifact file](./public/sample_case_artifact_file.png)
+
+- Result: `CORRECT` if `fa.result == logic.result`, `WRONG` otherwise
+- String: Input string
+- Logic: `logic.result`
+- FA: `fa.result`
+
+`<fa.label>.correct.txt`
+
+![Sample correct artifact file](./public/sample_correct_artifact_file.png)
+
+- First column: `fa.result`
+- Second column: `logic.result`
+- Third column: Input string
+
+`<fa.label>.incorrect.txt`
+
+Same as `<fa.label>.correct.txt`
+
+`<fa.label>.input.txt`
+
+Same as `<fa.label>.accepted.txt`
+
+`<fa.label>.rejected.txt`
+
+Same as `<fa.label>.accepted.txt`
+
+## Terminal Output
 
 A detailed explanation of what is shown in the terminal and also in the aggregate file
+
+- `fa.result`: Indicates the result from the finite automata
+- `logic.result`: Indicates the result from the logic test
+
+### Incorrect Portion
 
 - `Incorrect`: Total number of strings where the automaton and logic test gave different result. Conditions:-
   - `fa.result = false && logic.result = true`
@@ -149,7 +204,7 @@ A detailed explanation of what is shown in the terminal and also in the aggregat
   - `fa.result = false && logic.result = true`
 - `False Negatives(%)`: Total number of false negatives out of all strings
 
----
+### Correct Portion
 
 - `Correct`: Total number of strings where the automaton and logic test gave same result. Conditions:-
   - `fa.result = true && logic.result = true`
