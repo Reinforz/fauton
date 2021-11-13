@@ -1,4 +1,3 @@
-// import the class from the library
 const { DeterministicFiniteAutomaton, FiniteAutomataTest } = require('fauton');
 const path = require('path');
 

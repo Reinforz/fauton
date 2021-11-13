@@ -14,6 +14,14 @@
 - [Examples](#examples)
   - [Dfa for string that starts with bc](#dfa-for-string-that-starts-with-bc)
   - [Binary string divisible by 2 or 3 but not both](#binary-string-divisible-by-2-or-3-but-not-both)
+  - [Nfa for string that starts with `ab`](#nfa-for-string-that-starts-with-ab)
+  - [ε-nfa to nfa](#ε-nfa-to-nfa)
+  - [Generate and render full graph for a ε-nfa](#generate-and-render-full-graph-for-a-ε-nfa)
+- [Conditions for DFA](#conditions-for-dfa)
+- [Transitions Record Transformation](#transitions-record-transformation)
+  - [dfa](#dfa)
+  - [nfa](#nfa)
+  - [ε-nfa](#ε-nfa)
 - [Generated artifact files](#generated-artifact-files)
   - [Sample artifact files](#sample-artifact-files)
   - [`<fa.label>.accepted.txt`](#falabelacceptedtxt)
@@ -82,38 +90,7 @@ const startsWithBC = new DeterministicFiniteAutomaton(
 		},
 	}
 );
-```
 
-Internally this is how the transitions map will be generated
-
-```js
-const transitions = {
-	Q0: {
-		a: 'Q2',
-		b: 'Q1',
-		c: 'Q2',
-	},
-	Q1: {
-		a: 'Q2',
-		b: 'Q2',
-		c: 'Q3',
-	},
-	Q2: {
-		a: 'Q2',
-		b: 'Q2',
-		c: 'Q2',
-	},
-	Q3: {
-		a: 'Q3',
-		b: 'Q3',
-		c: 'Q3',
-	},
-};
-```
-
-Lets test the dfa we created above and see whether its actually correct or not.
-
-```js
 // The constructor takes only one argument, the directory where the all the artifact files will be generated, if its not present, it will be created
 const finiteAutomataTest = new FiniteAutomataTest(path.join(__dirname, 'logs'));
 
@@ -142,13 +119,9 @@ Let `D2` be the dfa responsible for checking divisibility by 2 and `D3` be respo
 
 Our condition is `(D2 OR D3) AND NOT(D2 AND D3)`, meaning either the string passes through `D2` or `D3`, but not by both. So `2` will be accepted, `3` will be accepted but `6` will be rejected as its divisible by both `2` and `3`
 
-![A dfa that checks if a binary string is divisible 3](./public/divisible_by_3.png 'A dfa that checks if a binary string is divisible by 3')
+![A dfa that checks if a binary string is divisible by 2 or 3 but not both](./public/divisible_by_3_or_2_but_not_both.jpg 'A dfa that checks if a binary string is divisible by 2 or 3 but not both')
 
-![A dfa that checks if a binary string is divisible 2](./public/divisible_by_2.png 'A dfa that checks if a binary string is divisible by 2')
-
-![A dfa that checks if a binary string is divisible by 2 or 3 but not both](./public/divisible_by_3_or_2_but_not_both.png 'A dfa that checks if a binary string is divisible by 2 or 3 but not both')
-
-Lets convert it to code !!!
+Lets generate a new dfa by combining the first two dfa's !!!
 
 ```js
 const { FiniteAutomataTest, DeterministicFiniteAutomaton } = require('fauton');
@@ -227,6 +200,287 @@ console.log(DivisibleBy3Or2ButNotByBoth.automaton.final_states);
 ```
 
 It automatically generates the merged transitions, new start and final states
+
+## Nfa for string that starts with `ab`
+
+![nfa for string that starts with ab](./public/nfa_starts_with_ab.png 'nfa for string that starts with ab')
+
+```js
+const { NonDeterministicFiniteAutomaton, FiniteAutomataTest } = require('fauton');
+const path = require('path');
+
+const startsWithAB = new NonDeterministicFiniteAutomaton(
+	(inputString) => inputString.startsWith('ab'),
+	{
+		alphabets: ['a', 'b', 'c'],
+		description: 'Starts with ab',
+		final_states: ['C'],
+		label: 'starts_with_ab',
+		start_state: 'A',
+		states: ['A', 'B', 'C'],
+		transitions: {
+			A: ['B'],
+			B: [null, 'C'],
+			C: 'loop',
+		},
+	}
+);
+
+const finiteAutomataTest = new FiniteAutomataTest(path.join(__dirname, 'logs'));
+finiteAutomataTest.test([
+	{
+		automaton: startsWithAB,
+		options: {
+			type: 'generate',
+			range: {
+				maxLength: 10,
+			},
+		},
+	},
+]);
+```
+
+## ε-nfa to nfa
+
+Lets say we have the following ε-nfa, and we want to convert it to nfa
+
+![epsilon nfa to regular nfa](./public/epsilon_to_nfa.png 'epsilon nfa to regular nfa')
+
+```js
+const { NonDeterministicFiniteAutomaton } = require('fauton');
+const path = require('path');
+
+const randomEpsilonNFA = new NonDeterministicFiniteAutomaton(
+	(inputString) => inputString.startsWith('ab'),
+	{
+		alphabets: ['a', 'b', 'c'],
+		description: 'Starts with ab',
+		final_states: ['C'],
+		label: 'random_epsilon_nfa',
+		start_state: 'A',
+		states: ['A', 'B', 'C'],
+		transitions: {
+			A: ['B', null, 'B'],
+			B: [null, 'C'],
+			C: [null, null, 'C'],
+		},
+		epsilon_transitions: {
+			A: ['B'],
+		},
+	}
+);
+
+// Epsilon-nfa is automatically converted to regular nfa
+console.log(randomEpsilonNFA.automaton.transitions);
+```
+
+```sh
+{
+  A: { a: [ 'B', 'C' ], c: [ 'B', 'C' ], b: [ 'C' ] },
+  B: { b: [ 'C' ], a: [], c: [ 'C' ] },
+  C: { c: [ 'C' ] }
+}
+```
+
+## Generate and render full graph for a ε-nfa
+
+```js
+const { NonDeterministicFiniteAutomaton, Render } = require('fauton');
+const path = require('path');
+
+const randomEpsilonNFA = new NonDeterministicFiniteAutomaton(
+	(inputString) => inputString.startsWith('ab'),
+	{
+		alphabets: ['a', 'b', 'c'],
+		description: 'Starts with ab',
+		final_states: ['C'],
+		label: 'random_epsilon_nfa',
+		start_state: 'A',
+		states: ['A', 'B', 'C'],
+		transitions: {
+			A: ['B', 'C', 'B'],
+			B: ['A', 'C'],
+			C: ['A', null, 'C'],
+		},
+		epsilon_transitions: {
+			A: ['B'],
+			B: ['C'],
+		},
+	}
+);
+
+const { graph } = randomEpsilonNFA.generateGraphFromString('abbc');
+console.log(JSON.stringify(graph, null, 2));
+Render.graphToHtml(graph, path.join(__dirname, 'index.html'));
+```
+
+```js
+{
+  "name": "A",
+  "state": "A",
+  "string": "",
+  "depth": 0,
+  "symbol": null,
+  "children": [
+    {
+      "name": "B(a)",
+      "state": "B",
+      "string": "a",
+      "depth": 1,
+      "symbol": "a",
+      "children": [
+        {
+          "name": "C(b)",
+          "state": "C",
+          "string": "ab",
+          "depth": 2,
+          "symbol": "b",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "C(a)",
+      "state": "C",
+      "string": "a",
+      "depth": 1,
+      "symbol": "a",
+      "children": []
+    },
+    {
+      "name": "A(a)",
+      "state": "A",
+      "string": "a",
+      "depth": 1,
+      "symbol": "a",
+      "children": [
+        {
+          "name": "C(b)",
+          "state": "C",
+          "string": "ab",
+          "depth": 2,
+          "symbol": "b",
+          "children": []
+        }
+      ]
+    }
+  ]
+}
+```
+
+Generated d3 graph
+
+![generated d3 graph](./public/generated_graph.png 'generated d3 graph')
+
+Take a look at [examples](./examples) folder for more examples.
+
+# Conditions for DFA
+
+Deterministic finite automaton must follow certain conditions for it to be considered as one. These are described below
+
+1. `transitions` record must contain all the elements of `states` as its key
+2. Only the items of the `states` can be the key of the `transitions` record
+3. `transitions` record values must either be an array or the string literal `loop`
+4. If its an array its length should be the same `alphabets` array
+5. `transitions` record values can only have `symbols` that are present in the `alphabets` array
+
+# Transitions Record Transformation
+
+## dfa
+
+All the states of the dfa must have transitions for all the input symbols.
+
+```json
+{
+	"final_states": ["A", "B", "C"],
+	"alphabets": ["0", "1", "2"],
+	"transitions": {
+		"A": ["B", "C", "A"],
+		"B": ["C", "A", "C"],
+		"C": "loop"
+	}
+}
+```
+
+For the above automaton, the `transitions` record will be transformed like the following:-
+
+```js
+{
+	"A": {
+		"0": "B",
+		"1": "C",
+		"2": "A",
+	},
+	"B": {
+		"0": "C",
+		"1": "A",
+		"2": "C",
+	},
+	"C": {
+		"0": "C",
+		"1": "C",
+		"2": "C",
+	},
+};
+```
+
+## nfa
+
+```json
+{
+	"alphabets": ["a", "b", "c"],
+	"states": ["A", "B", "C"],
+	"transitions": {
+		"A": ["B", null, "B"],
+		"B": [null, "C"],
+		"C": [null, null, "C"]
+	}
+}
+```
+
+Since its a nfa the conditions of `transitions` record for dfa is not applicable here
+
+```js
+{
+  "A": {
+    "a": ["B"],
+    "c": ["B"]
+  },
+  "B": {
+    "b": ["C"]
+  },
+  "C": {
+    "c": ["C"]
+  }
+}
+```
+
+## ε-nfa
+
+```json
+{
+	"alphabets": ["a", "b", "c"],
+	"states": ["A", "B", "C"],
+	"transitions": {
+		"A": ["B", null, "B"],
+		"B": [null, "C"],
+		"C": [null, null, "C"]
+	},
+	"epsilon_transitions": {
+		"A": ["B"]
+	}
+}
+```
+
+Transformed transitions record
+
+```js
+{
+  A: { a: [ 'B', 'C' ], c: [ 'B', 'C' ], b: [ 'C' ] },
+  B: { b: [ 'C' ], a: [], c: [ 'C' ] },
+  C: { c: [ 'C' ] }
+}
+```
 
 # Generated artifact files
 
@@ -335,5 +589,3 @@ Better and more detailed api documentation coming soon very soon !!!
 1.  Safwan Shaheer [github](https://github.com/Devorein) Author, Maintainer
 
 Feel free to submit a pull request or open a new issue, contributions are more than welcome !!!
-
-Take a look at the [examples](./examples) folder or check out the documentation to learn more.
