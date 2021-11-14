@@ -11,6 +11,7 @@
 </p>
 
 - [Features](#features)
+- [Motivation](#motivation)
 - [Examples](#examples)
   - [Dfa for string that starts with bc](#dfa-for-string-that-starts-with-bc)
   - [Binary string divisible by 2 or 3 but not both](#binary-string-divisible-by-2-or-3-but-not-both)
@@ -42,6 +43,8 @@
   - [Correct Portion](#correct-portion)
 - [Contributors](#contributors)
 
+**Please note that I won't be following semver at the initial stages, as there could be a lot of (breaking) changes between each release**
+
 # Features
 
 1. Test any dfa/nfa/ε-nfa
@@ -53,6 +56,11 @@
 7. Full typescript support
 8. Simple concise error messages for invalid finite automaton
 9. Generate full graph for ε-nfa given a string
+10. Generate ε closure of a single state
+
+# Motivation
+
+Its easy to check whether a string should be accepted or rejected using our favourite programming languages, but its a lot harder to transfer the logic to a finite automaton. Even if we are quite sure we can't be 100% sure until and unless we try out all the possible combinations of alphabet of the automata. This is an extremely tedious and error-prone process. Why not automate testing an automaton?
 
 # Examples
 
@@ -383,11 +391,12 @@ Take a look at [examples](./examples) folder for more examples.
 
 Deterministic finite automaton must follow certain conditions for it to be considered as one. These are described below
 
-1. `transitions` record must contain all the elements of `states` as its key
+1. `transitions` record must contain all the elements of `states` array as its key
 2. Only the items of the `states` can be the key of the `transitions` record
 3. `transitions` record values must either be an array or the string literal `loop`
-4. If its an array its length should be the same `alphabets` array
-5. `transitions` record values can only have `symbols` that are present in the `alphabets` array
+4. If its an array its length should be the same `alphabets` array, where each index represents which state to transition to when encountering a symbol (index of the `alphabets` array)
+5. Also if its an array each item should be a string as for a single symbol a dfa can transition to only one state
+6. `transitions` record values can only have `symbols` that are present in the `alphabets` array
 
 # Transitions Record Transformation
 
