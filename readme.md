@@ -56,12 +56,13 @@
 2. Supports arbitrary alphabets
 3. Easy to use api to generate input strings
 4. ε-nfa to nfa conversion
-5. Generate artifacts files for each automaton
-6. Highly customizable
-7. Full typescript support
-8. Simple concise error messages for invalid finite automaton
-9. Generate full graph for ε-nfa given a string
-10. Generate ε closure of a single state
+5. ε-nfa/nfa to dfa conversion
+6. Generate artifacts files for each automaton
+7. Highly customizable
+8. Full typescript support
+9. Simple concise error messages for invalid finite automaton
+10. Generate full graph for ε-nfa given a string
+11. Generate ε closure of a single state
 
 # Motivation
 

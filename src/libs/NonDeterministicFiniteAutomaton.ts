@@ -95,14 +95,17 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 
 	convertToDeterministicFiniteAutomaton(
 		dfaOptions: Partial<
-			Pick<Pick<IFiniteAutomaton, 'automaton'>['automaton'], 'label' | 'description'>
+			Pick<Pick<IFiniteAutomaton, 'automaton'>['automaton'], 'label' | 'description'> & {
+				separator: string;
+			}
 		>
 	) {
+		const separator = dfaOptions.separator ?? ',';
 		const startState = this.automaton.start_state;
 		const newStartStates = this.automaton.epsilon_transitions
 			? this.epsilonClosureOfState(startState)
 			: [this.automaton.start_state];
-		const newStartStateString = newStartStates.sort().join(',');
+		const newStartStateString = newStartStates.sort().join(separator);
 		const newStates: Set<string> = new Set();
 		const unmarkedStates: string[] = [newStartStateString];
 		const newTransitionsRecord: FiniteAutomaton['automaton']['transitions'] = {};
@@ -114,11 +117,11 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 			const currentStatesString = unmarkedStates.shift()!;
 			this.automaton.alphabets.forEach((symbol, symbolIndex) => {
 				const newStateString = this.moveAndEpsilonClosureStateSet(
-					currentStatesString!.split(','),
+					currentStatesString!.split(separator),
 					symbol
 				)
 					.sort()
-					.join(',');
+					.join(separator);
 				if (!newStates.has(newStateString) && newStateString) {
 					newStates.add(newStateString);
 					unmarkedStates.push(newStateString);
