@@ -19,6 +19,7 @@
   - [ε-nfa to nfa](#ε-nfa-to-nfa)
   - [Generate and render full graph for a ε-nfa](#generate-and-render-full-graph-for-a-ε-nfa)
   - [Conversion from ε-nfa to dfa](#conversion-from-ε-nfa-to-dfa)
+  - [Conversion from nfa to dfa](#conversion-from-nfa-to-dfa)
 - [Conditions for DFA](#conditions-for-dfa)
 - [Transitions Record Transformation](#transitions-record-transformation)
   - [dfa](#dfa)
@@ -444,6 +445,57 @@ console.log(JSON.stringify(epsilonNfa.convertToDeterministicFiniteAutomaton(), n
 			"0,1,10,2,4,5,6,7": {
 				"a": ["1,2,3,4,6,7,8"],
 				"b": ["1,2,4,5,6,7"]
+			}
+		},
+		"epsilon_transitions": null
+	}
+}
+```
+
+## Conversion from nfa to dfa
+
+```js
+const { NonDeterministicFiniteAutomaton } = require('fauton');
+
+const nfa = new NonDeterministicFiniteAutomaton((_, automatonTest) => automatonTest, {
+	start_state: 'q0',
+	alphabets: ['a', 'b'],
+	final_states: ['q1'],
+	label: 'sample nfa',
+	states: ['q0', 'q1', 'q2'],
+	transitions: {
+		q0: [['q2', 'q1']],
+		q2: [['q2', 'q1'], 'q2'],
+	},
+});
+
+console.log(JSON.stringify(nfa.convertToDeterministicFiniteAutomaton(), null, 2));
+```
+
+```json
+{
+	"automaton": {
+		"alphabets": ["a", "b"],
+		"final_states": ["q1,q2"],
+		"label": "sample nfa",
+		"start_state": "q0",
+		"states": ["q0", "q1,q2", "Ø", "q2"],
+		"transitions": {
+			"q0": {
+				"a": ["q1,q2"],
+				"b": ["Ø"]
+			},
+			"q1,q2": {
+				"a": ["q1,q2"],
+				"b": ["q2"]
+			},
+			"q2": {
+				"a": ["q1,q2"],
+				"b": ["q2"]
+			},
+			"Ø": {
+				"a": ["Ø"],
+				"b": ["Ø"]
 			}
 		},
 		"epsilon_transitions": null
