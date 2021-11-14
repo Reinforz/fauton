@@ -104,9 +104,8 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 		const newTransitionsRecord: FiniteAutomaton['automaton']['transitions'] = {};
 		const totalAlphabets = this.automaton.alphabets.length;
 		const newFinalStates: Set<string> = new Set();
-
 		newStates.add(newStateStateString);
-
+		let hasDeadState = false;
 		while (unmarkedStates.length !== 0) {
 			const currentStatesString = unmarkedStates.shift()!;
 			this.automaton.alphabets.forEach((symbol, symbolIndex) => {
@@ -116,14 +115,22 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 				)
 					.sort()
 					.join(',');
-				if (!newStates.has(newStateString)) {
+				if (!newStates.has(newStateString) && newStateString) {
 					newStates.add(newStateString);
 					unmarkedStates.push(newStateString);
+				}
+				if (!newStateString) {
+					hasDeadState = true;
+					newStates.add(`Ø`);
 				}
 				if (!newTransitionsRecord[currentStatesString]) {
 					newTransitionsRecord[currentStatesString] = new Array(totalAlphabets).fill(null) as any;
 				}
-				newTransitionsRecord[currentStatesString][symbolIndex] = [newStateString];
+				if (newStateString)
+					newTransitionsRecord[currentStatesString][symbolIndex] = [newStateString];
+				else {
+					newTransitionsRecord[currentStatesString][symbolIndex] = [`Ø`];
+				}
 			});
 		}
 
@@ -135,6 +142,13 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 				}
 			});
 		});
+
+		if (hasDeadState) {
+			newTransitionsRecord['Ø'] = {};
+			this.automaton.alphabets.forEach((symbol) => {
+				newTransitionsRecord['Ø'][symbol] = ['Ø'];
+			});
+		}
 
 		return new DeterministicFiniteAutomaton(this.testLogic, {
 			alphabets: this.automaton.alphabets,
