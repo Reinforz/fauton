@@ -20,7 +20,7 @@
   - [Binary string divisible by 2 or 3 but not both](#binary-string-divisible-by-2-or-3-but-not-both)
   - [Nfa for string that starts with `ab`](#nfa-for-string-that-starts-with-ab)
   - [ε-nfa to nfa](#ε-nfa-to-nfa)
-  - [Generate and render full graph for a ε-nfa](#generate-and-render-full-graph-for-a-ε-nfa)
+  - [Generate and render full graph for a ε-nfa given a string](#generate-and-render-full-graph-for-a-ε-nfa-given-a-string)
   - [Conversion from ε-nfa to dfa](#conversion-from-ε-nfa-to-dfa)
   - [Conversion from nfa to dfa](#conversion-from-nfa-to-dfa)
 - [Conditions for DFA](#conditions-for-dfa)
@@ -301,7 +301,7 @@ console.log(randomEpsilonNFA.automaton.transitions);
 }
 ```
 
-## Generate and render full graph for a ε-nfa
+## Generate and render full graph for a ε-nfa given a string
 
 ```js
 const { NonDeterministicFiniteAutomaton, Render } = require('fauton');
