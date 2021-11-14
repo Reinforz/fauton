@@ -18,6 +18,7 @@
   - [Nfa for string that starts with `ab`](#nfa-for-string-that-starts-with-ab)
   - [ε-nfa to nfa](#ε-nfa-to-nfa)
   - [Generate and render full graph for a ε-nfa](#generate-and-render-full-graph-for-a-ε-nfa)
+  - [Conversion from ε-nfa to dfa](#conversion-from-ε-nfa-to-dfa)
 - [Conditions for DFA](#conditions-for-dfa)
 - [Transitions Record Transformation](#transitions-record-transformation)
   - [dfa](#dfa)
@@ -43,7 +44,7 @@
   - [Correct Portion](#correct-portion)
 - [Contributors](#contributors)
 
-**Please note that I won't be following semver at the initial stages, as there could be a lot of (breaking) changes between each release**
+**Please note that I won't be following semver at the initial stages, as there could be a lot of (breaking) changes between each release which will all be patch**
 
 # Features
 
@@ -384,6 +385,71 @@ Render.graphToHtml(graph, path.join(__dirname, 'index.html'));
 Generated d3 graph
 
 <img src="https://raw.githubusercontent.com/Devorein/fauton/main/public/generated_graph.png" width="250"/>
+
+## Conversion from ε-nfa to dfa
+
+```js
+const { NonDeterministicFiniteAutomaton } = require('fauton');
+
+const epsilonNfa = new NonDeterministicFiniteAutomaton((_, automatonTest) => automatonTest, {
+	start_state: 0,
+	alphabets: ['a', 'b'],
+	final_states: [10],
+	label: 'sample ε nfa',
+	states: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+	transitions: {
+		2: [3],
+		4: [null, 5],
+		7: [8],
+		8: [null, 9],
+		9: [null, 10],
+	},
+	epsilon_transitions: {
+		0: [1, 7],
+		1: [2, 4],
+		3: [6],
+		5: [6],
+		6: [1, 7],
+	},
+});
+
+console.log(JSON.stringify(epsilonNfa.convertToDeterministicFiniteAutomaton(), null, 2));
+```
+
+```json
+{
+	"automaton": {
+		"alphabets": ["a", "b"],
+		"final_states": ["0,1,10,2,4,5,6,7"],
+		"label": "sample ε nfa",
+		"start_state": "0,1,2,4,7",
+		"states": ["0,1,2,4,7", "1,2,3,4,6,7,8", "1,2,4,5,6,7", "1,2,4,5,6,7,9", "0,1,10,2,4,5,6,7"],
+		"transitions": {
+			"0,1,2,4,7": {
+				"a": ["1,2,3,4,6,7,8"],
+				"b": ["1,2,4,5,6,7"]
+			},
+			"1,2,3,4,6,7,8": {
+				"a": ["1,2,3,4,6,7,8"],
+				"b": ["1,2,4,5,6,7,9"]
+			},
+			"1,2,4,5,6,7": {
+				"a": ["1,2,3,4,6,7,8"],
+				"b": ["1,2,4,5,6,7"]
+			},
+			"1,2,4,5,6,7,9": {
+				"a": ["1,2,3,4,6,7,8"],
+				"b": ["0,1,10,2,4,5,6,7"]
+			},
+			"0,1,10,2,4,5,6,7": {
+				"a": ["1,2,3,4,6,7,8"],
+				"b": ["1,2,4,5,6,7"]
+			}
+		},
+		"epsilon_transitions": null
+	}
+}
+```
 
 Take a look at [examples](./examples) folder for more examples.
 

@@ -80,9 +80,9 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 				);
 			}
 		});
-		const finalStates: Set<string> = new Set(states);
+		const finalStates = new Set(transitionRecordExtractedStates);
 		// No need to calculate epsilon closures of regular nfa
-		if (!this.automaton.epsilon_transitions) {
+		if (this.automaton.epsilon_transitions) {
 			transitionRecordExtractedStates.forEach((transitionRecordExtractedState) => {
 				const epsilonClosureOfStates = this.epsilonClosureOfState(transitionRecordExtractedState);
 				epsilonClosureOfStates.forEach((epsilonClosureOfState) => {
@@ -95,7 +95,9 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 
 	convertToDeterministicFiniteAutomaton() {
 		const startState = this.automaton.start_state;
-		const newStartStates = this.epsilonClosureOfState(startState);
+		const newStartStates = this.automaton.epsilon_transitions
+			? this.epsilonClosureOfState(startState)
+			: [this.automaton.start_state];
 		const newStateStateString = newStartStates.sort().join(',');
 		const newStates: Set<string> = new Set();
 		const unmarkedStates: string[] = [newStateStateString];
@@ -122,14 +124,17 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 					newTransitionsRecord[currentStatesString] = new Array(totalAlphabets).fill(null) as any;
 				}
 				newTransitionsRecord[currentStatesString][symbolIndex] = [newStateString];
-				// Checking if the new state string should be a final state
-				this.automaton.final_states.forEach((finalState) => {
-					if (newStateString.includes(finalState)) {
-						newFinalStates.add(newStateString);
-					}
-				});
 			});
 		}
+
+		// Checking if the new state string should be a final state
+		this.automaton.final_states.forEach((finalState) => {
+			newStates.forEach((newState) => {
+				if (newState.includes(finalState)) {
+					newFinalStates.add(newState);
+				}
+			});
+		});
 
 		return new DeterministicFiniteAutomaton(this.testLogic, {
 			alphabets: this.automaton.alphabets,
