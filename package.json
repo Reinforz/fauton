@@ -1,7 +1,7 @@
 {
   "name": "fauton",
   "version": "0.0.4",
-  "description": "A library to test any finite automaton(FA) with arbitrary alphabets",
+  "description": "A library to test any finite automaton with arbitrary alphabets",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -14,6 +14,15 @@
   "files": [
     "dist/"
   ],
+  "np": {
+    "branch": "main",
+    "cleanup": false,
+    "tests": false,
+    "yarn": false,
+    "contents": "dist",
+    "testScript": "build",
+    "message": "v%s"
+  },
   "keywords": [
     "dfa",
     "nfa",
@@ -21,6 +30,8 @@
     "finite-automata",
     "automaton-testing",
     "epsilon-nfa",
+    "epsilon-nfa-to-nfa",
+    "regex",
     "automaton"
   ],
   "homepage": "https://github.com/Devorein/fauton/blob/master/README.md",
