@@ -4,6 +4,9 @@
 </br>
 
 <p align="center">
+  <a href="www.npmjs.com/package/fauton">
+    <img src="https://img.shields.io/npm/dw/fauton"/>
+  </a>
   <a href="https://app.codecov.io/gh/Devorein/fauton/branch/master"><img src="https://img.shields.io/codecov/c/github/devorein/fauton?color=blue"/></a>
   <img src="https://img.shields.io/github/commit-activity/m/devorein/fauton?color=yellow" />
   <img src="https://img.shields.io/github/repo-size/devorein/fauton?style=flat-square&color=orange"/>

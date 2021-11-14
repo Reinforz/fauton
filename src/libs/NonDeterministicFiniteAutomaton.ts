@@ -1,4 +1,4 @@
-import { InputFiniteAutomaton } from '../types';
+import { IFiniteAutomaton, InputFiniteAutomaton } from '../types';
 import { DeterministicFiniteAutomaton } from './DeterministicFiniteAutomaton';
 import { FiniteAutomaton } from './FiniteAutomaton';
 
@@ -93,18 +93,22 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 		return Array.from(finalStates);
 	}
 
-	convertToDeterministicFiniteAutomaton() {
+	convertToDeterministicFiniteAutomaton(
+		dfaOptions: Partial<
+			Pick<Pick<IFiniteAutomaton, 'automaton'>['automaton'], 'label' | 'description'>
+		>
+	) {
 		const startState = this.automaton.start_state;
 		const newStartStates = this.automaton.epsilon_transitions
 			? this.epsilonClosureOfState(startState)
 			: [this.automaton.start_state];
-		const newStateStateString = newStartStates.sort().join(',');
+		const newStartStateString = newStartStates.sort().join(',');
 		const newStates: Set<string> = new Set();
-		const unmarkedStates: string[] = [newStateStateString];
+		const unmarkedStates: string[] = [newStartStateString];
 		const newTransitionsRecord: FiniteAutomaton['automaton']['transitions'] = {};
 		const totalAlphabets = this.automaton.alphabets.length;
 		const newFinalStates: Set<string> = new Set();
-		newStates.add(newStateStateString);
+		newStates.add(newStartStateString);
 		let hasDeadState = false;
 		while (unmarkedStates.length !== 0) {
 			const currentStatesString = unmarkedStates.shift()!;
@@ -153,11 +157,12 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 		return new DeterministicFiniteAutomaton(this.testLogic, {
 			alphabets: this.automaton.alphabets,
 			final_states: Array.from(newFinalStates),
-			label: this.automaton.label,
-			start_state: newStateStateString,
+			label: dfaOptions?.label ?? this.automaton.label,
+			start_state: newStartStateString,
 			states: Array.from(newStates),
 			transitions: newTransitionsRecord,
 			epsilon_transitions: null,
+			description: dfaOptions?.description ?? this.automaton.description,
 		});
 	}
 }
