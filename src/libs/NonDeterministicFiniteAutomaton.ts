@@ -17,10 +17,10 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 	convertToRegularNfa() {
 		const { alphabets, epsilon_transitions: epsilonTransitions, transitions } = this.automaton;
 		alphabets.forEach((alphabet) => {
-			Object.entries(transitions).forEach(([transitionState, transitionsRecord]) => {
+			this.automaton.states.forEach((state) => {
 				// Only if the state has a key on the epsilon transition record, we are gonna expand it
-				if (epsilonTransitions![transitionState]) {
-					const firstPhaseSet = this.epsilonClosureOfState(transitionState);
+				if (epsilonTransitions![state]) {
+					const firstPhaseSet = this.epsilonClosureOfState(state);
 					const secondPhaseSet = new Set<string>();
 					const thirdPhaseSet: Set<string> = new Set();
 
@@ -38,8 +38,12 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 							thirdPhaseSet.add(state);
 						});
 					});
-					if (transitionsRecord) {
-						transitionsRecord[alphabet] = Array.from(thirdPhaseSet);
+					if (this.automaton.transitions[state]) {
+						this.automaton.transitions[state][alphabet] = Array.from(thirdPhaseSet);
+					} else {
+						this.automaton.transitions[state] = {
+							[alphabet]: Array.from(thirdPhaseSet),
+						};
 					}
 				}
 			});

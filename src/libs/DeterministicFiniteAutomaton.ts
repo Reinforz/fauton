@@ -195,4 +195,113 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 	OR(dfaModule: DeterministicFiniteAutomaton, mergedDfaOptions: IMergedDfaOptions) {
 		return this.#merge(dfaModule, 'or', mergedDfaOptions);
 	}
+
+	#updateStateGroupsRecord(stateGroups: string[]) {
+		const stateGroupsRecord: Record<string, number> = {};
+		const allStatesSet: Set<string> = new Set(this.automaton.states);
+		stateGroups.forEach((stateGroup, stateGroupIndex) => {
+			// State group would contain combinations of states
+			stateGroup.split('').forEach((state) => {
+				// Since states could be joined by , or other separators
+				// We should check whether the character actually is a state
+				if (allStatesSet.has(state)) {
+					stateGroupsRecord[state] = stateGroupIndex;
+				}
+			});
+		});
+		return stateGroupsRecord;
+	}
+
+	minimize(
+		minimizedDfaOptions?: Pick<
+			Pick<IFiniteAutomaton, 'automaton'>['automaton'],
+			'label' | 'description'
+		>
+	) {
+		const stateGroups: string[] = [];
+		const finalStatesSet: Set<string> = new Set(this.automaton.final_states);
+		const allStatesSet: Set<string> = new Set(this.automaton.states);
+		const nonFinalStates: string[] = [];
+		this.automaton.states.forEach((state) => {
+			if (!finalStatesSet.has(state)) {
+				nonFinalStates.push(state);
+			}
+		});
+		const finalStateString = this.automaton.final_states.join('');
+		stateGroups.push(nonFinalStates.join(''));
+		stateGroups.push(finalStateString);
+		// A record to keep track of which state belongs to which group
+		let stateGroupsRecord = this.#updateStateGroupsRecord(stateGroups);
+
+		let shouldPartition = true;
+		while (shouldPartition) {
+			const stateGroup = stateGroups[0];
+			// Guard against non state symbols like ,.-
+			// ["A,B,C,D"] => ["A","B","C","D"]
+			const [firstState, ...otherStates] = stateGroup
+				.split('')
+				.filter((state) => allStatesSet.has(state));
+
+			const newStateGroups: string[] = [firstState];
+			// Filter out only the states present in the group
+			// ["B","C","D"]
+			otherStates.forEach((otherState) => {
+				let shouldMergeIntoSameGroup = false;
+				// Using for loop as we might need to break it
+				for (let index = 0; index < this.automaton.alphabets.length; index++) {
+					const symbol = this.automaton.alphabets[index];
+					const otherStateGroup =
+						stateGroupsRecord[this.automaton.transitions[otherState][symbol][0]];
+					// Check to which group the first state of the group transitions to for the symbol
+					const firstStateGroup =
+						stateGroupsRecord[this.automaton.transitions[firstState][symbol][0]];
+					if (otherStateGroup === firstStateGroup) {
+						shouldMergeIntoSameGroup = true;
+					} else {
+						shouldMergeIntoSameGroup = false;
+						break;
+					}
+				}
+				if (shouldMergeIntoSameGroup) {
+					newStateGroups[0] = newStateGroups[0] + otherState;
+				} else {
+					newStateGroups.push(otherState);
+				}
+			});
+			if (newStateGroups.length === 1) {
+				shouldPartition = false;
+			} else {
+				stateGroups.splice(0, 1, ...newStateGroups);
+				stateGroupsRecord = this.#updateStateGroupsRecord(stateGroups);
+			}
+		}
+
+		const newStateState = stateGroups.find((stateGroup) =>
+			stateGroup.includes(this.automaton.start_state)
+		);
+
+		const newTransitions: IFiniteAutomaton['automaton']['transitions'] = {};
+		const newStates = Array.from(stateGroups);
+		newStates.forEach((newState) => {
+			// ["AC"] => A, since in a group they will have the same transitions for a symbol
+			const [firstState] = newState;
+			newTransitions[newState] = {};
+			this.automaton.alphabets.forEach((symbol) => {
+				newTransitions[newState][symbol] = [
+					newStates[stateGroupsRecord[this.automaton.transitions[firstState][symbol][0]]],
+				];
+			});
+		});
+
+		return new DeterministicFiniteAutomaton(this.testLogic, {
+			label: minimizedDfaOptions?.label ?? this.automaton.label,
+			alphabets: this.automaton.alphabets,
+			description: minimizedDfaOptions?.description ?? this.automaton.description,
+			final_states: [finalStateString],
+			start_state: newStateState ?? this.automaton.start_state,
+			states: newStates,
+			transitions: newTransitions,
+			epsilon_transitions: null,
+		});
+	}
 }
