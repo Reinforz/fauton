@@ -70,7 +70,7 @@ export class FiniteAutomaton {
 			if (typeof transitionStates !== 'string' && Array.isArray(transitionStates)) {
 				transitionStates.forEach((transitionState, transitionStateIndex) => {
 					// Guarding against null values
-					if (transitionState) {
+					if (transitionState !== null || transitionState !== undefined) {
 						// For dealing with 1: [ [2, 3] ] => 1: [ ["2", "3"] ]
 						if (Array.isArray(transitionState)) {
 							transitionState.forEach((state) => {
