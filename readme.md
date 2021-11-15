@@ -23,6 +23,7 @@
   - [Generate and render full graph for a ε-nfa given a string](#generate-and-render-full-graph-for-a-ε-nfa-given-a-string)
   - [Conversion from ε-nfa to dfa](#conversion-from-ε-nfa-to-dfa)
   - [Conversion from nfa to dfa](#conversion-from-nfa-to-dfa)
+  - [Dfa minimization](#dfa-minimization)
 - [Conditions for DFA](#conditions-for-dfa)
 - [Transitions Record Transformation](#transitions-record-transformation)
   - [dfa](#dfa)
@@ -504,6 +505,65 @@ console.log(JSON.stringify(nfa.convertToDeterministicFiniteAutomaton(), null, 2)
 		},
 		"epsilon_transitions": null
 	}
+}
+```
+
+## Dfa minimization
+
+```js
+const { DeterministicFiniteAutomaton } = require('fauton');
+
+const dfa = new DeterministicFiniteAutomaton(() => true, {
+	states: [0, 1, 2, 3, 4, 5, 6, 7],
+	alphabets: ['0', '1'],
+	final_states: [2],
+	start_state: 0,
+	label: 'dfa',
+	transitions: {
+		0: [1, 5],
+		1: [6, 2],
+		2: [0, 2],
+		3: [2, 6],
+		4: [7, 5],
+		5: [2, 6],
+		6: [6, 4],
+		7: [6, 2],
+	},
+});
+
+console.log(dfa.minimize().automaton);
+```
+
+```json
+{
+	"label": "dfa",
+	"alphabets": ["0", "1"],
+	"final_states": ["2"],
+	"start_state": "04",
+	"states": ["04", "35", "17", "6", "2"],
+	"transitions": {
+		"2": {
+			"0": ["04"],
+			"1": ["2"]
+		},
+		"6": {
+			"0": ["6"],
+			"1": ["04"]
+		},
+		"17": {
+			"0": ["6"],
+			"1": ["2"]
+		},
+		"35": {
+			"0": ["2"],
+			"1": ["6"]
+		},
+		"04": {
+			"0": ["17"],
+			"1": ["35"]
+		}
+	},
+	"epsilon_transitions": null
 }
 ```
 
