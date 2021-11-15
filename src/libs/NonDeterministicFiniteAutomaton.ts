@@ -58,7 +58,7 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 	epsilonClosureOfState(state: string) {
 		const { epsilon_transitions: epsilonTransitions } = this.automaton;
 		const stack: string[] = [];
-		const allEpsilonStates: Set<string> = new Set(state);
+		const allEpsilonStates: Set<string> = new Set([state]);
 		stack.push(state);
 		while (stack.length !== 0) {
 			const currentState = stack.pop()!;
@@ -98,13 +98,13 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 	}
 
 	convertToDeterministicFiniteAutomaton(
-		dfaOptions: Partial<
+		dfaOptions?: Partial<
 			Pick<Pick<IFiniteAutomaton, 'automaton'>['automaton'], 'label' | 'description'> & {
 				separator: string;
 			}
 		>
 	) {
-		const separator = dfaOptions.separator ?? ',';
+		const separator = dfaOptions?.separator ?? ',';
 		const startState = this.automaton.start_state;
 		const newStartStates = this.automaton.epsilon_transitions
 			? this.epsilonClosureOfState(startState)

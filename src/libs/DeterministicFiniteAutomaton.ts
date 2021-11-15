@@ -184,15 +184,15 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 		);
 	}
 
-	AND(dfaModule: DeterministicFiniteAutomaton, mergedDfaOptions: IMergedDfaOptions) {
+	AND(dfaModule: DeterministicFiniteAutomaton, mergedDfaOptions?: IMergedDfaOptions) {
 		return this.#merge(dfaModule, 'and', mergedDfaOptions);
 	}
 
-	NOT(mergedDfaOptions: IMergedDfaOptions) {
+	NOT(mergedDfaOptions?: IMergedDfaOptions) {
 		return this.#merge(undefined, 'not', mergedDfaOptions);
 	}
 
-	OR(dfaModule: DeterministicFiniteAutomaton, mergedDfaOptions: IMergedDfaOptions) {
+	OR(dfaModule: DeterministicFiniteAutomaton, mergedDfaOptions?: IMergedDfaOptions) {
 		return this.#merge(dfaModule, 'or', mergedDfaOptions);
 	}
 
