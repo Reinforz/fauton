@@ -1,3 +1,6 @@
+import { DeterministicFiniteAutomaton } from './libs/DeterministicFiniteAutomaton';
+import { NonDeterministicFiniteAutomaton } from './libs/NonDeterministicFiniteAutomaton';
+
 export interface InputFiniteAutomaton {
 	// Append a string to all the states
 	append?: string;
@@ -48,4 +51,49 @@ export interface GraphNode {
 	children: GraphNode[];
 	depth: number;
 	string: string;
+}
+
+export interface IOutputFiles {
+	case: boolean;
+	incorrect: boolean;
+	correct: boolean;
+	input: boolean;
+	aggregate: boolean;
+	accepted: boolean;
+	rejected: boolean;
+}
+
+export type InputStringOption =
+	| {
+			type: 'generate';
+			random?: {
+				total: number;
+				minLength: number;
+				maxLength: number;
+			};
+			combo?: undefined | null;
+			outputFiles?: Partial<IOutputFiles>;
+	  }
+	| {
+			type: 'generate';
+			combo: {
+				maxLength: number;
+			};
+			random?: undefined | null;
+			outputFiles?: Partial<IOutputFiles>;
+	  }
+	| {
+			type: 'file';
+			filePath: string;
+			outputFiles?: Partial<IOutputFiles>;
+	  }
+	| {
+			type: 'custom';
+			inputs: string[];
+			outputFiles?: Partial<IOutputFiles>;
+	  };
+
+export interface IAutomataTestConfig {
+	automaton: DeterministicFiniteAutomaton | NonDeterministicFiniteAutomaton;
+	options: InputStringOption;
 }

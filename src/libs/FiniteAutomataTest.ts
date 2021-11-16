@@ -2,57 +2,17 @@ import cliProgress from 'cli-progress';
 import colors from 'colors';
 import fs from 'fs';
 import path from 'path';
-import { FiniteAutomatonTestInfo, TransformedFiniteAutomaton } from '../types';
+import {
+	FiniteAutomatonTestInfo,
+	IAutomataTestConfig,
+	IOutputFiles,
+	TransformedFiniteAutomaton,
+} from '../types';
 import { countFileLines, generateAggregateMessage, generateCaseMessage } from '../utils';
-import { DeterministicFiniteAutomaton } from './DeterministicFiniteAutomaton';
 import { FiniteAutomaton } from './FiniteAutomaton';
 import { GenerateString } from './GenerateString';
 
-interface IOutputFiles {
-	case: boolean;
-	incorrect: boolean;
-	correct: boolean;
-	input: boolean;
-	aggregate: boolean;
-	accepted: boolean;
-	rejected: boolean;
-}
-
-type IOption =
-	| {
-			type: 'generate';
-			random?: {
-				total: number;
-				minLength: number;
-				maxLength: number;
-			};
-			range?: undefined | null;
-			outputFiles?: Partial<IOutputFiles>;
-	  }
-	| {
-			type: 'generate';
-			range: {
-				maxLength: number;
-			};
-			random?: undefined | null;
-			outputFiles?: Partial<IOutputFiles>;
-	  }
-	| {
-			type: 'file';
-			filePath: string;
-			outputFiles?: Partial<IOutputFiles>;
-	  }
-	| {
-			type: 'custom';
-			inputs: string[];
-			outputFiles?: Partial<IOutputFiles>;
-	  };
-
 type IWriteStreams = Record<`${keyof IOutputFiles}WriteStream`, null | fs.WriteStream>;
-interface IConfig {
-	automaton: DeterministicFiniteAutomaton;
-	options: IOption;
-}
 export class FiniteAutomataTest {
 	#cliProgressBar: cliProgress.SingleBar;
 	#logsPath: string;
@@ -198,7 +158,7 @@ export class FiniteAutomataTest {
 		endStreams();
 	}
 
-	async test(configs: IConfig[]) {
+	async test(configs: IAutomataTestConfig[]) {
 		const finiteAutomatonTestInfos = configs.map(() => ({
 			falsePositives: 0,
 			falseNegatives: 0,
@@ -238,10 +198,10 @@ export class FiniteAutomataTest {
 							options.random.minLength,
 							options.random.maxLength
 						);
-					} else if (options.range) {
+					} else {
 						generatedStrings = GenerateString.generateAllCombosWithinLength(
 							automaton.automaton.alphabets,
-							options.range.maxLength
+							options.combo!.maxLength
 						);
 					}
 				} else {
