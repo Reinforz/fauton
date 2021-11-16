@@ -15,7 +15,7 @@ export interface InputFiniteAutomaton {
 		string | number,
 		(Array<string | number> | (string | number) | null)[] | 'loop'
 	>;
-	epsilon_transitions?: Record<string, string[]>;
+	epsilon_transitions?: Record<string, (string | number)[]>;
 }
 
 export interface TransformedFiniteAutomaton {
@@ -97,3 +97,5 @@ export interface IAutomataTestConfig {
 	automaton: DeterministicFiniteAutomaton | NonDeterministicFiniteAutomaton;
 	options: InputStringOption;
 }
+
+export type IAutomatonTestLogicFn = (inputString: string, automatonTestResult: boolean) => boolean;

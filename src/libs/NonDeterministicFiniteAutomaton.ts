@@ -1,10 +1,10 @@
-import { IFiniteAutomaton, InputFiniteAutomaton } from '../types';
+import { IAutomatonTestLogicFn, IFiniteAutomaton, InputFiniteAutomaton } from '../types';
 import { DeterministicFiniteAutomaton } from './DeterministicFiniteAutomaton';
 import { FiniteAutomaton } from './FiniteAutomaton';
 
 export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 	constructor(
-		testLogic: (inputString: string) => boolean,
+		testLogic: IAutomatonTestLogicFn,
 		automaton: InputFiniteAutomaton,
 		automatonId?: string
 	) {

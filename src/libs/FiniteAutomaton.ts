@@ -2,19 +2,20 @@ import colors from 'colors';
 import shortid from 'shortid';
 import {
 	GraphNode,
+	IAutomatonTestLogicFn,
 	InputFiniteAutomaton,
 	TFiniteAutomatonType,
 	TransformedFiniteAutomaton,
 } from '../types';
 
 export class FiniteAutomaton {
-	testLogic: (inputString: string, automatonTestResult: boolean) => boolean;
+	testLogic: IAutomatonTestLogicFn;
 	automaton: TransformedFiniteAutomaton;
 	#automatonId: string;
 	#automatonType: TFiniteAutomatonType;
 
 	constructor(
-		testLogic: (inputString: string, automatonTestResult: boolean) => boolean,
+		testLogic: IAutomatonTestLogicFn,
 		finiteAutomaton: InputFiniteAutomaton | TransformedFiniteAutomaton,
 		automatonType: TFiniteAutomatonType,
 		automatonId?: string
