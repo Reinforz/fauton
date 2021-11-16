@@ -6,10 +6,10 @@ export default function countFileLines(filePath: string): Promise<number> {
 		fs.createReadStream(filePath)
 			.on('data', (buffer) => {
 				let idx = -1;
-				lineCount--;
+				lineCount = -1;
 				do {
 					idx = buffer.indexOf(10 as any, idx + 1);
-					lineCount++;
+					lineCount += 1;
 				} while (idx !== -1);
 			})
 			.on('end', () => {

@@ -1,8 +1,8 @@
 import { IAutomatonTestLogicFn, IFiniteAutomaton, InputFiniteAutomaton } from '../types';
-import { DeterministicFiniteAutomaton } from './DeterministicFiniteAutomaton';
-import { FiniteAutomaton } from './FiniteAutomaton';
+import DeterministicFiniteAutomaton from './DeterministicFiniteAutomaton';
+import FiniteAutomaton from './FiniteAutomaton';
 
-export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
+export default class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 	constructor(
 		testLogic: IAutomatonTestLogicFn,
 		automaton: InputFiniteAutomaton,
@@ -20,22 +20,22 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 			this.automaton.states.forEach((state) => {
 				// Only if the state has a key on the epsilon transition record, we are gonna expand it
 				if (epsilonTransitions![state]) {
-					const firstPhaseSet = this.epsilonClosureOfState(state);
-					const secondPhaseSet = new Set<string>();
+					const firstPhaseStates = this.epsilonClosureOfState(state);
+					const secondPhaseStates = new Set<string>();
 					const thirdPhaseSet: Set<string> = new Set();
 
-					firstPhaseSet.forEach((state) => {
+					firstPhaseStates.forEach((firstPhaseState) => {
 						// Some states might be null, and thus have no transitions
-						if (transitions[state]) {
-							transitions[state][alphabet]?.forEach((transitionRecordState) => {
-								secondPhaseSet.add(transitionRecordState);
+						if (transitions[firstPhaseState]) {
+							transitions[firstPhaseState][alphabet]?.forEach((transitionRecordState) => {
+								secondPhaseStates.add(transitionRecordState);
 							});
 						}
 					});
 
-					secondPhaseSet.forEach((secondPhaseState) => {
-						this.epsilonClosureOfState(secondPhaseState).forEach((state) => {
-							thirdPhaseSet.add(state);
+					secondPhaseStates.forEach((secondPhaseState) => {
+						this.epsilonClosureOfState(secondPhaseState).forEach((closuredState) => {
+							thirdPhaseSet.add(closuredState);
 						});
 					});
 					if (this.automaton.transitions[state]) {
@@ -119,7 +119,8 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 		let hasDeadState = false;
 		while (unmarkedStates.length !== 0) {
 			const currentStatesString = unmarkedStates.shift()!;
-			this.automaton.alphabets.forEach((symbol, symbolIndex) => {
+			for (let symbolIndex = 0; symbolIndex < this.automaton.alphabets.length; symbolIndex += 1) {
+				const symbol = this.automaton.alphabets[symbolIndex];
 				const newStateString = this.moveAndEpsilonClosureStateSet(
 					currentStatesString!.split(separator),
 					symbol
@@ -142,7 +143,7 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 				else {
 					newTransitionsRecord[currentStatesString][symbolIndex] = [`Ø`];
 				}
-			});
+			}
 		}
 
 		// Checking if the new state string should be a final state

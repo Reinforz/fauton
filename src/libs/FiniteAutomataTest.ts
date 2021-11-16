@@ -1,20 +1,25 @@
+/* eslint-disable no-param-reassign */
+
 import cliProgress from 'cli-progress';
 import colors from 'colors';
 import fs from 'fs';
 import path from 'path';
-import {
-	FiniteAutomatonTestInfo,
-	IAutomataTestConfig,
-	IOutputFiles,
-	TransformedFiniteAutomaton,
-} from '../types';
+import { FiniteAutomatonTestInfo, InputStringOption, IOutputFiles } from '../types';
 import { countFileLines, generateAggregateMessage, generateCaseMessage } from '../utils';
-import { FiniteAutomaton } from './FiniteAutomaton';
-import { GenerateString } from './GenerateString';
+import DeterministicFiniteAutomaton from './DeterministicFiniteAutomaton';
+import FiniteAutomaton from './FiniteAutomaton';
+import GenerateString from './GenerateString';
+import NonDeterministicFiniteAutomaton from './NonDeterministicFiniteAutomaton';
+
+interface IAutomataTestConfig {
+	automaton: DeterministicFiniteAutomaton | NonDeterministicFiniteAutomaton;
+	options: InputStringOption;
+}
 
 type IWriteStreams = Record<`${keyof IOutputFiles}WriteStream`, null | fs.WriteStream>;
-export class FiniteAutomataTest {
+export default class FiniteAutomataTest {
 	#cliProgressBar: cliProgress.SingleBar;
+
 	#logsPath: string;
 
 	constructor(logsPath: string) {
@@ -22,7 +27,7 @@ export class FiniteAutomataTest {
 			{
 				barsize: 20,
 				stopOnComplete: true,
-				format: colors.green('{bar}') + ' {percentage}% {value}/{total} Chunks',
+				format: `${colors.green('{bar}')} {percentage}% {value}/{total} Chunks`,
 			},
 			cliProgress.Presets.shades_classic
 		);
@@ -85,42 +90,39 @@ export class FiniteAutomataTest {
 			inputWriteStream,
 		} = writeStreams;
 
-		for (let i = 0; i < inputStrings.length; i++) {
+		for (let i = 0; i < inputStrings.length; i += 1) {
 			const inputString = inputStrings[i].replace('\r', '').replace('\n', '');
 			if (inputString.length !== 0) {
 				const { automatonTestResult } = finiteAutomaton.generateGraphFromString(inputString);
 				const logicTestResult = finiteAutomaton.testLogic(inputString, automatonTestResult);
 				const isWrong = automatonTestResult !== logicTestResult;
 
-				const testResultString =
-					automatonTestResult.toString().toUpperCase()[0] +
-					' ' +
-					logicTestResult.toString().toUpperCase()[0] +
-					' ' +
-					inputString +
-					' ' +
-					'\n';
-				if (!automatonTestResult) {
-					rejectedWriteStream && rejectedWriteStream.write(inputString + '\n');
-				} else {
-					acceptedWriteStream && acceptedWriteStream.write(inputString + '\n');
+				const testResultString = `${automatonTestResult.toString().toUpperCase()[0]} ${
+					logicTestResult.toString().toUpperCase()[0]
+				} ${inputString} \n`;
+				if (!automatonTestResult && rejectedWriteStream) {
+					rejectedWriteStream.write(`${inputString}\n`);
+				} else if (acceptedWriteStream) {
+					acceptedWriteStream.write(`${inputString}\n`);
 				}
-				if (!isWrong) {
+				if (!isWrong && correctWriteStream) {
 					if (automatonTestResult === false && logicTestResult === false) {
 						finiteAutomatonTestInfo.trueNegatives += 1;
 					} else {
 						finiteAutomatonTestInfo.truePositives += 1;
 					}
-					correctWriteStream && correctWriteStream.write(testResultString);
-				} else {
+					correctWriteStream.write(testResultString);
+				} else if (incorrectWriteStream) {
 					if (automatonTestResult && !logicTestResult) {
 						finiteAutomatonTestInfo.falsePositives += 1;
 					} else {
 						finiteAutomatonTestInfo.falseNegatives += 1;
 					}
-					incorrectWriteStream && incorrectWriteStream.write(testResultString);
+					incorrectWriteStream.write(testResultString);
 				}
-				inputWriteStream && inputWriteStream.write(inputString + '\n');
+				if (inputWriteStream) {
+					inputWriteStream.write(`${inputString}\n`);
+				}
 
 				const { withoutColors } = generateCaseMessage(
 					isWrong,
@@ -128,45 +130,21 @@ export class FiniteAutomataTest {
 					automatonTestResult,
 					logicTestResult
 				);
-				caseWriteStream && caseWriteStream.write(withoutColors + '\n');
+				if (caseWriteStream) caseWriteStream.write(`${withoutColors}\n`);
 				this.#cliProgressBar.increment(1);
 			}
 		}
 	}
 
-	#postTest(
-		finiteAutomaton: TransformedFiniteAutomaton,
-		finiteAutomatonTestInfo: FiniteAutomatonTestInfo,
-		finiteAutomatonWriteStreams: {
-			record: IWriteStreams;
-			endStreams(): void;
-		}
-	) {
-		const {
-			record: { aggregateWriteStream },
-			endStreams,
-		} = finiteAutomatonWriteStreams;
-		const { withoutColors, withColors } = generateAggregateMessage(
-			finiteAutomaton.label,
-			finiteAutomaton.description,
-			finiteAutomatonTestInfo
-		);
-
-		console.log('\n' + withColors);
-		aggregateWriteStream && aggregateWriteStream.write(withoutColors);
-
-		endStreams();
-	}
-
 	async test(configs: IAutomataTestConfig[]) {
-		const finiteAutomatonTestInfos = configs.map(() => ({
+		const finiteAutomatonTestInfos: FiniteAutomatonTestInfo[] = configs.map(() => ({
 			falsePositives: 0,
 			falseNegatives: 0,
 			truePositives: 0,
 			trueNegatives: 0,
 		}));
 
-		for (let index = 0; index < configs.length; index++) {
+		for (let index = 0; index < configs.length; index += 1) {
 			const config = configs[index];
 			const finiteAutomatonTestInfo = finiteAutomatonTestInfos[index];
 			const { automaton, options } = config;
@@ -180,13 +158,14 @@ export class FiniteAutomataTest {
 				rejected: options.outputFiles?.rejected ?? true,
 			});
 			if (options.type === 'file') {
-				const readStream = fs.createReadStream(options.filePath);
+				const readStream = fs.createReadStream(options.filePath, { encoding: 'utf-8' });
 				const fileLines = await countFileLines(options.filePath);
 				this.#cliProgressBar.start(fileLines, 0, {
 					speed: 'N/A',
 				});
+				// eslint-disable-next-line
 				for await (const chunks of readStream) {
-					const inputStrings = chunks.toString().split('\n') as string[];
+					const inputStrings = chunks.split('\n') as string[];
 					this.#testAutomata(automaton, finiteAutomatonTestInfo, writeStreams.record, inputStrings);
 				}
 			} else {
@@ -220,7 +199,23 @@ export class FiniteAutomataTest {
 			}
 
 			// Run the postTest hook after all the automaton tests have been completed
-			this.#postTest(automaton.automaton, finiteAutomatonTestInfo, writeStreams);
+			const {
+				record: { aggregateWriteStream },
+				endStreams,
+			} = writeStreams;
+			const { withoutColors, withColors } = generateAggregateMessage(
+				automaton.automaton.label,
+				automaton.automaton.description,
+				finiteAutomatonTestInfo
+			);
+
+			// eslint-disable-next-line
+			console.log(`\n${withColors}`);
+			if (aggregateWriteStream) {
+				aggregateWriteStream.write(withoutColors);
+			}
+
+			endStreams();
 		}
 	}
 }

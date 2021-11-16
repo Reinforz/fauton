@@ -1,6 +1,3 @@
-import { DeterministicFiniteAutomaton } from './libs/DeterministicFiniteAutomaton';
-import { NonDeterministicFiniteAutomaton } from './libs/NonDeterministicFiniteAutomaton';
-
 export interface InputFiniteAutomaton {
 	// Append a string to all the states
 	append?: string;
@@ -31,8 +28,10 @@ export interface TransformedFiniteAutomaton {
 	epsilon_transitions: null | Record<string, string[]>;
 }
 
+// eslint-disable-next-line
+export type IAutomatonTestLogicFn = (inputString: string, automatonTestResult: boolean) => boolean;
 export interface IFiniteAutomaton {
-	testLogic: (inputString: string) => boolean;
+	testLogic: IAutomatonTestLogicFn;
 	automaton: TransformedFiniteAutomaton;
 }
 
@@ -92,10 +91,3 @@ export type InputStringOption =
 			inputs: string[];
 			outputFiles?: Partial<IOutputFiles>;
 	  };
-
-export interface IAutomataTestConfig {
-	automaton: DeterministicFiniteAutomaton | NonDeterministicFiniteAutomaton;
-	options: InputStringOption;
-}
-
-export type IAutomatonTestLogicFn = (inputString: string, automatonTestResult: boolean) => boolean;

@@ -31,40 +31,40 @@ export default function generateAggregateMessage(
 		5
 	);
 
-	const descriptionStringWithColors = dfaDescription ? colors.bold(dfaDescription) + '\n' : '';
-	const descriptionString = dfaDescription ? dfaDescription + '\n' : '';
+	const descriptionStringWithColors = dfaDescription ? `${colors.bold(dfaDescription)}\n` : '';
+	const descriptionString = dfaDescription ? `${dfaDescription}\n` : '';
 	return {
 		withColors: [
 			colors.blue.bold(dfaLabel),
-			descriptionStringWithColors + `Total: ` + colors.blue.bold(totalStrings.toString()) + '\n',
-			`Incorrect: ` + colors.red.bold(totalIncorrect.toString()),
-			`Incorrect(%): ` + colors.red.bold(incorrectPercentage.toString() + '%'),
-			`False Positives: ` + colors.red.bold(falsePositives.toString()),
-			`False Positives(%): ` + colors.red.bold(falsePositivesPercentage + '%'),
-			`False Negatives: ` + colors.red.bold(falseNegatives.toString()),
-			`False Negatives(%): ` + colors.red.bold(falseNegativesPercentage + '%') + '\n',
-			`Correct: ` + colors.green.bold(totalCorrect.toString()),
-			`Correct(%): ` + colors.green.bold(correctPercentage.toString() + '%'),
-			`True Positives: ` + colors.green.bold(truePositives.toString()),
-			`True Positives(%): ` + colors.green.bold(truePositivesPercentage + '%'),
-			`True Negatives: ` + colors.green.bold(trueNegatives.toString()),
-			`True Negatives(%): ` + colors.green.bold(trueNegativesPercentage + '%') + '\n',
+			`${descriptionStringWithColors}Total: ${colors.blue.bold(totalStrings.toString())}\n`,
+			`Incorrect: ${colors.red.bold(totalIncorrect.toString())}`,
+			`Incorrect(%): ${colors.red.bold(`${incorrectPercentage.toString()}%`)}`,
+			`False Positives: ${colors.red.bold(falsePositives.toString())}`,
+			`False Positives(%): ${colors.red.bold(`${falsePositivesPercentage}%`)}`,
+			`False Negatives: ${colors.red.bold(falseNegatives.toString())}`,
+			`False Negatives(%): ${colors.red.bold(`${falseNegativesPercentage}%`)}\n`,
+			`Correct: ${colors.green.bold(totalCorrect.toString())}`,
+			`Correct(%): ${colors.green.bold(`${correctPercentage.toString()}%`)}`,
+			`True Positives: ${colors.green.bold(truePositives.toString())}`,
+			`True Positives(%): ${colors.green.bold(`${truePositivesPercentage}%`)}`,
+			`True Negatives: ${colors.green.bold(trueNegatives.toString())}`,
+			`True Negatives(%): ${colors.green.bold(`${trueNegativesPercentage}%`)}\n`,
 		].join('\n'),
 		withoutColors: [
 			dfaLabel,
-			descriptionString + `Total: ` + totalStrings + '\n',
-			`Incorrect: ` + totalIncorrect,
-			`Incorrect(%): ` + incorrectPercentage.toString() + '%',
-			`False Positives: ` + falsePositives.toString(),
-			`False Positives(%): ` + falsePositivesPercentage + '%',
-			`False Negatives: ` + falseNegatives.toString(),
-			`False Negatives(%): ` + falseNegativesPercentage + '%' + '\n',
-			`Correct: ` + totalCorrect,
-			`Correct(%): ` + correctPercentage.toString() + '%',
-			`True Positives: ` + truePositives.toString(),
-			`True Positives(%): ` + truePositivesPercentage + '%',
-			`True Negatives: ` + trueNegatives.toString(),
-			`True Negatives(%): ` + trueNegativesPercentage + '%' + '\n',
+			`${descriptionString}Total: ${totalStrings}\n`,
+			`Incorrect: ${totalIncorrect}`,
+			`Incorrect(%): ${incorrectPercentage.toString()}%`,
+			`False Positives: ${falsePositives.toString()}`,
+			`False Positives(%): ${falsePositivesPercentage}%`,
+			`False Negatives: ${falseNegatives.toString()}`,
+			`False Negatives(%): ${falseNegativesPercentage}%\n`,
+			`Correct: ${totalCorrect}`,
+			`Correct(%): ${correctPercentage.toString()}%`,
+			`True Positives: ${truePositives.toString()}`,
+			`True Positives(%): ${truePositivesPercentage}%`,
+			`True Negatives: ${trueNegatives.toString()}`,
+			`True Negatives(%): ${trueNegativesPercentage}%\n`,
 		].join('\n'),
 	};
 }

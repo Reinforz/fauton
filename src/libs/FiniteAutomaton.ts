@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign, no-console */
 import colors from 'colors';
 import shortid from 'shortid';
 import {
@@ -8,10 +9,13 @@ import {
 	TransformedFiniteAutomaton,
 } from '../types';
 
-export class FiniteAutomaton {
+export default class FiniteAutomaton {
 	testLogic: IAutomatonTestLogicFn;
+
 	automaton: TransformedFiniteAutomaton;
+
 	#automatonId: string;
+
 	#automatonType: TFiniteAutomatonType;
 
 	constructor(
@@ -44,10 +48,10 @@ export class FiniteAutomaton {
 		// Convert all the epsilon transition values to string
 		if (finiteAutomaton.epsilon_transitions) {
 			Object.entries(finiteAutomaton.epsilon_transitions).forEach(
-				([epsilonTransitionState, epsilonTransitionStates]) => {
-					finiteAutomaton.epsilon_transitions![epsilonTransitionState] =
-						epsilonTransitionStates.map((epsilonTransitionState) =>
-							epsilonTransitionState.toString()
+				([epsilonTransitionStartState, epsilonTransitionTargetStates]) => {
+					finiteAutomaton.epsilon_transitions![epsilonTransitionStartState] =
+						epsilonTransitionTargetStates.map((epsilonTransitionTargetState) =>
+							epsilonTransitionTargetState.toString()
 						);
 				}
 			);
@@ -127,6 +131,7 @@ export class FiniteAutomaton {
 		return this.#automatonId;
 	}
 
+	// eslint-disable-next-line
 	#validate(automatonLabel: string, automatonValidationErrors: string[]) {
 		if (automatonValidationErrors.length !== 0) {
 			console.log(
@@ -226,16 +231,16 @@ export class FiniteAutomaton {
 
 		if (automaton.epsilon_transitions) {
 			Object.entries(automaton.epsilon_transitions).forEach(
-				([transitionState, transitionStates]) => {
-					if (!automatonStates.has(transitionState)) {
+				([transitionStartState, transitionTargetStates]) => {
+					if (!automatonStates.has(transitionStartState)) {
 						automatonValidationErrors.push(
-							`Epsilon transition state ${transitionState} must reference a state that is present in states`
+							`Epsilon transition state ${transitionStartState} must reference a state that is present in states`
 						);
 					}
-					transitionStates.forEach((transitionState) => {
-						if (!automatonStates.has(transitionState)) {
+					transitionTargetStates.forEach((transitionTargetState) => {
+						if (!automatonStates.has(transitionTargetState)) {
 							automatonValidationErrors.push(
-								`Epsilon transition state ${transitionState} must reference a state that is present in states`
+								`Epsilon transition state ${transitionTargetState} must reference a state that is present in states`
 							);
 						}
 					});
@@ -316,18 +321,18 @@ export class FiniteAutomaton {
 		const finalStates = new Set(this.automaton.final_states);
 
 		const graph = currentParents;
-		for (let index = 0; index < inputString.length; index++) {
+		for (let index = 0; index < inputString.length; index += 1) {
 			const newChildren: GraphNode[] = [];
 			const symbol = inputString[index];
 			currentParents.forEach((currentParent) => {
-				const transitionState = this.automaton.transitions[currentParent.state];
-				if (transitionState) {
-					const transitionStates = transitionState[symbol];
-					if (Array.isArray(transitionStates)) {
-						transitionStates.forEach((transitionState) => {
+				const transitionStateRecord = this.automaton.transitions[currentParent.state];
+				if (transitionStateRecord) {
+					const transitionTargetStates = transitionStateRecord[symbol];
+					if (Array.isArray(transitionTargetStates)) {
+						transitionTargetStates.forEach((transitionTargetState) => {
 							const parentGraphNode = {
-								name: transitionState + `(${symbol})`,
-								state: transitionState,
+								name: `${transitionTargetState}(${symbol})`,
+								state: transitionTargetState,
 								string: inputString.slice(0, index + 1),
 								depth: index + 1,
 								symbol,
@@ -341,8 +346,8 @@ export class FiniteAutomaton {
 			});
 			// Last symbol
 			if (index === inputString.length - 1) {
-				for (let index = 0; index < newChildren.length; index++) {
-					const newChild = newChildren[index];
+				for (let newChildIndex = 0; newChildIndex < newChildren.length; newChildIndex += 1) {
+					const newChild = newChildren[newChildIndex];
 					if (finalStates.has(newChild.state)) {
 						automatonTestResult = true;
 						break;

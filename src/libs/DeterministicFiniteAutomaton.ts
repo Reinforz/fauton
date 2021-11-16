@@ -1,10 +1,11 @@
+/* eslint-disable no-param-reassign */
 import {
 	IAutomatonTestLogicFn,
 	IFiniteAutomaton,
 	InputFiniteAutomaton,
 	TransformedFiniteAutomaton,
 } from '../types';
-import { FiniteAutomaton } from './FiniteAutomaton';
+import FiniteAutomaton from './FiniteAutomaton';
 
 type IMergedDfaOptions = Partial<
 	Pick<Pick<IFiniteAutomaton, 'automaton'>['automaton'], 'label' | 'description'> & {
@@ -13,7 +14,7 @@ type IMergedDfaOptions = Partial<
 >;
 
 type TMergeOperation = 'or' | 'and' | 'not';
-export class DeterministicFiniteAutomaton extends FiniteAutomaton {
+export default class DeterministicFiniteAutomaton extends FiniteAutomaton {
 	constructor(
 		testLogic: IAutomatonTestLogicFn,
 		automaton: InputFiniteAutomaton | TransformedFiniteAutomaton,
@@ -66,22 +67,20 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 				} else if (mergeOperation === 'not' && !currentAutomatonFinalStates.has(currentDfaState)) {
 					newFinalStates.add(newState);
 				}
-			} else {
-				if (
-					mergeOperation === 'or' &&
-					((inputAutomaton ? inputAutomatonFinalStates.has(newState) : true) ||
-						currentAutomatonFinalStates.has(newState))
-				) {
-					newFinalStates.add(newState);
-				} else if (
-					mergeOperation === 'and' &&
-					(inputAutomaton ? inputAutomatonFinalStates.has(newState) : true) &&
-					currentAutomatonFinalStates.has(newState)
-				) {
-					newFinalStates.add(newState);
-				} else if (mergeOperation === 'not' && !currentAutomatonFinalStates.has(newState)) {
-					newFinalStates.add(newState);
-				}
+			} else if (
+				mergeOperation === 'or' &&
+				((inputAutomaton ? inputAutomatonFinalStates.has(newState) : true) ||
+					currentAutomatonFinalStates.has(newState))
+			) {
+				newFinalStates.add(newState);
+			} else if (
+				mergeOperation === 'and' &&
+				(inputAutomaton ? inputAutomatonFinalStates.has(newState) : true) &&
+				currentAutomatonFinalStates.has(newState)
+			) {
+				newFinalStates.add(newState);
+			} else if (mergeOperation === 'not' && !currentAutomatonFinalStates.has(newState)) {
+				newFinalStates.add(newState);
 			}
 		});
 	}
@@ -148,33 +147,31 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 						finiteAutomaton!.testLogic(inputString, automatonTestResult) ||
 						this.testLogic(inputString, automatonTestResult)
 					);
-				} else if (mergeOperation === 'and') {
+				}
+				if (mergeOperation === 'and') {
 					return (
 						finiteAutomaton!.testLogic(inputString, automatonTestResult) &&
 						this.testLogic(inputString, automatonTestResult)
 					);
-				} else {
-					return !this.testLogic(inputString, automatonTestResult);
 				}
+				return !this.testLogic(inputString, automatonTestResult);
 			},
 			{
 				final_states: Array.from(newFinalStates),
 				label:
 					label ??
-					mergeOperation +
-						'(' +
+					`${mergeOperation}(` +
 						`${this.automaton.label}${mergeOperation !== 'not' ? ', ' : ''}${
 							finiteAutomaton ? finiteAutomaton.automaton.label : ''
 						}` +
-						')',
+						`)`,
 				description:
 					description ??
-					mergeOperation.toUpperCase() +
-						'(' +
+					`${mergeOperation.toUpperCase()}(` +
 						`${this.automaton.description}${mergeOperation !== 'not' ? ', ' : ''}${
 							finiteAutomaton ? finiteAutomaton.automaton.description : ''
 						}` +
-						')',
+						`)`,
 				start_state: isComposite ? newStartState : this.automaton.start_state,
 				states: isComposite ? newStates : JSON.parse(JSON.stringify(this.automaton.states)),
 				transitions: (isComposite
@@ -250,7 +247,7 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 		return Object.values(stateGroupsSymbolsRecord).concat(singleStateGroups);
 	}
 
-	checkEquivalenceBetweenStatesGroups(statesGroups: [string[][], string[][]]) {
+	static checkEquivalenceBetweenStatesGroups(statesGroups: [string[][], string[][]]) {
 		const [statesGroupsOne, statesGroupsTwo] = statesGroups;
 		if (statesGroupsOne.length !== statesGroupsTwo.length) return false;
 
@@ -259,7 +256,7 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 		statesGroupsOne.forEach((statesGroup) => {
 			stateGroupsSet.add(statesGroup.join(''));
 		});
-		for (let index = 0; index < statesGroupsTwo.length; index++) {
+		for (let index = 0; index < statesGroupsTwo.length; index += 1) {
 			const statesGroup = statesGroupsTwo[index];
 			if (!stateGroupsSet.has(statesGroup.join(''))) {
 				isEquivalent = false;
@@ -290,7 +287,7 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 		while (!shouldStop) {
 			previousEquivalentStatesGroups = currentEquivalentStatesGroups;
 			currentEquivalentStatesGroups = this.generateEquivalenceStates(currentEquivalentStatesGroups);
-			shouldStop = this.checkEquivalenceBetweenStatesGroups([
+			shouldStop = DeterministicFiniteAutomaton.checkEquivalenceBetweenStatesGroups([
 				currentEquivalentStatesGroups,
 				previousEquivalentStatesGroups,
 			]);
