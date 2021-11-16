@@ -1,5 +1,5 @@
-const { FiniteAutomataTest, DeterministicFiniteAutomaton } = require('fauton');
-const path = require('path');
+import { DeterministicFiniteAutomaton, FiniteAutomataTest } from 'fauton';
+import path from 'path';
 
 const DivisibleBy3 = new DeterministicFiniteAutomaton(
 	(inputString) => parseInt(inputString, 2) % 3 === 0,
@@ -45,7 +45,7 @@ finiteAutomataTest.test([
 		automaton: DivisibleBy3Or2ButNotByBoth,
 		options: {
 			type: 'generate',
-			range: {
+			combo: {
 				maxLength: 10,
 			},
 		},

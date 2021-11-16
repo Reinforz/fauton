@@ -1,5 +1,5 @@
-const { NonDeterministicFiniteAutomaton, FiniteAutomataTest } = require('fauton');
-const path = require('path');
+import { FiniteAutomataTest, NonDeterministicFiniteAutomaton } from 'fauton';
+import path from 'path';
 
 const startsWithAB = new NonDeterministicFiniteAutomaton(
 	(inputString) => inputString.startsWith('ab'),
@@ -24,7 +24,7 @@ finiteAutomataTest.test([
 		automaton: startsWithAB,
 		options: {
 			type: 'generate',
-			range: {
+			combo: {
 				maxLength: 10,
 			},
 		},

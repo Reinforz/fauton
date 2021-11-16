@@ -1,4 +1,4 @@
-const { DeterministicFiniteAutomaton } = require('fauton');
+import { DeterministicFiniteAutomaton } from 'fauton';
 
 const dfa = new DeterministicFiniteAutomaton(() => true, {
 	states: [0, 1, 2, 3, 4, 5, 6, 7],

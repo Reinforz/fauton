@@ -1,5 +1,5 @@
-const { DeterministicFiniteAutomaton, FiniteAutomataTest } = require('fauton');
-const path = require('path');
+import { DeterministicFiniteAutomaton, FiniteAutomataTest } from 'fauton';
+import path from 'path';
 
 const startsWithBC = new DeterministicFiniteAutomaton(
 	(inputString) => inputString.startsWith('bc'),
@@ -25,7 +25,7 @@ finiteAutomataTest.test([
 		automaton: startsWithBC,
 		options: {
 			type: 'generate',
-			range: {
+			combo: {
 				maxLength: 10,
 			},
 		},

@@ -1,5 +1,5 @@
-const { NonDeterministicFiniteAutomaton, Render } = require('fauton');
-const path = require('path');
+import { NonDeterministicFiniteAutomaton, Render } from 'fauton';
+import path from 'path';
 
 const randomEpsilonNFA = new NonDeterministicFiniteAutomaton(
 	(inputString) => inputString.startsWith('ab'),

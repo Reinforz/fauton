@@ -1,4 +1,4 @@
-const { NonDeterministicFiniteAutomaton } = require('fauton');
+import { NonDeterministicFiniteAutomaton } from 'fauton';
 
 const randomEpsilonNFA = new NonDeterministicFiniteAutomaton(
 	(inputString) => inputString.startsWith('ab'),

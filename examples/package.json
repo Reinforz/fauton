@@ -1,13 +1,18 @@
 {
-  "name": "basic_dfa",
+  "name": "fa-examples",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "scripts": {},
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "fauton": "latest"
+  },
+  "devDependencies": {
+    "typescript": "^4.4.4"
   }
 }

@@ -1,4 +1,4 @@
-const { NonDeterministicFiniteAutomaton } = require('fauton');
+import { NonDeterministicFiniteAutomaton } from 'fauton';
 
 const nfa = new NonDeterministicFiniteAutomaton((_, automatonTest) => automatonTest, {
 	start_state: 'q0',
