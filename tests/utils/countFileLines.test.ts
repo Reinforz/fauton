@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import countFileLines from '../../src/utils/countFileLines';
+import { countFileLines } from '../../src/utils/countFileLines';
 
 it(`Should count file lines`, () => {
 	const filePath = path.join(__dirname, 'sample.txt');

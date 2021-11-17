@@ -15,11 +15,14 @@ export function normalize(
 	finiteAutomaton: InputFiniteAutomaton | TransformedFiniteAutomaton
 ) {
 	validate(
-		finiteAutomaton.label ?? '',
+		finiteAutomaton.label,
 		generatePreNormalizationErrors(testLogic, automatonType, finiteAutomaton)
 	);
 
 	const appendedString = finiteAutomaton.append ?? '';
+	if (appendedString) {
+		delete finiteAutomaton.append;
+	}
 	finiteAutomaton.final_states = finiteAutomaton.final_states.map(
 		(finalState) => appendedString + finalState.toString()
 	);
@@ -100,7 +103,7 @@ export function normalize(
 	});
 
 	validate(
-		finiteAutomaton.label ?? '',
+		finiteAutomaton.label,
 		generatePostNormalizationErrors(automatonType, finiteAutomaton as TransformedFiniteAutomaton)
 	);
 	return finiteAutomaton as TransformedFiniteAutomaton;

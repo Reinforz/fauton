@@ -1,7 +1,7 @@
 export interface InputFiniteAutomaton {
 	// Append a string to all the states
 	append?: string;
-	alphabets: string[];
+	alphabets: (string | number)[];
 	label: string;
 	description?: string;
 	start_state: string | number;
@@ -43,7 +43,7 @@ export interface FiniteAutomatonTestInfo {
 	trueNegatives: number;
 }
 
-export type TFiniteAutomatonType = 'deterministic' | 'non-deterministic';
+export type TFiniteAutomatonType = 'deterministic' | 'non-deterministic' | 'epsilon';
 export interface GraphNode {
 	name: string;
 	state: string;

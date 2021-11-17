@@ -1,4 +1,4 @@
-import generateAggregateMessage from '../../src/utils/generateAggregateMessage';
+import { generateAggregateMessage } from '../../src/utils/generateAggregateMessage';
 
 it(`Should generate correct aggregate message values`, () => {
 	const { values } = generateAggregateMessage('dfa', undefined, {
