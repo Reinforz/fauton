@@ -6,11 +6,17 @@ import {
 import { epsilonClosureOfState } from './epsilonClosureOfState';
 import { moveAndEpsilonClosureStateSet } from './moveAndEpsilonClosureStateSet';
 
+/**
+ * Convert a e-nfa/nfa to a dfa
+ * @param automaton e/nfa to convert
+ * @param generatedAutomatonOptions Options for the newly generated dfa
+ * @returns data to construct a dfa
+ */
 export function convertToDeterministicFiniteAutomaton(
 	automaton: TransformedFiniteAutomaton,
-	dfaOptions?: GeneratedAutomatonOptions
+	generatedAutomatonOptions?: GeneratedAutomatonOptions
 ) {
-	const separator = dfaOptions?.separator ?? ',';
+	const separator = generatedAutomatonOptions?.separator ?? ',';
 	const startState = automaton.start_state;
 	const newStartStates = automaton.epsilon_transitions
 		? epsilonClosureOfState(automaton.epsilon_transitions, startState)
@@ -39,6 +45,7 @@ export function convertToDeterministicFiniteAutomaton(
 				newStates.add(newStateString);
 				unmarkedStates.push(newStateString);
 			}
+			// If the epsilon closure of the state is empty, its a trap state
 			if (!newStateString) {
 				hasDeadState = true;
 				newStates.add(`Ø`);
@@ -63,20 +70,17 @@ export function convertToDeterministicFiniteAutomaton(
 	});
 
 	if (hasDeadState) {
-		newTransitionsRecord['Ø'] = {};
-		automaton.alphabets.forEach((symbol) => {
-			newTransitionsRecord['Ø'][symbol] = ['Ø'];
-		});
+		newTransitionsRecord['Ø'] = new Array(totalAlphabets).fill('Ø') as any;
 	}
 
 	return {
 		alphabets: automaton.alphabets,
 		final_states: Array.from(newFinalStates),
-		label: dfaOptions?.label ?? automaton.label,
+		label: generatedAutomatonOptions?.label ?? automaton.label,
 		start_state: newStartStateString,
 		states: Array.from(newStates),
 		transitions: newTransitionsRecord,
 		epsilon_transitions: null,
-		description: dfaOptions?.description ?? automaton.description,
+		description: generatedAutomatonOptions?.description ?? automaton.description,
 	} as IFiniteAutomaton['automaton'];
 }
