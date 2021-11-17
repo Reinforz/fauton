@@ -1,8 +1,8 @@
-import { FiniteAutomataTest } from './FiniteAutomataTest';
 import { GenerateString } from './GenerateString';
-import { NonDeterministicFiniteAutomaton } from './NonDeterministicFiniteAutomaton';
 import { Render } from './Render';
 
 export * from './DeterministicFiniteAutomaton';
+export * from './FiniteAutomataTest';
 export * from './FiniteAutomaton';
-export { FiniteAutomataTest, Render, NonDeterministicFiniteAutomaton, GenerateString };
+export * from './NonDeterministicFiniteAutomaton';
+export { Render, GenerateString };
