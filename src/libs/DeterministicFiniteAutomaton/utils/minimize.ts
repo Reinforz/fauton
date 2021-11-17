@@ -1,14 +1,9 @@
-import {
-	IAutomatonTestLogicFn,
-	IFiniteAutomaton,
-	TransformedFiniteAutomaton,
-} from '../../../types';
+import { IFiniteAutomaton, TransformedFiniteAutomaton } from '../../../types';
 import { checkEquivalenceBetweenStatesGroups } from './checkEquivalenceBetweenStatesGroups';
 import { generateEquivalenceStates } from './generateEquivalenceStates';
 import { generateStateGroupsRecord } from './generateStateGroupsRecord';
 
 export function minimize(
-	testLogic: IAutomatonTestLogicFn,
 	automaton: TransformedFiniteAutomaton,
 	minimizedDfaOptions?: Pick<
 		Pick<IFiniteAutomaton, 'automaton'>['automaton'],
@@ -39,7 +34,7 @@ export function minimize(
 	}
 
 	const stateGroupsRecord = generateStateGroupsRecord(automaton, currentEquivalentStatesGroups);
-	const newStateState = currentEquivalentStatesGroups.find((stateGroup) =>
+	const newStartState = currentEquivalentStatesGroups.find((stateGroup) =>
 		stateGroup.includes(automaton.start_state)
 	);
 
@@ -59,18 +54,15 @@ export function minimize(
 	});
 
 	return {
-		testLogic,
-		automaton: {
-			label: minimizedDfaOptions?.label ?? automaton.label,
-			alphabets: automaton.alphabets,
-			description: minimizedDfaOptions?.description ?? automaton.description,
-			final_states: [finalStateString],
-			start_state: newStateState?.join('') ?? automaton.start_state,
-			states: currentEquivalentStatesGroups.map((currentEquivalentStatesGroup) =>
-				currentEquivalentStatesGroup.join('')
-			),
-			transitions: newTransitions,
-			epsilon_transitions: null,
-		},
-	};
+		label: minimizedDfaOptions?.label ?? automaton.label,
+		alphabets: automaton.alphabets,
+		description: minimizedDfaOptions?.description ?? automaton.description,
+		final_states: [finalStateString],
+		start_state: newStartState!.join(''),
+		states: currentEquivalentStatesGroups.map((currentEquivalentStatesGroup) =>
+			currentEquivalentStatesGroup.join('')
+		),
+		transitions: newTransitions,
+		epsilon_transitions: null,
+	} as IFiniteAutomaton['automaton'];
 }

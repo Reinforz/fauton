@@ -77,12 +77,10 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 			'label' | 'description'
 		>
 	) {
-		const { automaton, testLogic } = DeterministicFiniteAutomatonUtils.minimize(
+		return new DeterministicFiniteAutomaton(
 			this.testLogic,
-			this.automaton,
-			minimizedDfaOptions
+			DeterministicFiniteAutomatonUtils.minimize(this.automaton, minimizedDfaOptions)
 		);
-		return new DeterministicFiniteAutomaton(testLogic, automaton);
 	}
 }
 
