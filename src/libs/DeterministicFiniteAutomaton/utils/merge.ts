@@ -16,7 +16,6 @@ export function merge(
 		label,
 		description,
 	} = generatedAutomatonOptions ?? ({} as GeneratedAutomatonOptions);
-
 	const sourceAutomatonFinalStates = new Set(sourceAutomaton.automaton.final_states);
 	const targetAutomatonFinalStates = new Set(
 		targetAutomaton ? targetAutomaton.automaton.final_states : []
@@ -26,22 +25,18 @@ export function merge(
 	const newFinalStates: Set<string> = new Set();
 
 	// If we have two different dfa's we are in composite mode
-	const isComposite = Boolean(
-		targetAutomaton &&
-			(targetAutomaton ? targetAutomaton.automatonId : '') !== sourceAutomaton.automatonId
-	);
+	const isComposite =
+		targetAutomaton && targetAutomaton.automatonId !== sourceAutomaton.automatonId;
 
 	// If we are in composite mode, we need to generate a new id for the new dfa, by merging the ids of two input dfs separated by a separator
-	const newDfaId =
-		isComposite && targetAutomaton
-			? sourceAutomaton.automatonId + separator + targetAutomaton.automatonId
-			: sourceAutomaton.automatonId;
+	const newDfaId = isComposite
+		? sourceAutomaton.automatonId + separator + targetAutomaton.automatonId
+		: sourceAutomaton.automatonId;
 
-	// Only create a new state if its not composite
-	const newStartState =
-		isComposite && targetAutomaton
-			? sourceAutomaton.automaton.start_state + separator + targetAutomaton.automaton.start_state
-			: sourceAutomaton.automaton.start_state;
+	// Only create a new start state if its not composite
+	const newStartState = isComposite
+		? sourceAutomaton.automaton.start_state + separator + targetAutomaton.automaton.start_state
+		: sourceAutomaton.automaton.start_state;
 
 	function inner(targetAutomatonState?: string) {
 		sourceAutomaton.automaton.states.forEach((sourceAutomatonState) => {
@@ -51,42 +46,34 @@ export function merge(
 			if (isComposite && targetAutomatonState) {
 				newStates.push(newState);
 				newTransitions[newState] = {};
-				sourceAutomaton.automaton.alphabets.forEach((automatonAlphabet) => {
-					newTransitions[newState][automatonAlphabet] = [
-						sourceAutomaton.automaton.transitions[sourceAutomatonState][automatonAlphabet] +
+				sourceAutomaton.automaton.alphabets.forEach((symbol) => {
+					newTransitions[newState][symbol] = [
+						sourceAutomaton.automaton.transitions[sourceAutomatonState][symbol] +
 							separator +
-							(targetAutomaton
-								? targetAutomaton.automaton.transitions[targetAutomatonState][automatonAlphabet]
-								: ''),
+							targetAutomaton.automaton.transitions[targetAutomatonState][symbol],
 					];
 				});
 				if (
 					mergeOperation === 'or' &&
-					((targetAutomaton ? targetAutomatonFinalStates.has(targetAutomatonState) : true) ||
+					(targetAutomatonFinalStates.has(targetAutomatonState) ||
 						sourceAutomatonFinalStates.has(sourceAutomatonState))
 				) {
 					newFinalStates.add(newState);
 				} else if (
 					mergeOperation === 'and' &&
-					(targetAutomaton ? targetAutomatonFinalStates.has(targetAutomatonState) : true) &&
+					targetAutomatonFinalStates.has(targetAutomatonState) &&
 					sourceAutomatonFinalStates.has(sourceAutomatonState)
-				) {
-					newFinalStates.add(newState);
-				} else if (
-					mergeOperation === 'not' &&
-					!sourceAutomatonFinalStates.has(sourceAutomatonState)
 				) {
 					newFinalStates.add(newState);
 				}
 			} else if (
 				mergeOperation === 'or' &&
-				((targetAutomaton ? targetAutomatonFinalStates.has(newState) : true) ||
-					sourceAutomatonFinalStates.has(newState))
+				(targetAutomatonFinalStates.has(newState) || sourceAutomatonFinalStates.has(newState))
 			) {
 				newFinalStates.add(newState);
 			} else if (
 				mergeOperation === 'and' &&
-				(targetAutomaton ? targetAutomatonFinalStates.has(newState) : true) &&
+				targetAutomatonFinalStates.has(newState) &&
 				sourceAutomatonFinalStates.has(newState)
 			) {
 				newFinalStates.add(newState);
@@ -97,7 +84,7 @@ export function merge(
 	}
 
 	if (targetAutomaton) {
-		targetAutomaton?.automaton.states.forEach((targetAutomatonState) => {
+		targetAutomaton.automaton.states.forEach((targetAutomatonState) => {
 			inner(targetAutomatonState);
 		});
 	} else {
@@ -137,9 +124,7 @@ export function merge(
 					}` +
 					`)`,
 			start_state: isComposite ? newStartState : sourceAutomaton.automaton.start_state,
-			states: isComposite
-				? newStates
-				: JSON.parse(JSON.stringify(sourceAutomaton.automaton.states)),
+			states: isComposite ? newStates : [...sourceAutomaton.automaton.states],
 			transitions: (isComposite
 				? newTransitions
 				: // Making a new copy of current automata's transitions record
