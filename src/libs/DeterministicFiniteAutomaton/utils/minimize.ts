@@ -1,4 +1,3 @@
-import { DeterministicFiniteAutomaton } from '..';
 import {
 	IAutomatonTestLogicFn,
 	IFiniteAutomaton,
@@ -59,16 +58,19 @@ export function minimize(
 		});
 	});
 
-	return new DeterministicFiniteAutomaton(testLogic, {
-		label: minimizedDfaOptions?.label ?? automaton.label,
-		alphabets: automaton.alphabets,
-		description: minimizedDfaOptions?.description ?? automaton.description,
-		final_states: [finalStateString],
-		start_state: newStateState?.join('') ?? automaton.start_state,
-		states: currentEquivalentStatesGroups.map((currentEquivalentStatesGroup) =>
-			currentEquivalentStatesGroup.join('')
-		),
-		transitions: newTransitions,
-		epsilon_transitions: null,
-	});
+	return {
+		testLogic,
+		automaton: {
+			label: minimizedDfaOptions?.label ?? automaton.label,
+			alphabets: automaton.alphabets,
+			description: minimizedDfaOptions?.description ?? automaton.description,
+			final_states: [finalStateString],
+			start_state: newStateState?.join('') ?? automaton.start_state,
+			states: currentEquivalentStatesGroups.map((currentEquivalentStatesGroup) =>
+				currentEquivalentStatesGroup.join('')
+			),
+			transitions: newTransitions,
+			epsilon_transitions: null,
+		},
+	};
 }

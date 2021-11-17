@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-import { DeterministicFiniteAutomaton } from '..';
 import { IFiniteAutomaton, TMergeOperation, TransformedFiniteAutomaton } from '../../../types';
 
 export function generateMergedDfaData(
@@ -12,7 +11,7 @@ export function generateMergedDfaData(
 	newTransitions: IFiniteAutomaton['automaton']['transitions'],
 	newFinalStates: Set<string>,
 	mergeOperation: TMergeOperation,
-	inputAutomaton: DeterministicFiniteAutomaton | undefined,
+	inputAutomaton: IFiniteAutomaton | undefined,
 	isComposite: boolean,
 	separator: string
 ) {

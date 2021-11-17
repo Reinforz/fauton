@@ -1,4 +1,3 @@
-/* eslint-disable import/no-cycle */
 export * from './checkEquivalenceBetweenStatesGroups';
 export * from './generateEquivalenceStates';
 export * from './generateMergedDfaData';

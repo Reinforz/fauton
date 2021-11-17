@@ -1,4 +1,3 @@
-import { DeterministicFiniteAutomaton } from '..';
 import {
 	GeneratedAutomatonOptions,
 	IFiniteAutomaton,
@@ -9,8 +8,8 @@ import { generateMergedDfaData } from './generateMergedDfaData';
 
 export function merge(
 	automatonId: string,
-	sourceFiniteAutomaton: DeterministicFiniteAutomaton,
-	targetFiniteAutomaton: DeterministicFiniteAutomaton | undefined,
+	sourceFiniteAutomaton: IFiniteAutomaton,
+	targetFiniteAutomaton: IFiniteAutomaton | undefined,
 	mergeOperation: TMergeOperation,
 	generatedAutomatonOptions?: GeneratedAutomatonOptions
 ) {
@@ -24,13 +23,13 @@ export function merge(
 	// If we have two different dfa's we are in composite mode
 	const isComposite = Boolean(
 		targetFiniteAutomaton &&
-			(targetFiniteAutomaton ? targetFiniteAutomaton.getAutomatonId() : '') !== automatonId
+			(targetFiniteAutomaton ? targetFiniteAutomaton.automatonId : '') !== automatonId
 	);
 
 	// If we are in composite mode, we need to generate a new id for the new dfa, by merging the ids of two input dfs separated by a separator
 	const newDfaId =
 		isComposite && targetFiniteAutomaton
-			? automatonId + separator + targetFiniteAutomaton.getAutomatonId()
+			? automatonId + separator + targetFiniteAutomaton.automatonId
 			: automatonId;
 
 	// Only create a new state if its not composite
@@ -72,8 +71,9 @@ export function merge(
 			separator
 		);
 	}
-	return new DeterministicFiniteAutomaton(
-		(inputString, automatonTestResult) => {
+
+	return {
+		testLogic: (inputString, automatonTestResult) => {
 			if (mergeOperation === 'or') {
 				return (
 					targetFiniteAutomaton!.testLogic(inputString, automatonTestResult) ||
@@ -88,7 +88,7 @@ export function merge(
 			}
 			return !sourceFiniteAutomaton.testLogic(inputString, automatonTestResult);
 		},
-		{
+		automaton: {
 			final_states: Array.from(newFinalStates),
 			label:
 				label ??
@@ -117,6 +117,6 @@ export function merge(
 			alphabets: sourceFiniteAutomaton.automaton.alphabets,
 			epsilon_transitions: null,
 		},
-		isComposite ? newDfaId : automatonId
-	);
+		automatonId: isComposite ? newDfaId : automatonId,
+	} as IFiniteAutomaton;
 }

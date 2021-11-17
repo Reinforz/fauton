@@ -33,6 +33,7 @@ export type IAutomatonTestLogicFn = (inputString: string, automatonTestResult: b
 export interface IFiniteAutomaton {
 	testLogic: IAutomatonTestLogicFn;
 	automaton: TransformedFiniteAutomaton;
+	automatonId: string;
 }
 
 export interface FiniteAutomatonTestInfo {

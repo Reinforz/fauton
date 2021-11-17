@@ -19,41 +19,29 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 		super(testLogic, automaton, 'deterministic', automatonId);
 	}
 
-	generateMergedDfaData(
-		state: string,
-		newStates: string[],
-		newTransitions: IFiniteAutomaton['automaton']['transitions'],
-		newFinalStates: Set<string>,
-		mergeOperation: TMergeOperation,
-		inputAutomaton: DeterministicFiniteAutomaton | undefined,
-		isComposite: boolean,
-		separator: string
-	) {
-		return DeterministicFiniteAutomatonUtils.generateMergedDfaData(
-			this.automaton,
-			state,
-			newStates,
-			newTransitions,
-			newFinalStates,
-			mergeOperation,
-			inputAutomaton,
-			isComposite,
-			separator
-		);
-	}
-
 	#merge(
 		finiteAutomaton: DeterministicFiniteAutomaton | undefined,
 		mergeOperation: TMergeOperation,
 		generatedAutomatonOptions?: GeneratedAutomatonOptions
 	) {
-		return DeterministicFiniteAutomatonUtils.merge(
+		const { automaton, testLogic, automatonId } = DeterministicFiniteAutomatonUtils.merge(
 			this.getAutomatonId(),
-			this,
-			finiteAutomaton,
+			{
+				automaton: this.automaton,
+				automatonId: this.getAutomatonId(),
+				testLogic: this.testLogic,
+			},
+			finiteAutomaton
+				? {
+						automaton: finiteAutomaton.automaton,
+						automatonId: finiteAutomaton.getAutomatonId(),
+						testLogic: finiteAutomaton.testLogic,
+				  }
+				: undefined,
 			mergeOperation,
 			generatedAutomatonOptions
 		);
+		return new DeterministicFiniteAutomaton(testLogic, automaton, automatonId);
 	}
 
 	AND(
@@ -89,11 +77,12 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 			'label' | 'description'
 		>
 	) {
-		return DeterministicFiniteAutomatonUtils.minimize(
+		const { automaton, testLogic } = DeterministicFiniteAutomatonUtils.minimize(
 			this.testLogic,
 			this.automaton,
 			minimizedDfaOptions
 		);
+		return new DeterministicFiniteAutomaton(testLogic, automaton);
 	}
 }
 
