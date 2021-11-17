@@ -13,11 +13,16 @@ export function generatePreNormalizationErrors(
 ) {
 	const automatonValidationErrors: string[] = [];
 	if (!testLogic) {
-		automatonValidationErrors.push('testLogic function is required in Automaton');
+		automatonValidationErrors.push('testLogic function is required in automaton');
 	}
 
 	if (!automaton.label) {
 		automatonValidationErrors.push('Automaton label is required');
+	}
+
+	if (!automaton.transitions) {
+		automatonValidationErrors.push('Automaton transitions is required');
+		automaton.transitions = {};
 	}
 
 	if (!automaton.states) {
@@ -33,24 +38,7 @@ export function generatePreNormalizationErrors(
 		automaton.alphabets = [];
 	}
 
-	if (!Array.isArray(automaton.states)) {
-		automatonValidationErrors.push('Automaton states must be an array');
-	}
-
-	if (automaton.states.length === 0) {
-		automatonValidationErrors.push('Automaton states must be an array of length > 0');
-	}
-
-	// Checking to see if all the states are present in the transition record
 	if (automatonType === 'deterministic') {
-		automaton.states.forEach((state) => {
-			if (!automaton.transitions[state]) {
-				automatonValidationErrors.push(
-					`Automaton states must reference a state (${state}) that is present in transitions`
-				);
-			}
-		});
-
 		// Deterministic automaton can't have epsilon transitions
 		if (automaton.epsilon_transitions) {
 			automatonValidationErrors.push(`Deterministic automaton can't contain epsilon transitions`);
@@ -66,8 +54,27 @@ export function generatePreNormalizationErrors(
 		automaton.final_states = [];
 	}
 
+	if (!Array.isArray(automaton.alphabets)) {
+		automatonValidationErrors.push('Automaton alphabets must be an array');
+		automaton.alphabets = [];
+	}
+
+	if (!Array.isArray(automaton.states)) {
+		automatonValidationErrors.push('Automaton states must be an array');
+		automaton.states = [];
+	}
+
 	if (!Array.isArray(automaton.final_states)) {
 		automatonValidationErrors.push('Automaton final_states must be an array');
+		automaton.final_states = [];
+	}
+
+	if (automaton.states.length === 0) {
+		automatonValidationErrors.push('Automaton states must be an array of length > 0');
+	}
+
+	if (automaton.alphabets.length === 0) {
+		automatonValidationErrors.push('Automaton alphabets must be an array of length > 0');
 	}
 
 	if (automaton.final_states.length === 0) {
