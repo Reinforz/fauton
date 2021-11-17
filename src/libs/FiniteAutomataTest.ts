@@ -6,10 +6,10 @@ import fs from 'fs';
 import path from 'path';
 import { FiniteAutomatonTestInfo, InputStringOption, IOutputFiles } from '../types';
 import { countFileLines, generateAggregateMessage, generateCaseMessage } from '../utils';
-import DeterministicFiniteAutomaton from './DeterministicFiniteAutomaton';
-import FiniteAutomaton from './FiniteAutomaton';
-import GenerateString from './GenerateString';
-import NonDeterministicFiniteAutomaton from './NonDeterministicFiniteAutomaton';
+import { DeterministicFiniteAutomaton } from './DeterministicFiniteAutomaton';
+import { FiniteAutomaton } from './FiniteAutomaton/FiniteAutomaton';
+import { GenerateString } from './GenerateString';
+import { NonDeterministicFiniteAutomaton } from './NonDeterministicFiniteAutomaton';
 
 interface IAutomataTestConfig {
 	automaton: DeterministicFiniteAutomaton | NonDeterministicFiniteAutomaton;
@@ -17,7 +17,7 @@ interface IAutomataTestConfig {
 }
 
 type IWriteStreams = Record<`${keyof IOutputFiles}WriteStream`, null | fs.WriteStream>;
-export default class FiniteAutomataTest {
+export class FiniteAutomataTest {
 	#cliProgressBar: cliProgress.SingleBar;
 
 	#logsPath: string;

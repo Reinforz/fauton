@@ -9,7 +9,7 @@ function percentagesUptoPrecision(numerators: number[], denominator: number, pre
 	return numerators.map((numerator) => percentageUptoPrecision(numerator, denominator, precision));
 }
 
-export default function generateAggregateMessage(
+export function generateAggregateMessage(
 	faLabel: string,
 	faDescription: string | undefined,
 	finiteAutomatonTestInfo: FiniteAutomatonTestInfo

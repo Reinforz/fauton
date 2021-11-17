@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-export default function countFileLines(filePath: string): Promise<number> {
+export function countFileLines(filePath: string): Promise<number> {
 	return new Promise((resolve, reject) => {
 		let lineCount = 0;
 		fs.createReadStream(filePath)

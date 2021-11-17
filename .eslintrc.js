@@ -24,5 +24,6 @@ module.exports = {
 			},
 		],
 		'no-await-in-loop': 'off',
+		'import/prefer-default-export': 'off',
 	},
 };

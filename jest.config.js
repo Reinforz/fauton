@@ -4,13 +4,19 @@ module.exports = async () => {
 		testTimeout: 30000,
 		testEnvironment: 'node',
 		verbose: true,
-		testPathIgnorePatterns: ['<rootDir>/node_modules', '<rootDir>/dist'],
+		testPathIgnorePatterns: [
+			'<rootDir>/node_modules',
+			'<rootDir>/dist',
+			'<rootDir>/src/utils/generateCaseMessage.ts',
+			'<rootDir>/src/utils/generateRandomNumber.ts',
+		],
 		modulePathIgnorePatterns: ['<rootDir>/dist'],
 		roots: ['<rootDir>/tests'],
 		testMatch: ['<rootDir>/tests/**/*.test.ts'],
 		transform: {
 			'^.+\\.(ts)$': 'ts-jest',
 		},
+		collectCoverageFrom: ['src/**/{!(generateCaseMessage|generateRandomNumber),}.ts'],
 		collectCoverage: true,
 		coverageDirectory: './coverage',
 		coverageThreshold: {

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { GraphNode } from '../types';
 
-export default class Render {
+export class Render {
 	static graphToHtml(graph: GraphNode, htmlFilePath: string) {
 		return fs.writeFileSync(
 			htmlFilePath,

@@ -5,7 +5,7 @@ import {
 	InputFiniteAutomaton,
 	TransformedFiniteAutomaton,
 } from '../types';
-import FiniteAutomaton from './FiniteAutomaton';
+import { FiniteAutomaton } from './FiniteAutomaton/FiniteAutomaton';
 
 type IMergedDfaOptions = Partial<
 	Pick<Pick<IFiniteAutomaton, 'automaton'>['automaton'], 'label' | 'description'> & {
@@ -14,7 +14,7 @@ type IMergedDfaOptions = Partial<
 >;
 
 type TMergeOperation = 'or' | 'and' | 'not';
-export default class DeterministicFiniteAutomaton extends FiniteAutomaton {
+export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 	constructor(
 		testLogic: IAutomatonTestLogicFn,
 		automaton: InputFiniteAutomaton | TransformedFiniteAutomaton,

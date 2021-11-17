@@ -1,6 +1,6 @@
-import generateRandomNumber from '../utils/generateRandomNumber';
+import { generateRandomNumber } from '../utils/generateRandomNumber';
 
-export default class GenerateString {
+export class GenerateString {
 	static generateAllCombosWithinLength(
 		alphabets: string[],
 		maxLength: number,
