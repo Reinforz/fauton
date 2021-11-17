@@ -10,8 +10,8 @@ function percentagesUptoPrecision(numerators: number[], denominator: number, pre
 }
 
 export default function generateAggregateMessage(
-	dfaLabel: string,
-	dfaDescription: string | undefined,
+	faLabel: string,
+	faDescription: string | undefined,
 	finiteAutomatonTestInfo: FiniteAutomatonTestInfo
 ) {
 	const { falsePositives, falseNegatives, truePositives, trueNegatives } = finiteAutomatonTestInfo;
@@ -19,7 +19,7 @@ export default function generateAggregateMessage(
 	const totalIncorrect = falseNegatives + falsePositives;
 	const totalStrings = totalCorrect + totalIncorrect;
 	const correctPercentage = percentageUptoPrecision(totalCorrect, totalStrings, 5);
-	const incorrectPercentage = (100 - correctPercentage).toFixed(5);
+	const incorrectPercentage = parseFloat((100 - correctPercentage).toFixed(5));
 	const [
 		falsePositivesPercentage,
 		falseNegativesPercentage,
@@ -31,11 +31,22 @@ export default function generateAggregateMessage(
 		5
 	);
 
-	const descriptionStringWithColors = dfaDescription ? `${colors.bold(dfaDescription)}\n` : '';
-	const descriptionString = dfaDescription ? `${dfaDescription}\n` : '';
+	const descriptionStringWithColors = faDescription ? `${colors.bold(faDescription)}\n` : '';
+	const descriptionString = faDescription ? `${faDescription}\n` : '';
 	return {
+		values: {
+			totalCorrect,
+			totalIncorrect,
+			totalStrings,
+			correctPercentage,
+			incorrectPercentage,
+			falseNegativesPercentage,
+			falsePositivesPercentage,
+			truePositivesPercentage,
+			trueNegativesPercentage,
+		},
 		withColors: [
-			colors.blue.bold(dfaLabel),
+			colors.blue.bold(faLabel),
 			`${descriptionStringWithColors}Total: ${colors.blue.bold(totalStrings.toString())}\n`,
 			`Incorrect: ${colors.red.bold(totalIncorrect.toString())}`,
 			`Incorrect(%): ${colors.red.bold(`${incorrectPercentage.toString()}%`)}`,
@@ -51,7 +62,7 @@ export default function generateAggregateMessage(
 			`True Negatives(%): ${colors.green.bold(`${trueNegativesPercentage}%`)}\n`,
 		].join('\n'),
 		withoutColors: [
-			dfaLabel,
+			faLabel,
 			`${descriptionString}Total: ${totalStrings}\n`,
 			`Incorrect: ${totalIncorrect}`,
 			`Incorrect(%): ${incorrectPercentage.toString()}%`,
