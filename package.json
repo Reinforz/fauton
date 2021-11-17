@@ -12,7 +12,8 @@
     "build:watch": "tsc -w",
     "lint": "npx eslint \"./src\" --ext tsx,ts",
     "lint:fix": "npx eslint \"./src\" --ext tsx,ts --fix",
-    "test": "npx jest --runInBand --config ./jest.config.js"
+    "test": "npx jest --runInBand --config ./jest.config.js",
+    "format": "npx prettier ./src/**/*.{ts,js} --write"
   },
   "files": [
     "dist/"
