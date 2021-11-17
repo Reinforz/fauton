@@ -1,9 +1,6 @@
-import { TFiniteAutomatonType, TransformedFiniteAutomaton } from '../../../types';
+import { TransformedFiniteAutomaton } from '../../../types';
 
-export function generatePostNormalizationErrors(
-	automatonType: TFiniteAutomatonType,
-	automaton: TransformedFiniteAutomaton
-) {
+export function generatePostNormalizationErrors(automaton: TransformedFiniteAutomaton) {
 	const automatonValidationErrors: string[] = [];
 	const automatonStates: Set<string> = new Set(automaton.states);
 	const automatonAlphabets: Set<string> = new Set(automaton.alphabets);
@@ -21,13 +18,13 @@ export function generatePostNormalizationErrors(
 			([transitionStartState, transitionTargetStates]) => {
 				if (!automatonStates.has(transitionStartState)) {
 					automatonValidationErrors.push(
-						`Epsilon transition state ${transitionStartState} must reference a state that is present in states`
+						`Epsilon transitions state ${transitionStartState} must reference a state that is present in states`
 					);
 				}
 				transitionTargetStates.forEach((transitionTargetState) => {
 					if (!automatonStates.has(transitionTargetState)) {
 						automatonValidationErrors.push(
-							`Epsilon transition state ${transitionTargetState} must reference a state that is present in states`
+							`Epsilon transitions state ${transitionTargetState} must reference a state that is present in states`
 						);
 					}
 				});
@@ -43,44 +40,19 @@ export function generatePostNormalizationErrors(
 			);
 		}
 
-		// Checking if the transition record is a POJO
-		const isTransitionValuesARecord =
-			transitionStatesRecord &&
-			typeof transitionStatesRecord === 'object' &&
-			Object.getPrototypeOf(transitionStatesRecord) === Object.prototype;
-
-		if (automatonType === 'deterministic') {
-			if (typeof transitionStatesRecord !== 'string' && !isTransitionValuesARecord) {
-				automatonValidationErrors.push(
-					`Automaton transitions value must either be string "loop" or a tuple`
-				);
-			}
-			// ! Completely disable loop for non-deterministic automaton
-			if (typeof transitionStatesRecord === 'string' && transitionStatesRecord !== 'loop') {
-				automatonValidationErrors.push(
-					`Automaton transitions value when a string, can only be "loop"`
-				);
-			}
-		}
-
 		// all of these must refer to valid states
-		/* 
-    1: {
-      0: ["1", "2", "3"],
-      1: ["2", "3"]
-    } */
-		if (transitionStatesRecord && typeof transitionStatesRecord !== 'string') {
+		if (transitionStatesRecord) {
 			Object.entries(transitionStatesRecord).forEach(
-				([transitionStateSymbol, transitionStateResultantStates]) => {
+				([transitionStateSymbol, transitionStateTargetStates]) => {
 					if (!automatonAlphabets.has(transitionStateSymbol)) {
 						automatonValidationErrors.push(
 							`Automaton transitions symbol (${transitionStateSymbol}), must reference a valid alphabet`
 						);
 					}
-					transitionStateResultantStates.forEach((transitionStateResultantState) => {
-						if (!automatonStates.has(transitionStateResultantState)) {
+					transitionStateTargetStates.forEach((transitionStateTargetState) => {
+						if (!automatonStates.has(transitionStateTargetState)) {
 							automatonValidationErrors.push(
-								`Automaton transitions value (${transitionStateResultantState}) when a tuple, must reference a valid state`
+								`Automaton transitions value (${transitionStateTargetState}) when a tuple, must reference a valid state`
 							);
 						}
 					});

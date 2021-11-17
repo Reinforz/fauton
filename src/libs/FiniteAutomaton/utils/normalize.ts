@@ -104,7 +104,7 @@ export function normalize(
 
 	validate(
 		finiteAutomaton.label,
-		generatePostNormalizationErrors(automatonType, finiteAutomaton as TransformedFiniteAutomaton)
+		generatePostNormalizationErrors(finiteAutomaton as TransformedFiniteAutomaton)
 	);
 	return finiteAutomaton as TransformedFiniteAutomaton;
 }
