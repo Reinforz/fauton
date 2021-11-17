@@ -5,7 +5,7 @@ export function generateEquivalenceStates(
 	automaton: Pick<TransformedFiniteAutomaton, 'states' | 'alphabets' | 'transitions'>,
 	stateGroups: string[][]
 ) {
-	const stateGroupsRecord = generateStateGroupsRecord(automaton, stateGroups);
+	const stateGroupsRecord = generateStateGroupsRecord(automaton.states, stateGroups);
 	const stateGroupsSymbolsRecord: Record<string, string[]> = {};
 	// Segregating state groups based on its length
 	const singleStateGroups: string[][] = [];

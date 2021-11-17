@@ -33,7 +33,10 @@ export function minimize(
 		]);
 	}
 
-	const stateGroupsRecord = generateStateGroupsRecord(automaton, currentEquivalentStatesGroups);
+	const stateGroupsRecord = generateStateGroupsRecord(
+		automaton.states,
+		currentEquivalentStatesGroups
+	);
 	const newStartState = currentEquivalentStatesGroups.find((stateGroup) =>
 		stateGroup.includes(automaton.start_state)
 	);

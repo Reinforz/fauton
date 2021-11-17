@@ -25,7 +25,6 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 		generatedAutomatonOptions?: GeneratedAutomatonOptions
 	) {
 		const { automaton, testLogic, automatonId } = DeterministicFiniteAutomatonUtils.merge(
-			this.getAutomatonId(),
 			{
 				automaton: this.automaton,
 				automatonId: this.getAutomatonId(),
@@ -64,7 +63,10 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 
 	// Used to figure out which state belongs to which group in groups
 	generateStateGroupsRecord(stateGroups: string[][]) {
-		return DeterministicFiniteAutomatonUtils.generateStateGroupsRecord(this.automaton, stateGroups);
+		return DeterministicFiniteAutomatonUtils.generateStateGroupsRecord(
+			this.automaton.states,
+			stateGroups
+		);
 	}
 
 	generateEquivalenceStates(stateGroups: string[][]) {

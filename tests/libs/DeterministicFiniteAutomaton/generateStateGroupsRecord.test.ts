@@ -2,12 +2,7 @@ import { generateStateGroupsRecord } from '../../../src/libs/DeterministicFinite
 
 it(`Should work`, () => {
 	expect(
-		generateStateGroupsRecord(
-			{
-				states: ['A', 'B,C', 'E', 'D'],
-			},
-			[['A'], ['B,C', 'E'], ['D']]
-		)
+		generateStateGroupsRecord(['A', 'B,C', 'E', 'D'], [['A'], ['B,C', 'E'], ['D']])
 	).toStrictEqual({
 		A: 0,
 		'B,C': 1,
