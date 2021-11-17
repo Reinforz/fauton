@@ -1,6 +1,6 @@
 import { IAutomatonTestLogicFn, IFiniteAutomaton, InputFiniteAutomaton } from '../types';
 import { DeterministicFiniteAutomaton } from './DeterministicFiniteAutomaton';
-import { FiniteAutomaton } from './FiniteAutomaton/FiniteAutomaton';
+import { FiniteAutomaton } from './FiniteAutomaton';
 
 export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 	constructor(

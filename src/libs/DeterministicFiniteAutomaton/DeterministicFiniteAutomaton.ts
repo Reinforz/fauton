@@ -4,8 +4,8 @@ import {
 	IFiniteAutomaton,
 	InputFiniteAutomaton,
 	TransformedFiniteAutomaton,
-} from '../types';
-import { FiniteAutomaton } from './FiniteAutomaton/FiniteAutomaton';
+} from '../../types';
+import { FiniteAutomaton } from '../FiniteAutomaton';
 
 type IMergedDfaOptions = Partial<
 	Pick<Pick<IFiniteAutomaton, 'automaton'>['automaton'], 'label' | 'description'> & {

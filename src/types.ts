@@ -91,3 +91,10 @@ export type InputStringOption =
 			inputs: string[];
 			outputFiles?: Partial<IOutputFiles>;
 	  };
+
+export type GeneratedAutomatonOptions = Partial<
+	Pick<Pick<IFiniteAutomaton, 'automaton'>['automaton'], 'label' | 'description'> & {
+		separator: string;
+	}
+>;
+export type TMergeOperation = 'or' | 'and' | 'not';

@@ -7,7 +7,7 @@ import path from 'path';
 import { FiniteAutomatonTestInfo, InputStringOption, IOutputFiles } from '../types';
 import { countFileLines, generateAggregateMessage, generateCaseMessage } from '../utils';
 import { DeterministicFiniteAutomaton } from './DeterministicFiniteAutomaton';
-import { FiniteAutomaton } from './FiniteAutomaton/FiniteAutomaton';
+import { FiniteAutomaton } from './FiniteAutomaton';
 import { GenerateString } from './GenerateString';
 import { NonDeterministicFiniteAutomaton } from './NonDeterministicFiniteAutomaton';
 
