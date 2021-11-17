@@ -1,6 +1,14 @@
 import { TransformedFiniteAutomaton } from '../../../types';
 import { epsilonClosureOfState } from './epsilonClosureOfState';
 
+/**
+ * Move_DFA(states_arr, symbol)
+ * @param transitions Transition record of automaton
+ * @param epsilonTransitions epsilon transitions record of automaton
+ * @param states array of states
+ * @param symbol Symbol for which to find e-closure of
+ * @returns array of states obtained by epsilon closure for a symbol
+ */
 export function moveAndEpsilonClosureStateSet(
 	transitions: TransformedFiniteAutomaton['transitions'],
 	epsilonTransitions: TransformedFiniteAutomaton['epsilon_transitions'],
