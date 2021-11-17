@@ -28,7 +28,8 @@
     "baseUrl": "./src",
     "incremental": false,
     "types": [
-      "node"
+      "node",
+      "jest"
     ]
   },
   "exclude": [
