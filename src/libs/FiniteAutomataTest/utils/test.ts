@@ -5,7 +5,7 @@ import { generateAggregateMessage } from '../../../utils/generateAggregateMessag
 import { FiniteAutomaton } from '../../FiniteAutomaton';
 import { GenerateString } from '../../GenerateString';
 import { createFileWriteStreams } from './createFileWriteStreams';
-import { testAutomata } from './testAutomata';
+import { testAutomaton } from './testAutomaton';
 
 export async function test(
 	logsPath: string,
@@ -46,7 +46,7 @@ export async function test(
 			// eslint-disable-next-line
 			for await (const chunks of readStream) {
 				const inputStrings = chunks.split('\n') as string[];
-				testAutomata(
+				testAutomaton(
 					automaton,
 					finiteAutomatonTestInfo,
 					writeStreams.record,
@@ -76,7 +76,7 @@ export async function test(
 			if (preAutomatonTestCb) {
 				preAutomatonTestCb(generatedStrings.length);
 			}
-			testAutomata(
+			testAutomaton(
 				automaton,
 				finiteAutomatonTestInfo,
 				writeStreams.record,

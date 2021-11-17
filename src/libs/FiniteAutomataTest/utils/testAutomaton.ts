@@ -6,7 +6,7 @@ import { FiniteAutomaton } from '../../FiniteAutomaton';
 
 type IWriteStreams = Record<`${keyof IOutputFiles}WriteStream`, null | fs.WriteStream>;
 
-export function testAutomata(
+export function testAutomaton(
 	finiteAutomaton: FiniteAutomaton,
 	finiteAutomatonTestInfo: FiniteAutomatonTestInfo,
 	writeStreams: IWriteStreams,

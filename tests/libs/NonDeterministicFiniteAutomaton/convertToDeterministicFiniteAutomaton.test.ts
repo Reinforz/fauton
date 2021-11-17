@@ -1,25 +1,6 @@
 import { convertToDeterministicFiniteAutomaton } from '../../../src/libs/NonDeterministicFiniteAutomaton/utils/convertToDeterministicFiniteAutomaton';
 
 it(`Should work for regular nfa`, () => {
-	console.log(
-		convertToDeterministicFiniteAutomaton({
-			start_state: 'q0',
-			alphabets: ['a', 'b'],
-			final_states: ['q1'],
-			label: 'sample nfa',
-			states: ['q0', 'q1', 'q2'],
-			transitions: {
-				q0: {
-					a: ['q2', 'q1'],
-				},
-				q2: {
-					a: ['q2', 'q1'],
-					b: ['q2'],
-				},
-			},
-			epsilon_transitions: null,
-		}).transitions
-	);
 	expect(
 		convertToDeterministicFiniteAutomaton({
 			start_state: 'q0',

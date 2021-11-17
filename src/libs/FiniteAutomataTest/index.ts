@@ -48,7 +48,7 @@ export class FiniteAutomataTest {
 		writeStreams: IWriteStreams,
 		inputStrings: string[]
 	) {
-		FiniteAutomataTestUtils.testAutomata(
+		FiniteAutomataTestUtils.testAutomaton(
 			finiteAutomaton,
 			finiteAutomatonTestInfo,
 			writeStreams,
