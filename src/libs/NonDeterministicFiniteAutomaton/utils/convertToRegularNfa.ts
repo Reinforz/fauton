@@ -1,6 +1,10 @@
 import { TransformedFiniteAutomaton } from '../../../types';
 import { epsilonClosureOfState } from './epsilonClosureOfState';
 
+/**
+ * Convert an epsilon-nfa to nfa
+ * @param automaton epsilon-nfa to be converted
+ */
 export function convertToRegularNfa(
 	automaton: Pick<
 		TransformedFiniteAutomaton,
@@ -8,11 +12,17 @@ export function convertToRegularNfa(
 	>
 ) {
 	const { transitions, states, alphabets, epsilon_transitions: epsilonTransitions } = automaton;
+	const epsilonClosureOfStateCache: Record<string, string[]> = {};
 	alphabets.forEach((alphabet) => {
 		states.forEach((state) => {
 			// Only if the state has a key on the epsilon transition record, we are gonna expand it
-			if (epsilonTransitions![state]) {
-				const firstPhaseStates = epsilonClosureOfState(automaton.epsilon_transitions, state);
+			if (epsilonTransitions && epsilonTransitions[state]) {
+				const firstPhaseStates = !epsilonClosureOfStateCache[state]
+					? epsilonClosureOfState(automaton.epsilon_transitions, state)
+					: epsilonClosureOfStateCache[state];
+				if (!epsilonClosureOfStateCache[state]) {
+					epsilonClosureOfStateCache[state] = firstPhaseStates;
+				}
 				const secondPhaseStates = new Set<string>();
 				const thirdPhaseSet: Set<string> = new Set();
 
@@ -26,11 +36,15 @@ export function convertToRegularNfa(
 				});
 
 				secondPhaseStates.forEach((secondPhaseState) => {
-					epsilonClosureOfState(automaton.epsilon_transitions, secondPhaseState).forEach(
-						(closuredState) => {
-							thirdPhaseSet.add(closuredState);
-						}
-					);
+					const epsilonClosuredStates = !epsilonClosureOfStateCache[secondPhaseState]
+						? epsilonClosureOfState(automaton.epsilon_transitions, secondPhaseState)
+						: epsilonClosureOfStateCache[secondPhaseState];
+					if (!epsilonClosureOfStateCache[secondPhaseState]) {
+						epsilonClosureOfStateCache[secondPhaseState] = epsilonClosuredStates;
+					}
+					epsilonClosuredStates.forEach((closuredState) => {
+						thirdPhaseSet.add(closuredState);
+					});
 				});
 				if (transitions[state]) {
 					transitions[state][alphabet] = Array.from(thirdPhaseSet);
