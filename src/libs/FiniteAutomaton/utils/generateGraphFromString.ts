@@ -14,18 +14,18 @@ export function generateGraphFromString(
 			children: [],
 		},
 	];
-	const finalNodes: GraphNode[] = [];
 	let automatonTestResult = false;
 	const finalStates = new Set(automaton.final_states);
 
 	const graph = currentParents;
 	for (let index = 0; index < inputString.length; index += 1) {
-		const newChildren: GraphNode[] = [];
+		const newParents: GraphNode[] = [];
 		const symbol = inputString[index];
 		currentParents.forEach((currentParent) => {
 			const transitionStateRecord = automaton.transitions[currentParent.state];
 			if (transitionStateRecord) {
 				const transitionTargetStates = transitionStateRecord[symbol];
+				// Guarding against null values
 				if (Array.isArray(transitionTargetStates)) {
 					transitionTargetStates.forEach((transitionTargetState) => {
 						const parentGraphNode = {
@@ -37,27 +37,28 @@ export function generateGraphFromString(
 							children: [],
 						};
 						currentParent.children.push(parentGraphNode);
-						newChildren.push(parentGraphNode);
+						newParents.push(parentGraphNode);
 					});
 				}
 			}
 		});
-		// Last symbol
+		// for the Last symbol
 		if (index === inputString.length - 1) {
-			for (let newChildIndex = 0; newChildIndex < newChildren.length; newChildIndex += 1) {
-				const newChild = newChildren[newChildIndex];
+			// Looping through each of the new parent nodes
+			// to see if any of their state matches the final state
+			for (let newParentsIndex = 0; newParentsIndex < newParents.length; newParentsIndex += 1) {
+				const newChild = newParents[newParentsIndex];
 				if (finalStates.has(newChild.state)) {
 					automatonTestResult = true;
 					break;
 				}
 			}
-			finalNodes.push(...newChildren);
 		}
-		currentParents = newChildren;
+		currentParents = newParents;
 	}
 	return {
 		automatonTestResult,
-		finalNodes,
+		finalNodes: currentParents,
 		graph: graph[0],
 	};
 }
