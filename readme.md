@@ -28,6 +28,7 @@
   - [Conversion from nfa to dfa](#conversion-from-nfa-to-dfa)
   - [Dfa minimization](#dfa-minimization)
   - [Dfa equivalency by testing](#dfa-equivalency-by-testing)
+  - [Testing regular expressions](#testing-regular-expressions)
 - [Conditions for DFA](#conditions-for-dfa)
 - [Transitions Record Transformation](#transitions-record-transformation)
   - [dfa](#dfa)
@@ -57,7 +58,7 @@
 
 # Features
 
-1. Test any dfa/nfa/ε-nfa
+1. Test any valid dfa/nfa/ε-nfa/regex
 2. Supports arbitrary alphabets
 3. Easy to use api to generate input strings
 4. ε-nfa to nfa conversion
@@ -609,6 +610,47 @@ const finiteAutomataTest = new FiniteAutomataTest(path.join(__dirname, 'logs'));
 finiteAutomataTest.test([
 	{
 		automaton: minimized_dfa,
+		options: {
+			type: 'generate',
+			combo: {
+				maxLength: 10,
+			},
+		},
+	},
+]);
+```
+
+## Testing regular expressions
+
+Rather than testing only a finite automaton, you can also test your regular expressions against generated strings
+
+```js
+import { FiniteAutomataTest, RegularExpression } from 'fauton';
+import path from 'path';
+
+const regex = new RegularExpression(
+	(inputString) => {
+		return (
+			inputString[0] === 'a' &&
+			inputString[1] === 'b' &&
+			inputString
+				.slice(2)
+				.split('')
+				.every((char) => char === 'c')
+		);
+	},
+	{
+		alphabets: ['a', 'b', 'c'],
+		label: 'Starts with a and b, ends with any number of c',
+		regex: /^abc*$/g,
+	}
+);
+
+const finiteAutomataTest = new FiniteAutomataTest(path.join(__dirname, 'logs'));
+
+finiteAutomataTest.test([
+	{
+		automaton: regex,
 		options: {
 			type: 'generate',
 			combo: {
