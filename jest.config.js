@@ -9,6 +9,7 @@ module.exports = async () => {
 			'<rootDir>/dist',
 			'<rootDir>/src/utils/generateCaseMessage.ts',
 			'<rootDir>/src/utils/generateRandomNumber.ts',
+			'<rootDir>/src/utils/countFileLines.ts',
 		],
 		modulePathIgnorePatterns: ['<rootDir>/dist'],
 		roots: ['<rootDir>/tests'],
@@ -16,7 +17,9 @@ module.exports = async () => {
 		transform: {
 			'^.+\\.(ts)$': 'ts-jest',
 		},
-		collectCoverageFrom: ['src/**/{!(generateCaseMessage|generateRandomNumber|index),}.ts'],
+		collectCoverageFrom: [
+			'src/**/{!(generateCaseMessage|generateRandomNumber|countFileLines|index),}.ts',
+		],
 		collectCoverage: true,
 		coverageDirectory: './coverage',
 		coverageThreshold: {
