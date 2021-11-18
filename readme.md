@@ -1,5 +1,5 @@
 <div align="center"> <h1>Fauton</h1> </div>
-<div align="center"><b>A library to test any finite automaton with arbitrary alphabets</b></div>
+<div align="center"><b>A library to test and transform any finite automaton with arbitrary alphabets</b></div>
 
 </br>
 
@@ -7,7 +7,8 @@
   <a href="www.npmjs.com/package/fauton">
     <img src="https://img.shields.io/npm/dw/fauton"/>
   </a>
-  <a href="https://app.codecov.io/gh/Devorein/fauton/branch/master"><img src="https://img.shields.io/codecov/c/github/devorein/fauton?color=blue"/></a>
+  <a href="https://github.com/Devorein/fauton/actions?query=workflow%3A%22Lint%2C+Build+and+Test%22"><img src="https://github.com/devorein/fauton/workflows/Lint,%20Build%20and%20Test/badge.svg"/></a>
+  <a href="https://app.codecov.io/gh/Devorein/fauton/branch/main"><img src="https://img.shields.io/codecov/c/github/devorein/fauton?color=blue"/></a>
   <img src="https://img.shields.io/github/commit-activity/m/devorein/fauton?color=yellow" />
   <img src="https://img.shields.io/github/repo-size/devorein/fauton?style=flat-square&color=orange"/>
   <img src="https://img.shields.io/github/contributors/devorein/fauton?label=contributors&color=red"/>
