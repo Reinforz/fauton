@@ -21,10 +21,15 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm install
       - run: npm run lint
+      - name: Install fauton globally
+        run: npm install -g
       - name: Building library
         run: npm run build
       - name: Building examples
-        run: cd examples && npm run build
+        run: |
+          cd examples
+          npm link fauton
+          npm run build
       - run: npm run test
       - name: Uploading test coverage reports
         run: |
