@@ -60,6 +60,7 @@ export async function test(
 				if (options.random) {
 					generatedStrings = GenerateString.generateRandomUnique(
 						options.random.total,
+						automaton.automaton.alphabets,
 						options.random.minLength,
 						options.random.maxLength
 					);

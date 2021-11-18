@@ -1,7 +1,7 @@
 import { GenerateString } from '../../src/libs/GenerateString';
 
 it(`Should generate string combinations`, () => {
-	expect(GenerateString.generateAllCombosWithinLength(['a', 'b', 'c'], 3)).toStrictEqual([
+	expect(GenerateString.generateAllCombosWithinLength(['a', 'b', 'c'], 3, () => {})).toStrictEqual([
 		'a',
 		'b',
 		'c',
@@ -42,4 +42,10 @@ it(`Should generate string combinations`, () => {
 		'ccb',
 		'ccc',
 	]);
+});
+
+it(`Should generate random unique strings within length`, () => {
+	const randomStrings = GenerateString.generateRandomUnique(10, ['a', 'b', 'c'], 5, 5);
+	expect(randomStrings.length).toBe(10);
+	expect(new Set(randomStrings).size === 10).toBe(true);
 });
