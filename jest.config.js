@@ -16,7 +16,7 @@ module.exports = async () => {
 		transform: {
 			'^.+\\.(ts)$': 'ts-jest',
 		},
-		collectCoverageFrom: ['src/**/{!(generateCaseMessage|generateRandomNumber),}.ts'],
+		collectCoverageFrom: ['src/**/{!(generateCaseMessage|generateRandomNumber|index),}.ts'],
 		collectCoverage: true,
 		coverageDirectory: './coverage',
 		coverageThreshold: {
