@@ -53,6 +53,8 @@
   - [Incorrect Portion](#incorrect-portion)
   - [Correct Portion](#correct-portion)
 - [Contributors](#contributors)
+- [Algorithm Sources](#algorithm-sources)
+- [Credits](#credits)
 
 **Please note that I won't be following semver at the initial stages, as there could be a lot of (breaking) changes between each release which will all be patch**
 
@@ -961,5 +963,20 @@ Better and more detailed api documentation coming soon very soon !!!
 # Contributors
 
 1.  Safwan Shaheer [github](https://github.com/Devorein) Author, Maintainer
+
+# Algorithm Sources
+
+Wikipedia sources for all the algorithms used in the package
+
+1. [Thompson-McNaughton-Yamada](https://en.wikipedia.org/wiki/Thompson%27s_construction) algorithm for converting regex to e-nfa
+2. [Hopcroft](https://en.wikipedia.org/wiki/DFA_minimization#Hopcroft's_algorithm) algorithm for dfa-minimization
+3. [Rabin–Scott powerset construction](https://en.wikipedia.org/wiki/Powerset_construction) algorithm to convert nfa to dfa
+4. [Shunting-Yard](https://en.wikipedia.org/wiki/Shunting-yard_algorithm) algorithm to convert regex string from infix to postfix
+
+# Credits
+
+Big thanks to all these wonderful repos.
+
+1. [Orban](https://github.com/wevial/orban) Regular expression engine that uses the Thompson-McNaughton-Yamada algorithm implemented in Python.
 
 Feel free to submit a pull request or open a new issue, contributions are more than welcome !!!

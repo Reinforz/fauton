@@ -1,4 +1,5 @@
 import { IAutomatonTestLogicFn, IRegularExpression } from '../../types';
+import * as RegularExpressionUtils from './utils';
 
 export class RegularExpression {
 	automaton: IRegularExpression;
@@ -17,3 +18,5 @@ export class RegularExpression {
 		return Boolean(inputString.match(this.automaton.regex));
 	}
 }
+
+export { RegularExpressionUtils };
