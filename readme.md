@@ -10,7 +10,7 @@
   <a href="https://github.com/Devorein/fauton/actions?query=workflow%3A%22Lint%2C+Build+and+Test%22"><img src="https://github.com/devorein/fauton/workflows/Lint,%20Build%20and%20Test/badge.svg"/></a>
   <a href="https://app.codecov.io/gh/Devorein/fauton"><img src="https://img.shields.io/codecov/c/github/devorein/fauton?color=blue"/></a>
   <img src="https://img.shields.io/github/commit-activity/m/devorein/fauton?color=yellow" />
-  <img src="https://img.shields.io/github/repo-size/devorein/fauton?style=flat-square&color=orange"/>
+  <img src="https://img.shields.io/github/repo-size/devorein/fauton?style=flat-square&color=ocombo"/>
   <img src="https://img.shields.io/github/contributors/devorein/fauton?label=contributors&color=red"/>
   <img src="https://img.shields.io/librariesio/release/npm/fauton"/>
   <img src="https://img.shields.io/github/issues/devorein/fauton"/>
@@ -27,6 +27,7 @@
   - [Conversion from ε-nfa to dfa](#conversion-from-ε-nfa-to-dfa)
   - [Conversion from nfa to dfa](#conversion-from-nfa-to-dfa)
   - [Dfa minimization](#dfa-minimization)
+  - [Dfa equivalency by testing](#dfa-equivalency-by-testing)
 - [Conditions for DFA](#conditions-for-dfa)
 - [Transitions Record Transformation](#transitions-record-transformation)
   - [dfa](#dfa)
@@ -126,7 +127,7 @@ finiteAutomataTest.test([
 		// A configuration object that is used to feed input strings to the automaton
 		options: {
 			type: 'generate',
-			range: {
+			combo: {
 				maxLength: 10,
 			},
 		},
@@ -194,7 +195,7 @@ finiteAutomataTest.test([
 		automaton: DivisibleBy3Or2ButNotByBoth,
 		options: {
 			type: 'generate',
-			range: {
+			combo: {
 				maxLength: 10,
 			},
 		},
@@ -255,7 +256,7 @@ finiteAutomataTest.test([
 		automaton: startsWithAB,
 		options: {
 			type: 'generate',
-			range: {
+			combo: {
 				maxLength: 10,
 			},
 		},
@@ -570,6 +571,54 @@ console.log(dfa.minimize().automaton);
 }
 ```
 
+## Dfa equivalency by testing
+
+Testing if two dfa are equal through testing. One of the dfa is the minimized version of the other dfa, all the input string should return similar test result for both of them.
+
+```js
+import { DeterministicFiniteAutomaton, FiniteAutomataTest, FiniteAutomatonUtils } from 'fauton';
+import path from 'path';
+
+const dfa = new DeterministicFiniteAutomaton(() => true, {
+	states: [0, 1, 2, 3, 4, 5, 6, 7],
+	alphabets: ['0', '1'],
+	final_states: [2],
+	start_state: 0,
+	label: 'dfa',
+	transitions: {
+		0: [1, 5],
+		1: [6, 2],
+		2: [0, 2],
+		3: [2, 6],
+		4: [7, 5],
+		5: [2, 6],
+		6: [6, 4],
+		7: [6, 2],
+	},
+});
+
+const minimized_dfa = dfa.minimize();
+
+minimized_dfa.testLogic = (inputString) => {
+	return FiniteAutomatonUtils.generateGraphFromString(dfa.automaton, inputString)
+		.automatonTestResult;
+};
+
+const finiteAutomataTest = new FiniteAutomataTest(path.join(__dirname, 'logs'));
+
+finiteAutomataTest.test([
+	{
+		automaton: minimized_dfa,
+		options: {
+			type: 'generate',
+			combo: {
+				maxLength: 10,
+			},
+		},
+	},
+]);
+```
+
 Take a look at [examples](./examples) folder for more examples.
 
 # Conditions for DFA
@@ -751,7 +800,7 @@ finiteAutomataTest.test([
 		automaton,
 		options: {
 			type: 'generate',
-			range: {
+			combo: {
 				maxLength: 3,
 			},
 		},
@@ -816,7 +865,7 @@ Same as `<fa.label>.correct.txt`
 
 ## `<fa.label>.input.txt`
 
-Contains all the input strings. Useful when you are generating random or ranged strings and want to reuse it for later
+Contains all the input strings. Useful when you are generating random or combo strings and want to reuse it for later
 
 Same as `<fa.label>.accepted.txt`
 

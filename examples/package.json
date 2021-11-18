@@ -1,17 +1,17 @@
 {
   "name": "fauton-examples",
   "version": "1.0.0",
+  "private": true,
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "build:watch": "tsc -w"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "fauton": "latest"
-  },
+  "dependencies": {},
   "devDependencies": {
     "typescript": "^4.4.4"
   }
