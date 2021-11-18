@@ -4,13 +4,14 @@ import { countFileLines } from '../../../utils/countFileLines';
 import { generateAggregateMessage } from '../../../utils/generateAggregateMessage';
 import { FiniteAutomaton } from '../../FiniteAutomaton';
 import { GenerateString } from '../../GenerateString';
+import { RegularExpression } from '../../RegularExpression';
 import { createFileWriteStreams } from './createFileWriteStreams';
 import { testAutomaton } from './testAutomaton';
 
 export async function test(
 	logsPath: string,
 	configs: {
-		automaton: FiniteAutomaton;
+		automaton: FiniteAutomaton | RegularExpression;
 		options: InputStringOption;
 	}[],
 	// eslint-disable-next-line

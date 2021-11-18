@@ -43,6 +43,10 @@ export class FiniteAutomaton {
 	generateGraphFromString(inputString: string) {
 		return FiniteAutomatonUtils.generateGraphFromString(this.automaton, inputString);
 	}
+
+	test(inputString: string) {
+		return this.generateGraphFromString(inputString).automatonTestResult;
+	}
 }
 
 export { FiniteAutomatonUtils };

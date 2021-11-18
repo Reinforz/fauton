@@ -5,12 +5,20 @@ import colors from 'colors';
 import fs from 'fs';
 import { FiniteAutomatonTestInfo, InputStringOption, IOutputFiles } from '../../types';
 import { FiniteAutomaton } from '../FiniteAutomaton';
+import { RegularExpression } from '../RegularExpression';
 import * as FiniteAutomataTestUtils from './utils';
 
-export interface IAutomataTestConfig {
-	automaton: FiniteAutomaton;
-	options: InputStringOption;
-}
+export type IAutomataTestConfig =
+	| {
+			automaton: FiniteAutomaton;
+			regex?: RegularExpression;
+			options: InputStringOption;
+	  }
+	| {
+			automaton?: FiniteAutomaton;
+			regex: RegularExpression;
+			options: InputStringOption;
+	  };
 
 type IWriteStreams = Record<`${keyof IOutputFiles}WriteStream`, null | fs.WriteStream>;
 
@@ -43,7 +51,7 @@ export class FiniteAutomataTest {
 	}
 
 	testAutomata(
-		finiteAutomaton: FiniteAutomaton,
+		finiteAutomaton: FiniteAutomaton | RegularExpression,
 		finiteAutomatonTestInfo: FiniteAutomatonTestInfo,
 		writeStreams: IWriteStreams,
 		inputStrings: string[]
@@ -61,7 +69,7 @@ export class FiniteAutomataTest {
 
 	async test(
 		configs: {
-			automaton: FiniteAutomaton;
+			automaton: FiniteAutomaton | RegularExpression;
 			options: InputStringOption;
 		}[]
 	) {

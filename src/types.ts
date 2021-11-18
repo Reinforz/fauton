@@ -99,3 +99,10 @@ export type GeneratedAutomatonOptions = Partial<
 	}
 >;
 export type TMergeOperation = 'or' | 'and' | 'not';
+
+export interface IRegularExpression {
+	alphabets: string[];
+	regex: RegExp;
+	label: string;
+	description?: string;
+}

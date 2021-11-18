@@ -3,11 +3,12 @@ import fs from 'fs';
 import { FiniteAutomatonTestInfo, IOutputFiles } from '../../../types';
 import { generateCaseMessage } from '../../../utils';
 import { FiniteAutomaton } from '../../FiniteAutomaton';
+import { RegularExpression } from '../../RegularExpression';
 
 type IWriteStreams = Record<`${keyof IOutputFiles}WriteStream`, null | fs.WriteStream>;
 
 export function testAutomaton(
-	finiteAutomaton: FiniteAutomaton,
+	finiteAutomaton: FiniteAutomaton | RegularExpression,
 	finiteAutomatonTestInfo: FiniteAutomatonTestInfo,
 	writeStreams: IWriteStreams,
 	inputStrings: string[],
@@ -26,7 +27,7 @@ export function testAutomaton(
 	for (let i = 0; i < inputStrings.length; i += 1) {
 		const inputString = inputStrings[i].replace('\r', '').replace('\n', '');
 		if (inputString.length !== 0) {
-			const { automatonTestResult } = finiteAutomaton.generateGraphFromString(inputString);
+			const automatonTestResult = finiteAutomaton.test(inputString);
 			const logicTestResult = finiteAutomaton.testLogic(inputString, automatonTestResult);
 			const isWrong = automatonTestResult !== logicTestResult;
 
