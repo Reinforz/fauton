@@ -1,10 +1,9 @@
 import { GenerateString } from '../../src/libs/GenerateString';
 
 it(`Should generate string combinations`, () => {
-	expect(GenerateString.generateAllCombosWithinLength(['a', 'b', 'c'], 3, () => {})).toStrictEqual([
-		'a',
-		'b',
-		'c',
+	expect(
+		GenerateString.generateAllCombosWithinLength(['a', 'b', 'c'], 3, 2, () => {})
+	).toStrictEqual([
 		'aa',
 		'ab',
 		'ac',
