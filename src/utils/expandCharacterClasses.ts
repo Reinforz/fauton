@@ -1,3 +1,8 @@
+/**
+ * Generates an array of symbols by expanding the character classes string separate by ,
+ * @param characterClassesString String containing character classes separated by ,
+ * @returns An array of symbols that are present in the character classes
+ */
 export function expandCharacterClasses(characterClassesString: string) {
 	const characterClasses = characterClassesString.split(',');
 	const symbols: Set<string> = new Set();
@@ -13,5 +18,5 @@ export function expandCharacterClasses(characterClassesString: string) {
 			symbols.add(String.fromCodePoint(characterCodePoint));
 		}
 	});
-	return symbols;
+	return Array.from(symbols);
 }
