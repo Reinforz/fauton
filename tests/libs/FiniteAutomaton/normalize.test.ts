@@ -8,13 +8,13 @@ it(`Should normalize input finite automaton e-nfa without append`, () => {
 		start_state: 0,
 		states: [0, 1, 2, 3, 4],
 		transitions: {
-			1: [1],
-			2: [2, [3, 2]],
+			1: ['1-5', '2-3'],
+			2: [2, ['2-4', 4, 4, 5]],
 			3: [null, 3],
 		},
 		epsilon_transitions: {
 			0: [1],
-			1: [3, 4],
+			1: ['1-3', '3', 4],
 			4: [2],
 		},
 	});
@@ -27,16 +27,17 @@ it(`Should normalize input finite automaton e-nfa without append`, () => {
 		start_state: '0',
 		epsilon_transitions: {
 			0: ['1'],
-			1: ['3', '4'],
+			1: ['1', '2', '3', '4'],
 			4: ['2'],
 		},
 		transitions: {
 			'1': {
-				a: ['1'],
+				a: ['1', '2', '3', '4', '5'],
+				b: ['2', '3'],
 			},
 			'2': {
 				a: ['2'],
-				b: ['3', '2'],
+				b: ['2', '3', '4', '5'],
 			},
 			'3': {
 				b: ['3'],

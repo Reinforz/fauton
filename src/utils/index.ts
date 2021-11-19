@@ -1,5 +1,5 @@
 export * from './countFileLines';
-export * from './expandCharacterClasses';
+export * from './expandCharacterRanges';
 export * from './generateAggregateMessage';
 export * from './generateCaseMessage';
 export * from './generateRandomNumber';
