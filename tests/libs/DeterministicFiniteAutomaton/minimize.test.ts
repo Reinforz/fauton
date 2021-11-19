@@ -1,6 +1,6 @@
 import { minimize } from '../../../src/libs/DeterministicFiniteAutomaton/utils/minimize';
 
-it(`Should minimize dfa`, () => {
+it(`Should minimize dfa where start and end states are different`, () => {
 	expect(
 		minimize({
 			epsilon_transitions: null,
@@ -74,5 +74,70 @@ it(`Should minimize dfa`, () => {
 			},
 		},
 		description: undefined,
+	});
+});
+
+it(`Should minimize dfa where start is one of the final states`, () => {
+	expect(
+		minimize({
+			epsilon_transitions: null,
+			final_states: ['1', '4', '6'],
+			label: 'DFA',
+			start_state: '1',
+			alphabets: ['a', 'b'],
+			states: ['1', '2', '3', '4', '5', '6'],
+			transitions: {
+				1: {
+					a: ['3'],
+					b: ['6'],
+				},
+				2: {
+					a: ['5'],
+					b: ['6'],
+				},
+				3: {
+					a: ['5'],
+					b: ['6'],
+				},
+				4: {
+					a: ['2'],
+					b: ['6'],
+				},
+				5: {
+					a: ['6'],
+					b: ['1'],
+				},
+				6: {
+					a: ['4'],
+					b: ['4'],
+				},
+			},
+		})
+	).toStrictEqual({
+		description: undefined,
+		label: 'DFA',
+		alphabets: ['a', 'b'],
+		final_states: ['14', '6'],
+		start_state: '14',
+		states: ['23', '14', '6', '5'],
+		transitions: {
+			'5': {
+				a: ['6'],
+				b: ['14'],
+			},
+			'6': {
+				a: ['14'],
+				b: ['14'],
+			},
+			'14': {
+				a: ['23'],
+				b: ['6'],
+			},
+			'23': {
+				a: ['5'],
+				b: ['6'],
+			},
+		},
+		epsilon_transitions: null,
 	});
 });
