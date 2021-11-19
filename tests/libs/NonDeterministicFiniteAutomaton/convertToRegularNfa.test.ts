@@ -26,7 +26,7 @@ it(`Should convert epsilon-nfa to regular nfa`, () => {
 	});
 	expect(transitions).toStrictEqual({
 		A: {
-			0: ['A', 'B', 'C'],
+			0: ['A', 'C', 'B'],
 			1: ['B', 'C'],
 		},
 		B: {

@@ -1,5 +1,6 @@
 import { TransformedFiniteAutomaton } from '../../../types';
 import { epsilonClosureOfState } from './epsilonClosureOfState';
+import { moveAndEpsilonClosureStateSet } from './moveAndEpsilonClosureStateSet';
 
 /**
  * Convert an epsilon-nfa to nfa
@@ -13,44 +14,28 @@ export function convertToRegularNfa(
 ) {
 	const { transitions, states, alphabets, epsilon_transitions: epsilonTransitions } = automaton;
 	const epsilonClosureOfStateCache: Record<string, string[]> = {};
-	alphabets.forEach((alphabet) => {
+	alphabets.forEach((symbol) => {
 		states.forEach((state) => {
 			// Only if the state has a key on the epsilon transition record, we are gonna expand it
 			if (epsilonTransitions && epsilonTransitions[state]) {
-				const firstPhaseStates = !epsilonClosureOfStateCache[state]
+				const epsilonClosuredStates = !epsilonClosureOfStateCache[state]
 					? epsilonClosureOfState(automaton.epsilon_transitions, state)
 					: epsilonClosureOfStateCache[state];
 				if (!epsilonClosureOfStateCache[state]) {
-					epsilonClosureOfStateCache[state] = firstPhaseStates;
+					epsilonClosureOfStateCache[state] = epsilonClosuredStates;
 				}
-				const secondPhaseStates = new Set<string>();
-				const thirdPhaseSet: Set<string> = new Set();
 
-				firstPhaseStates.forEach((firstPhaseState) => {
-					// Some states might be null, and thus have no transitions
-					if (transitions[firstPhaseState]) {
-						transitions[firstPhaseState][alphabet]?.forEach((transitionRecordState) => {
-							secondPhaseStates.add(transitionRecordState);
-						});
-					}
-				});
-
-				secondPhaseStates.forEach((secondPhaseState) => {
-					const epsilonClosuredStates = !epsilonClosureOfStateCache[secondPhaseState]
-						? epsilonClosureOfState(automaton.epsilon_transitions, secondPhaseState)
-						: epsilonClosureOfStateCache[secondPhaseState];
-					if (!epsilonClosureOfStateCache[secondPhaseState]) {
-						epsilonClosureOfStateCache[secondPhaseState] = epsilonClosuredStates;
-					}
-					epsilonClosuredStates.forEach((closuredState) => {
-						thirdPhaseSet.add(closuredState);
-					});
-				});
+				const epsilonClosuredStatesForSymbol = moveAndEpsilonClosureStateSet(
+					transitions,
+					epsilonTransitions,
+					Array.from(epsilonClosuredStates),
+					symbol
+				);
 				if (transitions[state]) {
-					transitions[state][alphabet] = Array.from(thirdPhaseSet);
+					transitions[state][symbol] = epsilonClosuredStatesForSymbol;
 				} else {
 					transitions[state] = {
-						[alphabet]: Array.from(thirdPhaseSet),
+						[symbol]: epsilonClosuredStatesForSymbol,
 					};
 				}
 			}
