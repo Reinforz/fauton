@@ -1,7 +1,7 @@
 import { normalize } from '../../../src/libs/FiniteAutomaton/utils/normalize';
 
 it(`Should normalize input finite automaton e-nfa without append`, () => {
-	const normalizedFiniteAutomaton = normalize(() => true, 'epsilon', {
+	const normalizedFiniteAutomaton = normalize({
 		alphabets: ['a', 'b'],
 		final_states: [0, 1],
 		label: 'DFA',
@@ -46,7 +46,7 @@ it(`Should normalize input finite automaton e-nfa without append`, () => {
 });
 
 it(`Should normalize input finite automaton without append`, () => {
-	const normalizedFiniteAutomaton = normalize(() => true, 'deterministic', {
+	const normalizedFiniteAutomaton = normalize({
 		alphabets: [0, 1],
 		final_states: [0, 1],
 		label: 'DFA',
@@ -88,7 +88,7 @@ it(`Should normalize input finite automaton without append`, () => {
 });
 
 it(`Should normalize input finite automaton with append`, () => {
-	const normalizedFiniteAutomaton = normalize(() => true, 'deterministic', {
+	const normalizedFiniteAutomaton = normalize({
 		alphabets: ['a', 'b'],
 		final_states: [0, 1],
 		label: 'DFA',

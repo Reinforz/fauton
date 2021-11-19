@@ -26,14 +26,23 @@ export class FiniteAutomaton {
 		this.#automatonType = automatonType;
 		this.#automatonId = automatonId ?? shortid();
 		this.testLogic = testLogic;
-		this.automaton = this.normalize(testLogic, finiteAutomaton);
-	}
-
-	normalize(
-		testLogic: IAutomatonTestLogicFn,
-		finiteAutomaton: InputFiniteAutomaton | TransformedFiniteAutomaton
-	) {
-		return FiniteAutomatonUtils.normalize(testLogic, this.#automatonType, finiteAutomaton);
+		// Validate the automaton passed before normalizing it
+		FiniteAutomatonUtils.validate(
+			finiteAutomaton.label,
+			FiniteAutomatonUtils.generatePreNormalizationErrors(
+				testLogic,
+				this.#automatonType,
+				finiteAutomaton
+			)
+		);
+		this.automaton = FiniteAutomatonUtils.normalize(finiteAutomaton);
+		// Validate the automaton passed after normalizing it
+		FiniteAutomatonUtils.validate(
+			finiteAutomaton.label,
+			FiniteAutomatonUtils.generatePostNormalizationErrors(
+				finiteAutomaton as TransformedFiniteAutomaton
+			)
+		);
 	}
 
 	getAutomatonId() {

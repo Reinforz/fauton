@@ -1,24 +1,7 @@
 /* eslint-disable no-param-reassign */
-import {
-	IAutomatonTestLogicFn,
-	InputFiniteAutomaton,
-	TFiniteAutomatonType,
-	TransformedFiniteAutomaton,
-} from '../../../types';
-import { generatePostNormalizationErrors } from './generatePostNormalizationErrors';
-import { generatePreNormalizationErrors } from './generatePreNormalizationErrors';
-import { validate } from './validate';
+import { InputFiniteAutomaton, TransformedFiniteAutomaton } from '../../../types';
 
-export function normalize(
-	testLogic: IAutomatonTestLogicFn,
-	automatonType: TFiniteAutomatonType,
-	finiteAutomaton: InputFiniteAutomaton | TransformedFiniteAutomaton
-) {
-	validate(
-		finiteAutomaton.label,
-		generatePreNormalizationErrors(testLogic, automatonType, finiteAutomaton)
-	);
-
+export function normalize(finiteAutomaton: InputFiniteAutomaton | TransformedFiniteAutomaton) {
 	const appendedString = finiteAutomaton.append ?? '';
 	if (appendedString) {
 		delete finiteAutomaton.append;
@@ -102,9 +85,5 @@ export function normalize(
 		}
 	});
 
-	validate(
-		finiteAutomaton.label,
-		generatePostNormalizationErrors(finiteAutomaton as TransformedFiniteAutomaton)
-	);
 	return finiteAutomaton as TransformedFiniteAutomaton;
 }
