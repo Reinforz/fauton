@@ -5,12 +5,7 @@ export function countFileLines(filePath: string): Promise<number> {
 		let lineCount = 0;
 		fs.createReadStream(filePath)
 			.on('data', (buffer) => {
-				let idx = -1;
-				lineCount = -1;
-				do {
-					idx = buffer.indexOf(10 as any, idx + 1);
-					lineCount += 1;
-				} while (idx !== -1);
+				for (let i = 0; i < buffer.length; i += 1) if (buffer[i] === 10) lineCount += 1;
 			})
 			.on('end', () => {
 				resolve(lineCount);
