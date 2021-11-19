@@ -78,6 +78,7 @@ export type InputStringOption =
 			type: 'generate';
 			combo: {
 				maxLength: number;
+				startLength?: number;
 			};
 			random?: undefined | null;
 			outputFiles?: Partial<IOutputFiles>;

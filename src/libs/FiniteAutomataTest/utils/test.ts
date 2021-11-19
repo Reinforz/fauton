@@ -68,7 +68,8 @@ export async function test(
 				} else {
 					generatedStrings = GenerateString.generateAllCombosWithinLength(
 						automaton.automaton.alphabets,
-						options.combo!.maxLength
+						options.combo!.maxLength,
+						options.combo!.startLength ?? 1
 					);
 				}
 			} else {

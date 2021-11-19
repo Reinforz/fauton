@@ -5,12 +5,14 @@ export class GenerateString {
 	 * Generates all combination of strings that can be made by the alphabet from length 1 to `maxLength`
 	 * @param alphabet Alphabet of the strings
 	 * @param maxLength Max length of the generated strings
+	 * @param startLength Starting length of the string
 	 * @param cb A cb passed each generated string
 	 * @returns An array of strings
 	 */
 	static generateAllCombosWithinLength(
 		alphabet: string[],
 		maxLength: number,
+		startLength: number,
 		// eslint-disable-next-line
 		cb?: (generatedString: string) => void
 	) {
@@ -27,7 +29,7 @@ export class GenerateString {
 			}
 		}
 
-		for (let length = 1; length <= maxLength; length += 1) {
+		for (let length = startLength; length <= maxLength; length += 1) {
 			generateAllKLength('', length);
 		}
 
