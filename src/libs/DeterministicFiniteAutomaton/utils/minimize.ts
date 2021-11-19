@@ -17,7 +17,6 @@ export function minimize(
 			nonFinalStates.push(state);
 		}
 	});
-	const finalStateString = automaton.final_states.join('');
 	let currentEquivalentStatesGroups: string[][] = [nonFinalStates, automaton.final_states];
 	let previousEquivalentStatesGroups: string[][] = [];
 	let shouldStop = false;
@@ -56,15 +55,20 @@ export function minimize(
 		});
 	});
 
+	const newStates = currentEquivalentStatesGroups.map((currentEquivalentStatesGroup) =>
+		currentEquivalentStatesGroup.join('')
+	);
 	return {
 		label: minimizedDfaOptions?.label ?? automaton.label,
 		alphabets: automaton.alphabets,
 		description: minimizedDfaOptions?.description ?? automaton.description,
-		final_states: [finalStateString],
+		final_states: newStates.filter((newState) => {
+			// Checking if the new state should be part of the final states
+			const newStateStrings = new Set(newState);
+			return automaton.final_states.find((finalState) => newStateStrings.has(finalState));
+		}),
 		start_state: newStartState!.join(''),
-		states: currentEquivalentStatesGroups.map((currentEquivalentStatesGroup) =>
-			currentEquivalentStatesGroup.join('')
-		),
+		states: newStates,
 		transitions: newTransitions,
 		epsilon_transitions: null,
 	} as IFiniteAutomaton['automaton'];
