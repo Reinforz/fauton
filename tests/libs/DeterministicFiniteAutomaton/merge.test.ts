@@ -115,12 +115,15 @@ it(`Should work for OR operation`, () => {
 });
 
 it(`Should work for OR operation for same dfa`, () => {
-	const mergedAutomaton = merge(dfa1, dfa1, 'or');
+	const mergedAutomaton = merge(dfa1, dfa1, 'or', {
+		description: 'New description',
+		label: 'New label',
+	});
 	expect(mergedAutomaton.testLogic('101', false)).toStrictEqual(false);
 	expect(mergedAutomaton.testLogic('11', true)).toStrictEqual(true);
 	expect(mergedAutomaton.automaton).toStrictEqual({
-		description: 'OR(Dfa to accept strings divisible by 3, Dfa to accept strings divisible by 3)',
-		label: 'or(divisible_by_3, divisible_by_3)',
+		description: 'New description',
+		label: 'New label',
 		alphabets: ['0', '1'],
 		final_states: ['A'],
 		start_state: 'A',

@@ -87,15 +87,9 @@ export function normalize(finiteAutomaton: InputFiniteAutomaton | TransformedFin
 								newEpsilonTransitionTargetStates.add(stateString);
 							});
 						});
-						if (!transitionStateRecord[finiteAutomaton.alphabets[transitionStateIndex]]) {
-							transitionStateRecord[finiteAutomaton.alphabets[transitionStateIndex]] = Array.from(
-								newEpsilonTransitionTargetStates
-							);
-						} else {
-							transitionStateRecord[finiteAutomaton.alphabets[transitionStateIndex]].push(
-								...Array.from(newEpsilonTransitionTargetStates)
-							);
-						}
+						transitionStateRecord[finiteAutomaton.alphabets[transitionStateIndex]] = Array.from(
+							newEpsilonTransitionTargetStates
+						);
 					}
 					// For dealing with 1: [ "1-2", 3 ] => 1: [ ["1", "2"], ["3"] ]
 					else {

@@ -54,7 +54,8 @@ export class GenerateString {
 	) {
 		// Using a set to store only unique input strings
 		const uniqueRandomInputStrings: Set<string> = new Set(initialInputStrings ?? []);
-		while (uniqueRandomInputStrings.size + (initialInputStrings ?? []).length < total) {
+
+		while (uniqueRandomInputStrings.size < total) {
 			const inputStringLength = generateRandomNumber(minLength, maxLength);
 			let randomInputString = '';
 			for (let index = 0; index < inputStringLength; index += 1) {
