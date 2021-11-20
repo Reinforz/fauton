@@ -4,6 +4,7 @@ import {
 	IAutomatonTestLogicFn,
 	IFiniteAutomaton,
 	InputFiniteAutomaton,
+	SkipOptions,
 	TMergeOperation,
 	TransformedFiniteAutomaton,
 } from '../../types';
@@ -14,9 +15,10 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 	constructor(
 		testLogic: IAutomatonTestLogicFn,
 		automaton: InputFiniteAutomaton | TransformedFiniteAutomaton,
-		automatonId?: string
+		automatonId?: string,
+		skipOptions?: SkipOptions
 	) {
-		super(testLogic, automaton, 'deterministic', automatonId);
+		super(testLogic, automaton, 'deterministic', automatonId, skipOptions);
 	}
 
 	#merge(
@@ -40,7 +42,10 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 			mergeOperation,
 			generatedAutomatonOptions
 		);
-		return new DeterministicFiniteAutomaton(testLogic, automaton, automatonId);
+		return new DeterministicFiniteAutomaton(testLogic, automaton, automatonId, {
+			skipNormalization: true,
+			skipValidation: true,
+		});
 	}
 
 	AND(
@@ -81,7 +86,12 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 	) {
 		return new DeterministicFiniteAutomaton(
 			this.testLogic,
-			DeterministicFiniteAutomatonUtils.minimize(this.automaton, minimizedDfaOptions)
+			DeterministicFiniteAutomatonUtils.minimize(this.automaton, minimizedDfaOptions),
+			undefined,
+			{
+				skipNormalization: true,
+				skipValidation: true,
+			}
 		);
 	}
 }

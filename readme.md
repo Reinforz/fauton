@@ -836,7 +836,7 @@ finiteAutomataTest.test([
 
 ## Generating all combinations of certain length
 
-You can feed automata and logic test callback a set of unique randomly generated strings from the alphabet of the automata
+You can also feed your automaton and logic test callback all the combinations of the alphabet of certain length
 
 ```js
 finiteAutomataTest.test([
@@ -852,7 +852,7 @@ finiteAutomataTest.test([
 ]);
 ```
 
-If you alphabet is `a,b` then it will generate the following set of strings
+If your alphabet is `a,b` then it will generate the following set of strings
 
 ```sh
 a, b, aa, bb, ab, ba, aaa, aab, aba, abb, bbb, bba, bab, baa

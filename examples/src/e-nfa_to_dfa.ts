@@ -22,12 +22,4 @@ const epsilonNfa = new NonDeterministicFiniteAutomaton((_, automatonTest) => aut
 	},
 });
 
-console.log(
-	JSON.stringify(
-		epsilonNfa.convertToDeterministicFiniteAutomaton({
-			separator: '-',
-		}),
-		null,
-		2
-	)
-);
+console.log(JSON.stringify(epsilonNfa.convertToDeterministicFiniteAutomaton(), null, 2));

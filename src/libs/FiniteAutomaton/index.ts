@@ -3,6 +3,7 @@ import shortid from 'shortid';
 import {
 	IAutomatonTestLogicFn,
 	InputFiniteAutomaton,
+	SkipOptions,
 	TFiniteAutomatonType,
 	TransformedFiniteAutomaton,
 } from '../../types';
@@ -21,28 +22,36 @@ export class FiniteAutomaton {
 		testLogic: IAutomatonTestLogicFn,
 		finiteAutomaton: InputFiniteAutomaton | TransformedFiniteAutomaton,
 		automatonType: TFiniteAutomatonType,
-		automatonId?: string
+		automatonId?: string,
+		skipOptions?: Partial<SkipOptions>
 	) {
 		this.#automatonType = automatonType;
 		this.#automatonId = automatonId ?? shortid();
 		this.testLogic = testLogic;
 		// Validate the automaton passed before normalizing it
-		FiniteAutomatonUtils.validate(
-			finiteAutomaton.label,
-			FiniteAutomatonUtils.generatePreNormalizationErrors(
-				testLogic,
-				this.#automatonType,
-				finiteAutomaton
-			)
-		);
-		this.automaton = FiniteAutomatonUtils.normalize(finiteAutomaton);
-		// Validate the automaton passed after normalizing it
-		FiniteAutomatonUtils.validate(
-			finiteAutomaton.label,
-			FiniteAutomatonUtils.generatePostNormalizationErrors(
-				finiteAutomaton as TransformedFiniteAutomaton
-			)
-		);
+		if (!skipOptions?.skipValidation) {
+			FiniteAutomatonUtils.validate(
+				finiteAutomaton.label,
+				FiniteAutomatonUtils.generatePreNormalizationErrors(
+					testLogic,
+					this.#automatonType,
+					finiteAutomaton
+				)
+			);
+		}
+		if (!skipOptions?.skipNormalization) {
+			this.automaton = FiniteAutomatonUtils.normalize(finiteAutomaton);
+		}
+
+		if (!skipOptions?.skipValidation) {
+			// Validate the automaton passed after normalizing it
+			FiniteAutomatonUtils.validate(
+				finiteAutomaton.label,
+				FiniteAutomatonUtils.generatePostNormalizationErrors(
+					finiteAutomaton as TransformedFiniteAutomaton
+				)
+			);
+		}
 	}
 
 	getAutomatonId() {

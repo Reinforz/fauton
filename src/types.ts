@@ -107,3 +107,8 @@ export interface IRegularExpression {
 	label: string;
 	description?: string;
 }
+
+export interface SkipOptions {
+	skipValidation: boolean;
+	skipNormalization: boolean;
+}

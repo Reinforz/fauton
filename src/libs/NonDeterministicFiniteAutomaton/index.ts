@@ -51,7 +51,12 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 			NonDeterministicFiniteAutomatonUtils.convertToDeterministicFiniteAutomaton(
 				this.automaton,
 				dfaOptions
-			)
+			),
+			undefined,
+			{
+				skipNormalization: false,
+				skipValidation: false,
+			}
 		);
 	}
 }
