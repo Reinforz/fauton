@@ -2,6 +2,20 @@
 import { InputFiniteAutomaton, TransformedFiniteAutomaton } from '../../../types';
 import { expandCharacterRanges } from '../../../utils';
 
+function expandCharacterRangesForArray(
+	characterRanges: (string | number)[],
+	appendedString?: string
+) {
+	const uniqueSymbols: Set<string> = new Set();
+	characterRanges.forEach((characterRange) => {
+		expandCharacterRanges(characterRange.toString()).forEach((expandedCharacterRange) => {
+			uniqueSymbols.add((appendedString ?? '') + expandedCharacterRange);
+		});
+	});
+
+	return Array.from(uniqueSymbols);
+}
+
 /**
  * Normalizes an input automaton to a standard form
  * @param finiteAutomaton Automaton to normalize
@@ -13,16 +27,20 @@ export function normalize(finiteAutomaton: InputFiniteAutomaton | TransformedFin
 	if (appendedString) {
 		delete finiteAutomaton.append;
 	}
-	// Convert all the final states to string
-	finiteAutomaton.final_states = finiteAutomaton.final_states.map(
-		(finalState) => appendedString + finalState.toString()
+	// Expanding all character ranges for the final states
+	finiteAutomaton.final_states = expandCharacterRangesForArray(
+		finiteAutomaton.final_states,
+		appendedString
 	);
-	// Convert all the alphabets to string
-	finiteAutomaton.alphabets = finiteAutomaton.alphabets.map((alphabet) => alphabet.toString());
+
+	// Expanding all character ranges for the alphabet
+	finiteAutomaton.alphabets = expandCharacterRangesForArray(finiteAutomaton.alphabets);
+
+	// Expanding all character ranges for the states
+	finiteAutomaton.states = expandCharacterRangesForArray(finiteAutomaton.states, appendedString);
+
 	// Convert the start state to string
 	finiteAutomaton.start_state = appendedString + finiteAutomaton.start_state.toString();
-	// Convert the states to string
-	finiteAutomaton.states = finiteAutomaton.states.map((state) => appendedString + state.toString());
 	// Convert all the epsilon transition values to string
 	if (finiteAutomaton.epsilon_transitions) {
 		Object.entries(finiteAutomaton.epsilon_transitions).forEach(

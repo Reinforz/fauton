@@ -9,9 +9,8 @@ export function validate(automatonLabel: string, automatonValidationErrors: stri
 			)} Errors`
 		);
 		automatonValidationErrors.forEach((automatonValidationError) =>
-			console.log(colors.red.bold(automatonValidationError))
+			console.log(`${colors.red.bold(automatonValidationError)}\n`)
 		);
-		console.log();
 		throw new Error(`Error validating automaton`);
 	}
 }
