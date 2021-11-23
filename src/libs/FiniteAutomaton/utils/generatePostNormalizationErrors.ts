@@ -24,7 +24,7 @@ export function generatePostNormalizationErrors(automaton: TransformedFiniteAuto
 				transitionTargetStates.forEach((transitionTargetState) => {
 					if (!automatonStates.has(transitionTargetState)) {
 						automatonValidationErrors.push(
-							`Epsilon transitions state ${transitionTargetState} must reference a state that is present in states`
+							`Epsilon transitions state ${transitionStartState} must reference a state ${transitionTargetState} that is present in states`
 						);
 					}
 				});

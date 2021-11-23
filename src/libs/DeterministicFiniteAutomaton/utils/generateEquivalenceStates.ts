@@ -13,7 +13,7 @@ export function generateEquivalenceStates(
 	stateGroups.forEach((stateGroup) => {
 		if (stateGroup.length > 1) {
 			compositeStateGroups.push(stateGroup);
-		} else {
+		} else if (stateGroup.length !== 0) {
 			singleStateGroups.push(stateGroup);
 		}
 	});
@@ -32,6 +32,13 @@ export function generateEquivalenceStates(
 			}
 		});
 	});
+
+	const statesGroups = Object.values(stateGroupsSymbolsRecord);
 	// Attaching the single state groups as they were not present in the record
-	return Object.values(stateGroupsSymbolsRecord).concat(singleStateGroups);
+	if (singleStateGroups.length !== 0) {
+		return statesGroups.concat(singleStateGroups);
+	} else {
+		// Don't concat single state
+		return statesGroups;
+	}
 }

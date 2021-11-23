@@ -111,4 +111,5 @@ export interface IRegularExpression {
 export interface SkipOptions {
 	skipValidation: boolean;
 	skipNormalization: boolean;
+	skipCharacterRangesExpansion: boolean;
 }

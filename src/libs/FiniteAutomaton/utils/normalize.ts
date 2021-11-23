@@ -4,13 +4,16 @@ import { expandCharacterRanges } from '../../../utils';
 
 function expandCharacterRangesForArray(
 	characterRanges: (string | number)[],
+	skipCharacterRangesExpansion: boolean,
 	appendedString?: string
 ) {
 	const uniqueSymbols: Set<string> = new Set();
 	characterRanges.forEach((characterRange) => {
-		expandCharacterRanges(characterRange.toString()).forEach((expandedCharacterRange) => {
-			uniqueSymbols.add((appendedString ?? '') + expandedCharacterRange);
-		});
+		expandCharacterRanges(characterRange.toString(), skipCharacterRangesExpansion).forEach(
+			(expandedCharacterRange) => {
+				uniqueSymbols.add((appendedString ?? '') + expandedCharacterRange);
+			}
+		);
 	});
 
 	return Array.from(uniqueSymbols);
@@ -19,9 +22,13 @@ function expandCharacterRangesForArray(
 /**
  * Normalizes an input automaton to a standard form
  * @param finiteAutomaton Automaton to normalize
+ * @param skipCharacterRangesExpansion Skip character ranges expansion
  * @returns Normalized automaton
  */
-export function normalize(finiteAutomaton: InputFiniteAutomaton | TransformedFiniteAutomaton) {
+export function normalize(
+	finiteAutomaton: InputFiniteAutomaton | TransformedFiniteAutomaton,
+	skipCharacterRangesExpansion?: boolean
+) {
 	const appendedString = finiteAutomaton.append ?? '';
 	// Append property is unnecessary after normalizing
 	if (appendedString) {
@@ -30,14 +37,22 @@ export function normalize(finiteAutomaton: InputFiniteAutomaton | TransformedFin
 	// Expanding all character ranges for the final states
 	finiteAutomaton.final_states = expandCharacterRangesForArray(
 		finiteAutomaton.final_states,
+		skipCharacterRangesExpansion ?? false,
 		appendedString
 	);
 
 	// Expanding all character ranges for the alphabet
-	finiteAutomaton.alphabets = expandCharacterRangesForArray(finiteAutomaton.alphabets);
+	finiteAutomaton.alphabets = expandCharacterRangesForArray(
+		finiteAutomaton.alphabets,
+		skipCharacterRangesExpansion ?? false
+	);
 
 	// Expanding all character ranges for the states
-	finiteAutomaton.states = expandCharacterRangesForArray(finiteAutomaton.states, appendedString);
+	finiteAutomaton.states = expandCharacterRangesForArray(
+		finiteAutomaton.states,
+		skipCharacterRangesExpansion ?? false,
+		appendedString
+	);
 
 	// Convert the start state to string
 	finiteAutomaton.start_state = appendedString + finiteAutomaton.start_state.toString();
@@ -47,7 +62,10 @@ export function normalize(finiteAutomaton: InputFiniteAutomaton | TransformedFin
 			([epsilonTransitionStartState, epsilonTransitionTargetStates]) => {
 				const newEpsilonTransitionTargetStates: Set<string> = new Set();
 				epsilonTransitionTargetStates.forEach((epsilonTransitionTargetState) => {
-					expandCharacterRanges(epsilonTransitionTargetState.toString()).forEach((stateString) => {
+					expandCharacterRanges(
+						epsilonTransitionTargetState.toString(),
+						skipCharacterRangesExpansion
+					).forEach((stateString) => {
 						newEpsilonTransitionTargetStates.add(stateString.toString());
 					});
 				});
@@ -83,9 +101,11 @@ export function normalize(finiteAutomaton: InputFiniteAutomaton | TransformedFin
 						// In order to remove duplicate states, we are using a set
 						transitionState.forEach((state) => {
 							// Expand all the state strings, which could be character ranges
-							expandCharacterRanges(state.toString()).forEach((stateString) => {
-								newEpsilonTransitionTargetStates.add(stateString);
-							});
+							expandCharacterRanges(state.toString(), skipCharacterRangesExpansion).forEach(
+								(stateString) => {
+									newEpsilonTransitionTargetStates.add(stateString);
+								}
+							);
 						});
 						transitionStateRecord[finiteAutomaton.alphabets[transitionStateIndex]] = Array.from(
 							newEpsilonTransitionTargetStates
@@ -93,13 +113,15 @@ export function normalize(finiteAutomaton: InputFiniteAutomaton | TransformedFin
 					}
 					// For dealing with 1: [ "1-2", 3 ] => 1: [ ["1", "2"], ["3"] ]
 					else {
-						expandCharacterRanges(transitionState.toString()).forEach((expandedState) => {
-							attachToStateRecord(
-								transitionStateRecord,
-								transitionStateIndex,
-								appendedString + expandedState.toString()
-							);
-						});
+						expandCharacterRanges(transitionState.toString(), skipCharacterRangesExpansion).forEach(
+							(expandedState) => {
+								attachToStateRecord(
+									transitionStateRecord,
+									transitionStateIndex,
+									appendedString + expandedState.toString()
+								);
+							}
+						);
 					}
 				}
 			});

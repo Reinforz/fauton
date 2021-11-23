@@ -40,7 +40,12 @@ export class FiniteAutomaton {
 			);
 		}
 		if (!skipOptions?.skipNormalization) {
-			this.automaton = FiniteAutomatonUtils.normalize(finiteAutomaton);
+			this.automaton = FiniteAutomatonUtils.normalize(
+				finiteAutomaton,
+				skipOptions?.skipCharacterRangesExpansion ?? false
+			);
+		} else {
+			this.automaton = finiteAutomaton as any;
 		}
 
 		if (!skipOptions?.skipValidation) {
@@ -48,7 +53,7 @@ export class FiniteAutomaton {
 			FiniteAutomatonUtils.validate(
 				finiteAutomaton.label,
 				FiniteAutomatonUtils.generatePostNormalizationErrors(
-					finiteAutomaton as TransformedFiniteAutomaton
+					this.automaton as TransformedFiniteAutomaton
 				)
 			);
 		}

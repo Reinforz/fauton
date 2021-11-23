@@ -2,6 +2,7 @@ import {
 	GeneratedAutomatonOptions,
 	IAutomatonTestLogicFn,
 	InputFiniteAutomaton,
+	SkipOptions,
 } from '../../types';
 import { DeterministicFiniteAutomaton } from '../DeterministicFiniteAutomaton';
 import { FiniteAutomaton } from '../FiniteAutomaton';
@@ -11,9 +12,10 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 	constructor(
 		testLogic: IAutomatonTestLogicFn,
 		automaton: InputFiniteAutomaton,
-		automatonId?: string
+		automatonId?: string,
+		skipOptions?: Partial<SkipOptions>
 	) {
-		super(testLogic, automaton, 'non-deterministic', automatonId);
+		super(testLogic, automaton, 'non-deterministic', automatonId, skipOptions);
 		if (this.automaton.epsilon_transitions) {
 			this.convertToRegularNfa();
 		}
@@ -54,8 +56,7 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 			),
 			undefined,
 			{
-				skipNormalization: false,
-				skipValidation: false,
+				skipCharacterRangesExpansion: true,
 			}
 		);
 	}

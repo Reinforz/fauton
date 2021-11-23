@@ -58,15 +58,15 @@ export function minimize(
 	const newStates = currentEquivalentStatesGroups.map((currentEquivalentStatesGroup) =>
 		currentEquivalentStatesGroup.join('')
 	);
+
 	return {
 		label: minimizedDfaOptions?.label ?? automaton.label,
 		alphabets: automaton.alphabets,
 		description: minimizedDfaOptions?.description ?? automaton.description,
-		final_states: newStates.filter((newState) => {
+		final_states: newStates.filter((newState) =>
 			// Checking if the new state should be part of the final states
-			const newStateStrings = new Set(newState);
-			return automaton.final_states.find((finalState) => newStateStrings.has(finalState));
-		}),
+			automaton.final_states.find((finalState) => newState.includes(finalState))
+		),
 		start_state: newStartState!.join(''),
 		states: newStates,
 		transitions: newTransitions,

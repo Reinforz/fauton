@@ -16,7 +16,7 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 		testLogic: IAutomatonTestLogicFn,
 		automaton: InputFiniteAutomaton | TransformedFiniteAutomaton,
 		automatonId?: string,
-		skipOptions?: SkipOptions
+		skipOptions?: Partial<SkipOptions>
 	) {
 		super(testLogic, automaton, 'deterministic', automatonId, skipOptions);
 	}
@@ -89,8 +89,7 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 			DeterministicFiniteAutomatonUtils.minimize(this.automaton, minimizedDfaOptions),
 			undefined,
 			{
-				skipNormalization: true,
-				skipValidation: true,
+				skipCharacterRangesExpansion: true,
 			}
 		);
 	}

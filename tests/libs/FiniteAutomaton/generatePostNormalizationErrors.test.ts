@@ -60,7 +60,7 @@ it(`Should generate errors`, () => {
 		})
 	).toStrictEqual([
 		`Automaton final_states must reference a state (3) that is present in states`,
-		`Epsilon transitions state 3 must reference a state that is present in states`,
+		`Epsilon transitions state 2 must reference a state 3 that is present in states`,
 		`Epsilon transitions state 3 must reference a state that is present in states`,
 		`Automaton transitions (3) must reference a state that is present in states`,
 		`Automaton transitions symbol (c), must reference a valid alphabet`,
