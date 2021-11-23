@@ -1,4 +1,5 @@
 import { IAutomatonTestLogicFn, IRegularExpression } from '../../types';
+import { NonDeterministicFiniteAutomaton } from '../NonDeterministicFiniteAutomaton';
 import * as RegularExpressionUtils from './utils';
 
 export class RegularExpression {
@@ -16,6 +17,20 @@ export class RegularExpression {
 
 	test(inputString: string) {
 		return Boolean(inputString.match(this.automaton.regex));
+	}
+
+	convertToEpsilonNonDeterministicFiniteAutomaton() {
+		return new NonDeterministicFiniteAutomaton(
+			this.testLogic,
+			RegularExpressionUtils.generateEpsilonNfaFromRegex(
+				this.automaton.alphabets,
+				this.automaton.regex.toString()
+			),
+			undefined,
+			{
+				skipCharacterRangesExpansion: true,
+			}
+		);
 	}
 }
 

@@ -15,7 +15,13 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 		automatonId?: string,
 		skipOptions?: Partial<SkipOptions>
 	) {
-		super(testLogic, automaton, 'non-deterministic', automatonId, skipOptions);
+		super(
+			testLogic,
+			automaton,
+			automaton.epsilon_transitions ? 'epsilon' : 'non-deterministic',
+			automatonId,
+			skipOptions
+		);
 		if (this.automaton.epsilon_transitions) {
 			this.convertToRegularNfa();
 		}

@@ -35,78 +35,72 @@ export function validateRegex(regexString: string) {
 
 			case '*':
 			case '+':
-			case '?': {
-				// If last token was ( and no literal was found
+			case '?':
+			case '|': {
+				// If last token was ( and no literal was found, operators must act on a literal
 				if (noopTokens[noopTokens.length - 1] === 0 && literals.size === 0) {
 					return false;
 				}
 				// Two consecutive operations is invalid
-				else if (index !== 0 && operations.has(regexString[index - 1])) {
-					return false;
-				}
-				break;
-			}
-
-			case '|': {
-				// If last token was ( and no literal was found
-				if (noopTokens[noopTokens.length - 1] === 0 && literals.size === 0) {
+				// Operators can't be the first symbol
+				else if (index === 0 || operations.has(regexString[index - 1])) {
 					return false;
 				}
 
-				if (noopTokens.length > 1) {
-					let leftRegex = '',
-						rightRegex = '',
-						// Checks whether the whole expression is inside parenthesis
-						insideParen = false,
-						lhsParenCount = 0,
-						rhsParenCount = 0;
-
-					// Backtracking from current to first symbol
-					for (let j = 0; j < index; j += 1) {
-						if (regexString[index - j - 1] === ')') {
-							lhsParenCount += 1;
-						} else if (regexString[index - j - 1] === '(') {
-							lhsParenCount -= 1;
-							// We've encountered two "(" without ")"
-							if (lhsParenCount < 0) {
-								insideParen = true;
-								// extract the left hand side regex
-								leftRegex = regexString.slice(index - j, index);
-								break;
-							}
-						}
-					}
-
-					// If we are not inside parenthesis
-					if (leftRegex === '') {
-						// Extract the lh and rh regex from regex string
-						leftRegex = regexString.slice(0, index);
-						rightRegex = regexString.slice(index + 1);
-					} else if (insideParen) {
-						// Extract the rh side regex
-						for (let j = index + 1; j < regexString.length; j += 1) {
-							if (regexString[j] === ')') {
-								rhsParenCount -= 1;
-								// We've encountered two ")" without "(""
-								if (rhsParenCount < 0) {
-									rightRegex = regexString.slice(index + 1, j);
-								}
-							} else if (regexString[j] === '(') {
-								rhsParenCount += 1;
-							}
-						}
-
-						// Right hand regex of | cant be empty
-						if (rightRegex === '') {
-							return false;
-						}
-					}
-
-					if (validateRegex(rightRegex) && validateRegex(leftRegex) === false) {
+				if (regexSymbol === '|') {
+					// | operator can't be the last symbol of regex
+					if (index === regexString.length - 1) {
 						return false;
 					}
-				}
+					if (noopTokens.length > 1) {
+						let rightRegex = '',
+							// Checks whether the whole expression is inside parenthesis
+							insideParen = false,
+							lhsParenCount = 0,
+							rhsParenCount = 0;
 
+						// Backtracking from current to first symbol
+						for (let j = 0; j < index; j += 1) {
+							if (regexString[index - j - 1] === ')') {
+								lhsParenCount += 1;
+							} else if (regexString[index - j - 1] === '(') {
+								lhsParenCount -= 1;
+								// We've encountered extra "(" without ")"
+								if (lhsParenCount < 0) {
+									insideParen = true;
+									// extract the left hand side regex
+									break;
+								}
+							}
+						}
+
+						if (insideParen) {
+							// Extract the rh side regex
+							for (let j = index + 1; j < regexString.length; j += 1) {
+								if (regexString[j] === ')') {
+									rhsParenCount -= 1;
+									// We've encountered two ")" without "(""
+									if (rhsParenCount < 0) {
+										rightRegex = regexString.slice(index + 1, j);
+										break;
+									}
+								} else if (regexString[j] === '(') {
+									rhsParenCount += 1;
+								}
+							}
+
+							// Right hand regex of | cant be empty
+							if (rightRegex === '') {
+								return false;
+							}
+						}
+						if (validateRegex(rightRegex) === false) {
+							return false;
+						} else {
+							noopTokens[noopTokens.length - 1] += 1;
+						}
+					}
+				}
 				break;
 			}
 			// Non operand characters, literal
