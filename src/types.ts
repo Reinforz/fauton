@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 export interface InputFiniteAutomaton {
 	// Append a string to all the states
 	append?: string;
@@ -112,4 +113,36 @@ export interface SkipOptions {
 	skipValidation: boolean;
 	skipNormalization: boolean;
 	skipCharacterRangesExpansion: boolean;
+}
+
+export type RegexNode =
+	| ConcatRegexNode
+	| KleeneRegexNode
+	| OrRegexNode
+	| LiteralRegexNode
+	| PlusRegexNode;
+
+export interface ConcatRegexNode {
+	operator: 'Concat';
+	operands: [RegexNode, RegexNode];
+}
+
+export interface KleeneRegexNode {
+	operator: 'Kleene';
+	operands: [RegexNode];
+}
+
+export interface OrRegexNode {
+	operator: 'Or';
+	operands: [RegexNode, RegexNode];
+}
+
+export interface PlusRegexNode {
+	operator: 'Plus';
+	operands: [RegexNode];
+}
+
+export interface LiteralRegexNode {
+	operator: 'Literal';
+	operands: [string | number];
 }
