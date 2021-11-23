@@ -17,6 +17,10 @@ export class RegularExpression {
 	test(inputString: string) {
 		return Boolean(inputString.match(this.automaton.regex));
 	}
+
+	addConcatOperatorToRegex() {
+		return RegularExpressionUtils.addConcatOperatorToRegex(this.automaton.regex.toString());
+	}
 }
 
 export { RegularExpressionUtils };
