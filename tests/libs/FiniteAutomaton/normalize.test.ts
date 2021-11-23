@@ -2,11 +2,11 @@ import { normalize } from '../../../src/libs/FiniteAutomaton/utils/normalize';
 
 it(`Should normalize input finite automaton e-nfa without append`, () => {
 	const normalizedFiniteAutomaton = normalize({
-		alphabets: ['a-c', 'e'],
-		final_states: ['0-1'],
+		alphabets: ['a-c', 'e', 'e'],
+		final_states: ['0-1', '1'],
 		label: 'DFA',
 		start_state: 0,
-		states: ['0-4'],
+		states: ['0-4', '2', '3'],
 		transitions: {
 			1: ['1-5', '2-3'],
 			2: [2, ['2-4', 4, 4, 5]],
