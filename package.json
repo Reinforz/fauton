@@ -49,6 +49,7 @@
   "author": "Safwan Shaheer <devorein00@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@datastructures-js/priority-queue": "^5.3.0",
     "cli-progress": "^3.9.1",
     "colors": "^1.4.0",
     "shortid": "^2.2.16"

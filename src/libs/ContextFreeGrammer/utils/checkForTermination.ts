@@ -1,11 +1,8 @@
+import { isAllTerminal } from './isAllTerminal';
+
 /* eslint-disable no-loop-func */
 function setDifference(setA: Set<string>, setB: Set<string>) {
 	return new Set(Array.from(setA).filter((setAElement) => !setB.has(setAElement)));
-}
-
-export function isAllTerminal(terminals: string[], word: string) {
-	const terminalsSet = new Set(terminals);
-	return word.split('').every((letter) => terminalsSet.has(letter));
 }
 
 export function checkForTermination(
