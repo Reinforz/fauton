@@ -1,3 +1,5 @@
+import { checkForTermination } from './checkForTermination';
+
 export function validateCfg(
 	variables: string[],
 	terminals: string[],
