@@ -15,20 +15,16 @@ export function checkGrammar(
 		0,
 		languageChecker
 	);
-	const grammarLanguage = GenerateString.generateCfgLanguage(
-		cfgOption,
-		// actualLanguage.length,
-		maxLength
-	);
+	const grammarLanguage = GenerateString.generateCfgLanguage(cfgOption, maxLength);
 	const grammarLanguageStrings = Object.keys(grammarLanguage).sort(
 		(stringA, stringB) => stringA.length - stringB.length
 	);
 	// These strings exist in our cfg but not in our actual language
-	const badWords = grammarLanguageStrings.filter((string) => !languageChecker(string));
-	if (badWords.length) {
-		console.log('These words are in cfg but not in actual language');
-		badWords.forEach((badWord) => {
-			console.log(badWord);
+	const falsePositives = grammarLanguageStrings.filter((string) => !languageChecker(string));
+	if (falsePositives.length) {
+		console.log('False positives');
+		falsePositives.forEach((falsePositive) => {
+			console.log(falsePositive);
 		});
 	} else {
 		console.log('All words in cfg language are legal');

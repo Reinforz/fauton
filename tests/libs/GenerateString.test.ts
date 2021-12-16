@@ -73,7 +73,7 @@ describe('.generateCfgLanguage', () => {
 				},
 				variables: ['S', 'N', 'E'],
 			},
-			10
+			3
 		);
 		console.log(cfgLanguage);
 	});

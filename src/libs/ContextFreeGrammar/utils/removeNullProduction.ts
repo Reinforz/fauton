@@ -38,19 +38,38 @@ function createProductionCombinations(
  * @param cfgOption Variables and transition record for cfg
  * @returns New transition record with null production removed
  */
-export function removeNullProduction(cfgOption: Pick<CFGOption, 'variables' | 'transitionRecord'>) {
-	const { transitionRecord, variables } = cfgOption;
+export function removeNullProduction(
+	cfgOption: Pick<CFGOption, 'variables' | 'transitionRecord' | 'startVariable'>
+) {
+	const { transitionRecord, variables, startVariable } = cfgOption;
 
 	// eslint-disable-next-line
 	while (true) {
-		const epsilonProductionVariableIndex = variables.findIndex((variable) =>
-			transitionRecord[variable].some((substitution) => substitution.length === 0)
-		);
+		let epsilonProductionVariableIndex = -1;
+		let epsilonProductionVariableSubstitutionIndex = -1;
+		for (let variableIndex = 0; variableIndex < variables.length; variableIndex += 1) {
+			const variable = variables[variableIndex];
+			if (variable !== startVariable) {
+				const nullSubstitutionIndex = transitionRecord[variable].findIndex(
+					(substitution) => substitution.length === 0
+				);
+				if (nullSubstitutionIndex !== -1) {
+					epsilonProductionVariableIndex = variableIndex;
+					epsilonProductionVariableSubstitutionIndex = nullSubstitutionIndex;
+					break;
+				}
+			}
+		}
+
 		if (epsilonProductionVariableIndex === -1) {
 			break;
 		} else {
 			const epsilonProductionVariable = variables[epsilonProductionVariableIndex];
-			transitionRecord[epsilonProductionVariable].splice(epsilonProductionVariableIndex, 1);
+			// Remove the null substitution
+			transitionRecord[epsilonProductionVariable].splice(
+				epsilonProductionVariableSubstitutionIndex,
+				1
+			);
 			Object.entries(transitionRecord).forEach(
 				([transitionRecordVariable, transitionRecordSubstitutions]) => {
 					const newSubstitutions: string[] = [];

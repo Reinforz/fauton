@@ -1,6 +1,7 @@
 import { MinPriorityQueue, PriorityQueueItem } from '@datastructures-js/priority-queue';
 import { CFGOption, LanguageChecker } from '../types';
 import { generateRandomNumber } from '../utils/generateRandomNumber';
+import { removeNullProduction } from './ContextFreeGrammar/utils/removeNullProduction';
 
 interface IQueueItem {
 	path: string[];
@@ -91,6 +92,11 @@ export class GenerateString {
 	 */
 	static generateCfgLanguage(cfgOptions: CFGOption, maxStringLength: number) {
 		const { transitionRecord, variables, startVariable } = cfgOptions;
+		const nullProductionRemovedTransitionRecord = removeNullProduction({
+			transitionRecord,
+			variables,
+			startVariable,
+		});
 		const toTraverse = new MinPriorityQueue<IQueueItem>();
 		// A set to keep track of all the words that have been traversed
 		const traversedSet = new Set(startVariable);
@@ -111,17 +117,14 @@ export class GenerateString {
 				element: { path, word },
 			} = queueItem;
 			// Extracting all the variables of the word
-			const variablesInWord = word.split('').filter((letter) => variablesSet.has(letter));
 
-			// Some words might have variables which might be expanded to epsilon
-			// For example maxLength is 3, word is aAbc, this would be rejected
-			// But if A can be expanded to epsilon then it should at-least be checked
-			if (word.length <= maxStringLength + variablesInWord.length) {
+			if (word.length <= maxStringLength) {
+				const variablesInWord = word.split('').filter((letter) => variablesSet.has(letter));
 				if (variablesInWord.length === 0 && !cfgLanguage[word]) {
 					cfgLanguage[word] = path;
 				} else {
 					variablesInWord.forEach((variable) => {
-						transitionRecord[variable].forEach((substitution) => {
+						nullProductionRemovedTransitionRecord[variable].forEach((substitution) => {
 							// Replace the variable in the word with the substitution
 							const substitutedWord = word.replace(variable, substitution);
 							if (!traversedSet.has(substitutedWord)) {

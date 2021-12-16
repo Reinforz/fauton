@@ -10,6 +10,7 @@ it(`Should remove null production from transition record`, () => {
 			C: ['c'],
 		},
 		variables: ['S', 'A', 'B', 'C'],
+		startVariable: 'S',
 	});
 
 	expect(
@@ -26,4 +27,24 @@ it(`Should remove null production from transition record`, () => {
 	expect(arrayEquivalency(nullProductionRemovedTransition.A, ['aA', 'a'])).toBe(true);
 	expect(arrayEquivalency(nullProductionRemovedTransition.B, ['bB', 'b'])).toBe(true);
 	expect(arrayEquivalency(nullProductionRemovedTransition.C, ['c'])).toBe(true);
+});
+
+it(`Should not remove null production from transition record if start symbol contains epsilon`, () => {
+	const nullProductionRemovedTransition = removeNullProduction({
+		startVariable: 'S',
+		transitionRecord: {
+			S: ['A', 'B', 'C'],
+			A: ['aAf', '', 'B'],
+			B: ['bBe', '', 'C'],
+			C: ['cCd', ''],
+		},
+		variables: ['S', 'A', 'B', 'C'],
+	});
+
+	expect(nullProductionRemovedTransition).toStrictEqual({
+		S: ['', 'A', 'B', 'C'],
+		A: ['af', 'aAf', 'B'],
+		B: ['be', 'bBe', 'C'],
+		C: ['cd', 'cCd'],
+	});
 });
