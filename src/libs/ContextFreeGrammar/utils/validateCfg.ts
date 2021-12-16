@@ -1,11 +1,8 @@
+import { CFGOption } from '../../../types';
 import { checkForTermination } from './checkForTermination';
 
-export function validateCfg(
-	variables: string[],
-	terminals: string[],
-	transitionRecord: Record<string, string[]>,
-	startVariable: string
-) {
+export function validateCfg(cfgOption: CFGOption) {
+	const { startVariable, terminals, transitionRecord, variables } = cfgOption;
 	// Check if all the variables is present in transition record
 	const transitionRecordEntries = Object.entries(transitionRecord);
 	if (transitionRecordEntries.length !== variables.length) {
@@ -38,7 +35,7 @@ export function validateCfg(
 		});
 	});
 	// Check if the substitutions will terminate at some point or not
-	const willTerminate = checkForTermination(variables, terminals, transitionRecord);
+	const willTerminate = checkForTermination({ variables, terminals, transitionRecord });
 	if (!willTerminate) {
 		throw new Error(`Your transition function will never terminate.`);
 	}

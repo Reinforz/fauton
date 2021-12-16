@@ -146,3 +146,13 @@ export interface LiteralRegexNode {
 	operator: 'Literal';
 	operands: [string | number];
 }
+
+export interface CFGOption {
+	variables: string[];
+	terminals: string[];
+	transitionRecord: Record<string, string[]>;
+	startVariable: string;
+}
+
+// eslint-disable-next-line
+export type LanguageChecker = (inputString: string) => boolean;

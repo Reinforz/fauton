@@ -1,4 +1,5 @@
 import { MinPriorityQueue, PriorityQueueItem } from '@datastructures-js/priority-queue';
+import { CFGOption } from '../../../types';
 import { isAllTerminal } from './isAllTerminal';
 
 interface IQueueItem {
@@ -7,21 +8,19 @@ interface IQueueItem {
 }
 
 export function generateCfgLanguage(
-	transitionRecord: Record<string, string[]>,
-	variables: string[],
-	terminals: string[],
-	start: string,
+	cfgOptions: CFGOption,
 	totalStrings: number,
 	maxStringLength: number
 ) {
+	const { transitionRecord, variables, terminals, startVariable } = cfgOptions;
 	const toTraverse = new MinPriorityQueue<IQueueItem>();
-	const traversedSet = new Set(start);
+	const traversedSet = new Set(startVariable);
 	const variablesSet = new Set(variables);
 
 	toTraverse.enqueue(
 		{
 			path: [],
-			word: start,
+			word: startVariable,
 		},
 		0
 	);
@@ -42,6 +41,7 @@ export function generateCfgLanguage(
 					const letter = word[index];
 					if (variablesSet.has(letter)) {
 						transitionRecord[letter].forEach((substitution) => {
+							// Replace the variable in the word with the substitution
 							const substitutedWord = word.replace(letter, substitution);
 							if (!traversedSet.has(substitutedWord)) {
 								traversedSet.add(substitutedWord);

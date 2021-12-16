@@ -1,3 +1,4 @@
+import { LanguageChecker } from '../types';
 import { generateRandomNumber } from '../utils/generateRandomNumber';
 
 export class GenerateString {
@@ -12,16 +13,22 @@ export class GenerateString {
 	static generateAllCombosWithinLength(
 		alphabet: string[],
 		maxLength: number,
-		startLength: number,
+		startLength?: number,
 		// eslint-disable-next-line
-		cb?: (generatedString: string) => void
+		cb?: LanguageChecker
 	) {
 		const generatedStrings: Set<string> = new Set();
 
 		function generateAllKLength(generatedString: string, stringLength: number) {
 			if (stringLength === 0) {
-				generatedStrings.add(generatedString);
-				if (cb) cb(generatedString);
+				if (cb) {
+					const shouldAdd = cb(generatedString);
+					if (shouldAdd) {
+						generatedStrings.add(generatedString);
+					}
+				} else {
+					generatedStrings.add(generatedString);
+				}
 				return;
 			}
 			for (let i = 0; i < alphabet.length; i += 1) {
@@ -29,7 +36,7 @@ export class GenerateString {
 			}
 		}
 
-		for (let length = startLength; length <= maxLength; length += 1) {
+		for (let length = startLength ?? 0; length <= maxLength; length += 1) {
 			generateAllKLength('', length);
 		}
 
