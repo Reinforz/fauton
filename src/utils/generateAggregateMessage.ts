@@ -10,8 +10,8 @@ function percentagesUptoPrecision(numerators: number[], denominator: number, pre
 }
 
 export function generateAggregateMessage(
-	faLabel: string,
-	faDescription: string | undefined,
+	automatonLabel: string | undefined,
+	automatonDescription: string | undefined,
 	automatonTestInfo: AutomatonTestInfo
 ) {
 	const { falsePositives, falseNegatives, truePositives, trueNegatives } = automatonTestInfo;
@@ -31,8 +31,10 @@ export function generateAggregateMessage(
 		5
 	);
 
-	const descriptionStringWithColors = faDescription ? `${colors.bold(faDescription)}\n` : '';
-	const descriptionString = faDescription ? `${faDescription}\n` : '';
+	const descriptionStringWithColors = automatonDescription
+		? `${colors.bold(automatonDescription)}\n`
+		: '';
+	const descriptionString = automatonDescription ? `${automatonDescription}\n` : '';
 	return {
 		values: {
 			totalCorrect,
@@ -46,7 +48,7 @@ export function generateAggregateMessage(
 			trueNegativesPercentage,
 		},
 		withColors: [
-			colors.blue.bold(faLabel),
+			colors.blue.bold(automatonLabel ?? ''),
 			`${descriptionStringWithColors}Total: ${colors.blue.bold(totalStrings.toString())}\n`,
 			`Incorrect: ${colors.red.bold(totalIncorrect.toString())}`,
 			`Incorrect(%): ${colors.red.bold(`${incorrectPercentage.toString()}%`)}`,
@@ -62,7 +64,7 @@ export function generateAggregateMessage(
 			`True Negatives(%): ${colors.green.bold(`${trueNegativesPercentage}%`)}\n`,
 		].join('\n'),
 		withoutColors: [
-			faLabel,
+			automatonLabel,
 			`${descriptionString}Total: ${totalStrings}\n`,
 			`Incorrect: ${totalIncorrect}`,
 			`Incorrect(%): ${incorrectPercentage.toString()}%`,

@@ -1,7 +1,6 @@
 import { CFGOption, LanguageChecker } from '../../../types';
-import { setDifference } from '../../../utils';
+import { generateAggregateMessage, setDifference } from '../../../utils';
 import { GenerateString } from '../../GenerateString';
-import { removeNullProduction } from './removeNullProduction';
 import { validateCfg } from './validateCfg';
 
 export function checkGrammar(
@@ -16,20 +15,12 @@ export function checkGrammar(
 		0,
 		languageChecker
 	);
-	// Generate the null removed transition record before hand so that we can validate it again
-	const nullRemovedTransitionRecord = removeNullProduction(cfgOption);
-	// Making sure that the transition record terminates after removing null transitions
-	validateCfg({ ...cfgOption, transitionRecord: nullRemovedTransitionRecord });
-	const grammarLanguage = GenerateString.generateCfgLanguage(
-		{ ...cfgOption, transitionRecord: nullRemovedTransitionRecord },
-		maxLength,
-		true
-	);
+	const grammarLanguage = GenerateString.generateCfgLanguage(cfgOption, maxLength);
 	const grammarLanguageStrings = Object.keys(grammarLanguage).sort(
 		(stringA, stringB) => stringA.length - stringB.length
 	);
-	// These strings exist in our cfg but not in our actual language
 	const falsePositives = grammarLanguageStrings.filter((string) => !languageChecker(string));
+	// These strings exist in our cfg but not in our actual language
 	if (falsePositives.length) {
 		console.log('False positives');
 		falsePositives.forEach((falsePositive) => {
@@ -43,7 +34,7 @@ export function checkGrammar(
 	if (difference.size) {
 		console.log();
 		if (difference.size > 0) {
-			console.log('True negatives');
+			console.log('False negatives');
 		} else if (difference.size < 0) {
 			console.log('False positives');
 		}
@@ -53,4 +44,11 @@ export function checkGrammar(
 	} else {
 		console.log('CFG represents the actual language');
 	}
+	const { withColors } = generateAggregateMessage(undefined, undefined, {
+		falseNegatives: difference.size,
+		falsePositives: falsePositives.length,
+		trueNegatives: 0,
+		truePositives: actualLanguage.length,
+	});
+	console.log(withColors);
 }
