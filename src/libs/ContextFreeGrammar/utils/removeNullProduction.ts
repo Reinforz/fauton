@@ -7,6 +7,7 @@ function createProductionCombinations(
 ) {
 	const totalCombinations = 2 ** epsilonProducingVariableCount;
 	const newSubstitutions: string[] = [];
+	let containsEpsilon = false;
 
 	for (let index = 0; index < totalCombinations; index += 1) {
 		let nthVariable = 0;
@@ -28,9 +29,15 @@ function createProductionCombinations(
 				newSubstitution += substitutionLetter;
 			}
 		}
-		newSubstitutions.push(newSubstitution);
+		// Set the contains epsilon flag to true if we have an epsilon string
+		if (!newSubstitution.length) {
+			containsEpsilon = true;
+		} else {
+			// Only add the substitution if we dont have any epsilon
+			newSubstitutions.push(newSubstitution);
+		}
 	}
-	return newSubstitutions;
+	return [newSubstitutions, containsEpsilon] as const;
 }
 
 /**
@@ -83,14 +90,17 @@ export function removeNullProduction(
 						if (epsilonProductionVariableCount === 0) {
 							newSubstitutions.push(substitution);
 						} else {
-							// Generate all possible combination of the production rule, with and without the epsilon producing variable
-							newSubstitutions.push(
-								...createProductionCombinations(
-									substitution,
-									epsilonProductionVariable,
-									epsilonProductionVariableCount
-								)
+							const [productionCombinations, containsEpsilon] = createProductionCombinations(
+								substitution,
+								epsilonProductionVariable,
+								epsilonProductionVariableCount
 							);
+							// Generate all possible combination of the production rule, with and without the epsilon producing variable
+							newSubstitutions.push(...productionCombinations);
+							// Only add epsilon if the variable is start variable and combination contains epsilon
+							if (transitionRecordVariable === startVariable && containsEpsilon) {
+								newSubstitutions.push('');
+							}
 						}
 					});
 

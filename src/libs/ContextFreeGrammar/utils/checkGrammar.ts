@@ -1,6 +1,7 @@
 import { CFGOption, LanguageChecker } from '../../../types';
 import { setDifference } from '../../../utils';
 import { GenerateString } from '../../GenerateString';
+import { removeNullProduction } from './removeNullProduction';
 import { validateCfg } from './validateCfg';
 
 export function checkGrammar(
@@ -15,7 +16,15 @@ export function checkGrammar(
 		0,
 		languageChecker
 	);
-	const grammarLanguage = GenerateString.generateCfgLanguage(cfgOption, maxLength);
+	// Generate the null removed transition record before hand so that we can validate it again
+	const nullRemovedTransitionRecord = removeNullProduction(cfgOption);
+	// Making sure that the transition record terminates after removing null transitions
+	validateCfg({ ...cfgOption, transitionRecord: nullRemovedTransitionRecord });
+	const grammarLanguage = GenerateString.generateCfgLanguage(
+		{ ...cfgOption, transitionRecord: nullRemovedTransitionRecord },
+		maxLength,
+		true
+	);
 	const grammarLanguageStrings = Object.keys(grammarLanguage).sort(
 		(stringA, stringB) => stringA.length - stringB.length
 	);

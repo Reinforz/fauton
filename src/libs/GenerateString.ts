@@ -90,13 +90,20 @@ export class GenerateString {
 	 * @param maxStringLength Maximum length of the generated string
 	 * @returns A record of generated string and the path taken to generate them
 	 */
-	static generateCfgLanguage(cfgOptions: CFGOption, maxStringLength: number) {
+	static generateCfgLanguage(
+		cfgOptions: CFGOption,
+		maxStringLength: number,
+		removedNullProduction?: boolean
+	) {
 		const { transitionRecord, variables, startVariable } = cfgOptions;
-		const nullProductionRemovedTransitionRecord = removeNullProduction({
-			transitionRecord,
-			variables,
-			startVariable,
-		});
+		let transformedTransitionRecord = transitionRecord;
+		if (!removedNullProduction) {
+			transformedTransitionRecord = removeNullProduction({
+				transitionRecord,
+				variables,
+				startVariable,
+			});
+		}
 		const toTraverse = new MinPriorityQueue<IQueueItem>();
 		// A set to keep track of all the words that have been traversed
 		const traversedSet = new Set(startVariable);
@@ -124,7 +131,7 @@ export class GenerateString {
 					cfgLanguage[word] = path;
 				} else {
 					variablesInWord.forEach((variable) => {
-						nullProductionRemovedTransitionRecord[variable].forEach((substitution) => {
+						transformedTransitionRecord[variable].forEach((substitution) => {
 							// Replace the variable in the word with the substitution
 							const substitutedWord = word.replace(variable, substitution);
 							if (!traversedSet.has(substitutedWord)) {
