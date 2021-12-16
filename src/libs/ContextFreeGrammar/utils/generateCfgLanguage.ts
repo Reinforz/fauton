@@ -32,30 +32,33 @@ export function generateCfgLanguage(
 		const {
 			element: { path, word },
 		} = queueItem;
-		if (word.length <= maxStringLength) {
+		// Extracting all the variables of the word
+		const variablesInWord = word.split('').filter((letter) => variablesSet.has(letter));
+
+		// Some words might have variables which might be expanded to epsilon
+		// For example maxLength is 3, word is aAbc, this would be rejected
+		// But if A can be expanded to epsilon then it should at-least be checked
+		if (word.length <= maxStringLength + variablesInWord.length) {
 			if (isAllTerminal(terminals, word) && !cfgLanguage[word]) {
 				cfgLanguage[word] = path;
 				totalGeneratedWords += 1;
 			} else {
-				for (let index = 0; index < word.length; index += 1) {
-					const letter = word[index];
-					if (variablesSet.has(letter)) {
-						transitionRecord[letter].forEach((substitution) => {
-							// Replace the variable in the word with the substitution
-							const substitutedWord = word.replace(letter, substitution);
-							if (!traversedSet.has(substitutedWord)) {
-								traversedSet.add(substitutedWord);
-								toTraverse.enqueue(
-									{
-										path: [...path, word],
-										word: substitutedWord,
-									},
-									substitutedWord.length
-								);
-							}
-						});
-					}
-				}
+				variablesInWord.forEach((variable) => {
+					transitionRecord[variable].forEach((substitution) => {
+						// Replace the variable in the word with the substitution
+						const substitutedWord = word.replace(variable, substitution);
+						if (!traversedSet.has(substitutedWord)) {
+							traversedSet.add(substitutedWord);
+							toTraverse.enqueue(
+								{
+									path: [...path, word],
+									word: substitutedWord,
+								},
+								substitutedWord.length
+							);
+						}
+					});
+				});
 			}
 		}
 	}

@@ -24,16 +24,19 @@ export function checkGrammar(
 	const badWords = grammarLanguageStrings.filter((string) => !languageChecker(string));
 	if (badWords.length) {
 		console.log('These words are in cfg but not in actual language');
-		console.log(badWords.join('\n'));
+		badWords.forEach((badWord) => {
+			console.log(badWord);
+		});
 	} else {
 		console.log('All words in cfg language are legal');
 	}
 
 	const difference = setDifference(new Set(actualLanguage), new Set(grammarLanguageStrings));
 	if (difference.size) {
-		if (difference.size > 1) {
+		console.log();
+		if (difference.size > 0) {
 			console.log('These words are in actual language but not in cfg');
-		} else if (difference.size < -1) {
+		} else if (difference.size < 0) {
 			console.log('These words are in cfg but not in actual language');
 		}
 		difference.forEach((word) => {

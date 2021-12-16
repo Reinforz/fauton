@@ -52,9 +52,9 @@
   - [Sample terminal output](#sample-terminal-output)
   - [Incorrect Portion](#incorrect-portion)
   - [Correct Portion](#correct-portion)
-- [Contributors](#contributors)
 - [Algorithm Sources](#algorithm-sources)
 - [Credits](#credits)
+- [Contributors](#contributors)
 
 **Please note that I won't be following semver at the initial stages, as there could be a lot of (breaking) changes between each release which will all be patch**
 
@@ -148,7 +148,7 @@ Our condition is `(D2 OR D3) AND NOT(D2 AND D3)`, meaning either the string pass
 
 ![A dfa that checks if a binary string is divisible by 2 or 3 but not both](./public/divisible_by_3_or_2_but_not_both.jpg 'A dfa that checks if a binary string is divisible by 2 or 3 but not both')
 
-Lets generate a new dfa by combining the first two dfa's !!!
+Lets generate a new dfa by combining the first two dfa's
 
 ```js
 const { FiniteAutomataTest, DeterministicFiniteAutomaton } = require('fauton');
@@ -958,11 +958,7 @@ The progress bar shows the number of input strings that's been processed. Beneat
   - `fa.result = false && logic.result = false`
 - `True Negatives(%)`: Total number of true negatives out of all strings
 
-Better and more detailed api documentation coming soon very soon !!!
-
-# Contributors
-
-1.  Safwan Shaheer [github](https://github.com/Devorein) Author, Maintainer
+Better and more detailed api documentation coming soon very soon.
 
 # Algorithm Sources
 
@@ -978,5 +974,10 @@ Wikipedia sources for all the algorithms used in the package
 Big thanks to all these wonderful repos.
 
 1. [Orban](https://github.com/wevial/orban) Regular expression engine that uses the Thompson-McNaughton-Yamada algorithm implemented in Python.
+2. [CFGChecker](https://github.com/mattany/CFGChecker) A program that cross references a context free grammar with a given language.
 
-Feel free to submit a pull request or open a new issue, contributions are more than welcome !!!
+# Contributors
+
+1.  Safwan Shaheer [github](https://github.com/Devorein) Author, Maintainer
+
+Feel free to submit a pull request or open a new issue, contributions are more than welcome.
