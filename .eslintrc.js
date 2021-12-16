@@ -28,5 +28,6 @@ module.exports = {
 		'no-else-return': 'off',
 		'one-var': 'off',
 		'no-console': 'off',
+		'no-bitwise': 'off',
 	},
 };

@@ -17,7 +17,7 @@ export function checkGrammar(
 	);
 	const grammarLanguage = GenerateString.generateCfgLanguage(
 		cfgOption,
-		actualLanguage.length,
+		// actualLanguage.length,
 		maxLength
 	);
 	const grammarLanguageStrings = Object.keys(grammarLanguage).sort(

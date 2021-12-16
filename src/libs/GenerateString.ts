@@ -1,7 +1,6 @@
 import { MinPriorityQueue, PriorityQueueItem } from '@datastructures-js/priority-queue';
 import { CFGOption, LanguageChecker } from '../types';
 import { generateRandomNumber } from '../utils/generateRandomNumber';
-import { isAllTerminal } from './ContextFreeGrammar/utils/isAllTerminal';
 
 interface IQueueItem {
 	path: string[];
@@ -83,9 +82,17 @@ export class GenerateString {
 		return Array.from(uniqueRandomInputStrings);
 	}
 
-	static generateCfgLanguage(cfgOptions: CFGOption, totalStrings: number, maxStringLength: number) {
-		const { transitionRecord, variables, terminals, startVariable } = cfgOptions;
+	/**
+	 * Generates all the strings of a given cfg within certain length along with the path taken to generate them
+	 * @param cfgOptions Variables, terminals and transition Record for the cfg
+	 * @param totalStrings Total number of strings that should be generated
+	 * @param maxStringLength Maximum length of the generated string
+	 * @returns A record of generated string and the path taken to generate them
+	 */
+	static generateCfgLanguage(cfgOptions: CFGOption, maxStringLength: number) {
+		const { transitionRecord, variables, startVariable } = cfgOptions;
 		const toTraverse = new MinPriorityQueue<IQueueItem>();
+		// A set to keep track of all the words that have been traversed
 		const traversedSet = new Set(startVariable);
 		const variablesSet = new Set(variables);
 
@@ -98,8 +105,7 @@ export class GenerateString {
 		);
 
 		const cfgLanguage: Record<string, string[]> = {};
-		let totalGeneratedWords = 0;
-		while (toTraverse.size() > 0 && totalGeneratedWords < totalStrings) {
+		while (toTraverse.size() > 0) {
 			const queueItem = toTraverse.dequeue() as PriorityQueueItem<IQueueItem>;
 			const {
 				element: { path, word },
@@ -111,9 +117,8 @@ export class GenerateString {
 			// For example maxLength is 3, word is aAbc, this would be rejected
 			// But if A can be expanded to epsilon then it should at-least be checked
 			if (word.length <= maxStringLength + variablesInWord.length) {
-				if (isAllTerminal(terminals, word) && !cfgLanguage[word]) {
+				if (variablesInWord.length === 0 && !cfgLanguage[word]) {
 					cfgLanguage[word] = path;
-					totalGeneratedWords += 1;
 				} else {
 					variablesInWord.forEach((variable) => {
 						transitionRecord[variable].forEach((substitution) => {

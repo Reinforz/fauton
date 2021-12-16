@@ -968,6 +968,7 @@ Wikipedia sources for all the algorithms used in the package
 2. [Hopcroft](https://en.wikipedia.org/wiki/DFA_minimization#Hopcroft's_algorithm) algorithm for dfa-minimization
 3. [Rabin–Scott powerset construction](https://en.wikipedia.org/wiki/Powerset_construction) algorithm to convert nfa to dfa
 4. [Shunting-Yard](https://en.wikipedia.org/wiki/Shunting-yard_algorithm) algorithm to convert regex string from infix to postfix
+5. [Chomsky Normal Form](https://en.wikipedia.org/wiki/Chomsky_normal_form) Algorithm to remove ambiguity from a CFG
 
 # Credits
 
@@ -975,6 +976,7 @@ Big thanks to all these wonderful repos.
 
 1. [Orban](https://github.com/wevial/orban) Regular expression engine that uses the Thompson-McNaughton-Yamada algorithm implemented in Python.
 2. [CFGChecker](https://github.com/mattany/CFGChecker) A program that cross references a context free grammar with a given language.
+3. [CFG Epsilon Removal](https://eli.thegreenplace.net/2010/02/08/removing-epsilon-productions-from-context-free-grammars) A detailed article on how to remove epsilon from CFG
 
 # Contributors
 
