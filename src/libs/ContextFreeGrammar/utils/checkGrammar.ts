@@ -1,7 +1,6 @@
 import { CFGOption, LanguageChecker } from '../../../types';
 import { setDifference } from '../../../utils';
 import { GenerateString } from '../../GenerateString';
-import { generateCfgLanguage } from './generateCfgLanguage';
 import { validateCfg } from './validateCfg';
 
 export function checkGrammar(
@@ -16,7 +15,11 @@ export function checkGrammar(
 		0,
 		languageChecker
 	);
-	const grammarLanguage = generateCfgLanguage(cfgOption, actualLanguage.length, maxLength);
+	const grammarLanguage = GenerateString.generateCfgLanguage(
+		cfgOption,
+		actualLanguage.length,
+		maxLength
+	);
 	const grammarLanguageStrings = Object.keys(grammarLanguage).sort(
 		(stringA, stringB) => stringA.length - stringB.length
 	);
