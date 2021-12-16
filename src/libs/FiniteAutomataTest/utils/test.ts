@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { FiniteAutomatonTestInfo, InputStringOption } from '../../../types';
+import { AutomatonTestInfo, InputStringOption } from '../../../types';
 import { countFileLines } from '../../../utils/countFileLines';
 import { generateAggregateMessage } from '../../../utils/generateAggregateMessage';
 import { FiniteAutomaton } from '../../FiniteAutomaton';
@@ -18,7 +18,7 @@ export async function test(
 	preAutomatonTestCb: (totalInputStrings: number) => void,
 	postAutomatonTestCb: () => void
 ) {
-	const finiteAutomatonTestInfos: FiniteAutomatonTestInfo[] = configs.map(() => ({
+	const AutomatonTestInfos: AutomatonTestInfo[] = configs.map(() => ({
 		falsePositives: 0,
 		falseNegatives: 0,
 		truePositives: 0,
@@ -27,7 +27,7 @@ export async function test(
 
 	for (let index = 0; index < configs.length; index += 1) {
 		const config = configs[index];
-		const finiteAutomatonTestInfo = finiteAutomatonTestInfos[index];
+		const AutomatonTestInfo = AutomatonTestInfos[index];
 		const { automaton, options } = config;
 		const writeStreams = createFileWriteStreams(logsPath, automaton.automaton.label, {
 			aggregate: options.outputFiles?.aggregate ?? true,
@@ -49,7 +49,7 @@ export async function test(
 				const inputStrings = chunks.split('\n') as string[];
 				testAutomaton(
 					automaton,
-					finiteAutomatonTestInfo,
+					AutomatonTestInfo,
 					writeStreams.record,
 					inputStrings,
 					postAutomatonTestCb
@@ -81,7 +81,7 @@ export async function test(
 			}
 			testAutomaton(
 				automaton,
-				finiteAutomatonTestInfo,
+				AutomatonTestInfo,
 				writeStreams.record,
 				generatedStrings,
 				postAutomatonTestCb
@@ -96,7 +96,7 @@ export async function test(
 		const { withoutColors, withColors } = generateAggregateMessage(
 			automaton.automaton.label,
 			automaton.automaton.description,
-			finiteAutomatonTestInfo
+			AutomatonTestInfo
 		);
 
 		// eslint-disable-next-line

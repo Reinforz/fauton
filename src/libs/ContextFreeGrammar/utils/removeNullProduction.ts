@@ -54,9 +54,12 @@ export function removeNullProduction(
 	while (true) {
 		let epsilonProductionVariableIndex = -1;
 		let epsilonProductionVariableSubstitutionIndex = -1;
+		// Finding the variable which contains empty substitution
 		for (let variableIndex = 0; variableIndex < variables.length; variableIndex += 1) {
 			const variable = variables[variableIndex];
+			// Making sure we are not checking the start variable, as the start variable can contain epsilon
 			if (variable !== startVariable) {
+				// Finding the index of the first epsilon substitution
 				const nullSubstitutionIndex = transitionRecord[variable].findIndex(
 					(substitution) => substitution.length === 0
 				);
@@ -77,6 +80,7 @@ export function removeNullProduction(
 				epsilonProductionVariableSubstitutionIndex,
 				1
 			);
+			// We need to loop through each item in transition record as we dont know how removing epsilon would impact the other substitutions
 			Object.entries(transitionRecord).forEach(
 				([transitionRecordVariable, transitionRecordSubstitutions]) => {
 					const newSubstitutions: string[] = [];

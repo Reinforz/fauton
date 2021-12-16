@@ -1,5 +1,5 @@
 import colors from 'colors';
-import { FiniteAutomatonTestInfo } from '../types';
+import { AutomatonTestInfo } from '../types';
 
 function percentageUptoPrecision(numerator: number, denominator: number, precision: number) {
 	return Number(((numerator / denominator) * 100).toFixed(precision));
@@ -12,9 +12,9 @@ function percentagesUptoPrecision(numerators: number[], denominator: number, pre
 export function generateAggregateMessage(
 	faLabel: string,
 	faDescription: string | undefined,
-	finiteAutomatonTestInfo: FiniteAutomatonTestInfo
+	automatonTestInfo: AutomatonTestInfo
 ) {
-	const { falsePositives, falseNegatives, truePositives, trueNegatives } = finiteAutomatonTestInfo;
+	const { falsePositives, falseNegatives, truePositives, trueNegatives } = automatonTestInfo;
 	const totalCorrect = trueNegatives + truePositives;
 	const totalIncorrect = falseNegatives + falsePositives;
 	const totalStrings = totalCorrect + totalIncorrect;

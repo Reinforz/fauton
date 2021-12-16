@@ -43,9 +43,9 @@ export function checkGrammar(
 	if (difference.size) {
 		console.log();
 		if (difference.size > 0) {
-			console.log('These words are in actual language but not in cfg');
+			console.log('True negatives');
 		} else if (difference.size < 0) {
-			console.log('These words are in cfg but not in actual language');
+			console.log('False positives');
 		}
 		difference.forEach((word) => {
 			console.log(word);

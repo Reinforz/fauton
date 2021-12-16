@@ -37,7 +37,7 @@ export interface IFiniteAutomaton {
 	automatonId: string;
 }
 
-export interface FiniteAutomatonTestInfo {
+export interface AutomatonTestInfo {
 	falsePositives: number;
 	falseNegatives: number;
 	truePositives: number;

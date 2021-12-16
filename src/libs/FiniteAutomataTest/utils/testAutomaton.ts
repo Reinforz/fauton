@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import fs from 'fs';
-import { FiniteAutomatonTestInfo, IOutputFiles } from '../../../types';
+import { AutomatonTestInfo, IOutputFiles } from '../../../types';
 import { generateCaseMessage } from '../../../utils';
 import { FiniteAutomaton } from '../../FiniteAutomaton';
 import { RegularExpression } from '../../RegularExpression';
@@ -9,7 +9,7 @@ type IWriteStreams = Record<`${keyof IOutputFiles}WriteStream`, null | fs.WriteS
 
 export function testAutomaton(
 	finiteAutomaton: FiniteAutomaton | RegularExpression,
-	finiteAutomatonTestInfo: FiniteAutomatonTestInfo,
+	AutomatonTestInfo: AutomatonTestInfo,
 	writeStreams: IWriteStreams,
 	inputStrings: string[],
 	postAutomatonTestCb?: () => void
@@ -41,16 +41,16 @@ export function testAutomaton(
 			}
 			if (!isWrong && correctWriteStream) {
 				if (automatonTestResult === false && logicTestResult === false) {
-					finiteAutomatonTestInfo.trueNegatives += 1;
+					AutomatonTestInfo.trueNegatives += 1;
 				} else {
-					finiteAutomatonTestInfo.truePositives += 1;
+					AutomatonTestInfo.truePositives += 1;
 				}
 				correctWriteStream.write(testResultString);
 			} else if (incorrectWriteStream) {
 				if (automatonTestResult && !logicTestResult) {
-					finiteAutomatonTestInfo.falsePositives += 1;
+					AutomatonTestInfo.falsePositives += 1;
 				} else {
-					finiteAutomatonTestInfo.falseNegatives += 1;
+					AutomatonTestInfo.falseNegatives += 1;
 				}
 				incorrectWriteStream.write(testResultString);
 			}

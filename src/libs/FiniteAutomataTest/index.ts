@@ -3,7 +3,7 @@
 import cliProgress from 'cli-progress';
 import colors from 'colors';
 import fs from 'fs';
-import { FiniteAutomatonTestInfo, InputStringOption, IOutputFiles } from '../../types';
+import { AutomatonTestInfo, InputStringOption, IOutputFiles } from '../../types';
 import { FiniteAutomaton } from '../FiniteAutomaton';
 import { RegularExpression } from '../RegularExpression';
 import * as FiniteAutomataTestUtils from './utils';
@@ -52,13 +52,13 @@ export class FiniteAutomataTest {
 
 	testAutomata(
 		finiteAutomaton: FiniteAutomaton | RegularExpression,
-		finiteAutomatonTestInfo: FiniteAutomatonTestInfo,
+		AutomatonTestInfo: AutomatonTestInfo,
 		writeStreams: IWriteStreams,
 		inputStrings: string[]
 	) {
 		FiniteAutomataTestUtils.testAutomaton(
 			finiteAutomaton,
-			finiteAutomatonTestInfo,
+			AutomatonTestInfo,
 			writeStreams,
 			inputStrings,
 			() => {
