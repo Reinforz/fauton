@@ -16,7 +16,7 @@ function createProductionCombinations(
 			substitutionIndex < substitution.length;
 			substitutionIndex += 1
 		) {
-			const substitutionLetter = substitution[index];
+			const substitutionLetter = substitution[substitutionIndex];
 			if (substitutionLetter === epsilonProducingVariable) {
 				// If nthVariable is 4, it will generate the following combo, 10, 11, 01, 00
 				// 11 means both the epsilon variable will be included, 00 means none will be included
@@ -33,7 +33,12 @@ function createProductionCombinations(
 	return newSubstitutions;
 }
 
-export function removeNullProduction(cfgOption: CFGOption) {
+/**
+ * Removes all the null production and returns a new transition record
+ * @param cfgOption Variables and transition record for cfg
+ * @returns New transition record with null production removed
+ */
+export function removeNullProduction(cfgOption: Pick<CFGOption, 'variables' | 'transitionRecord'>) {
 	const { transitionRecord, variables } = cfgOption;
 
 	// eslint-disable-next-line
@@ -76,4 +81,5 @@ export function removeNullProduction(cfgOption: CFGOption) {
 			);
 		}
 	}
+	return transitionRecord;
 }
