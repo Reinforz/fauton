@@ -3,7 +3,7 @@
 import cliProgress from 'cli-progress';
 import colors from 'colors';
 import fs from 'fs';
-import { AutomatonTestInfo, IAutomaton, InputStringOption, IOutputFiles } from '../../types';
+import { AutomatonTestInfo, IAutomatonInfo, InputStringOption, IOutputFiles } from '../../types';
 import { FiniteAutomaton } from '../FiniteAutomaton';
 import { RegularExpression } from '../RegularExpression';
 import * as AutomataTestUtils from './utils';
@@ -47,13 +47,13 @@ export class AutomataTest {
 	}
 
 	testAutomata(
-		finiteAutomaton: FiniteAutomaton | RegularExpression,
+		automaton: FiniteAutomaton | RegularExpression,
 		automatonTestInfo: AutomatonTestInfo,
 		writeStreams: IWriteStreams,
 		inputStrings: string[]
 	) {
 		AutomataTestUtils.testAutomaton(
-			finiteAutomaton,
+			automaton,
 			automatonTestInfo,
 			writeStreams,
 			inputStrings,
@@ -65,13 +65,20 @@ export class AutomataTest {
 
 	async test(
 		configs: {
-			automaton: IAutomaton;
+			automatonInfo: IAutomatonInfo;
 			options: InputStringOption;
 		}[]
 	) {
 		AutomataTestUtils.test(
 			this.#logsPath,
-			configs,
+			configs.map((config) => ({
+				automatonInfo: {
+					automaton: config.automatonInfo.automaton,
+					test: config.automatonInfo.test.bind(config.automatonInfo),
+					testLogic: config.automatonInfo.testLogic.bind(config.automatonInfo),
+				},
+				options: config.options,
+			})),
 			(totalInputStrings: number) => {
 				this.#cliProgressBar.start(totalInputStrings, 0, {
 					speed: 'N/A',

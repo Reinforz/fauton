@@ -1,14 +1,14 @@
-import { CFGAutomaton, IAutomatonTestLogicFn } from '../../types';
+import { CFGAutomaton, IAutomatonInfo, IAutomatonTestLogicFn } from '../../types';
 import { GenerateString } from '../GenerateString';
 import * as ContextFreeGrammarUtils from './utils';
 import { validateCfg } from './utils/validateCfg';
 
 export { ContextFreeGrammarUtils };
 
-export class ContextFreeGrammar {
+export class ContextFreeGrammar implements IAutomatonInfo {
 	testLogic: IAutomatonTestLogicFn;
 
-	automaton: CFGAutomaton;
+	automaton: CFGAutomaton & { alphabets: string[] };
 
 	grammarLanguage: Set<string>;
 
@@ -17,7 +17,10 @@ export class ContextFreeGrammar {
 		this.testLogic = testLogic;
 		const grammarLanguage = GenerateString.generateCfgLanguage(automaton, maxLength);
 		this.grammarLanguage = new Set(Object.keys(grammarLanguage));
-		this.automaton = automaton;
+		this.automaton = {
+			...automaton,
+			alphabets: automaton.terminals,
+		};
 	}
 
 	test(inputString: string) {

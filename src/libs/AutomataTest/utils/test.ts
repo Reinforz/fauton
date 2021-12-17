@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { AutomatonTestInfo, IAutomaton, InputStringOption } from '../../../types';
+import { AutomatonTestInfo, IAutomatonInfo, InputStringOption } from '../../../types';
 import { countFileLines } from '../../../utils/countFileLines';
 import { generateAggregateMessage } from '../../../utils/generateAggregateMessage';
 import { GenerateString } from '../../GenerateString';
@@ -9,7 +9,7 @@ import { testAutomaton } from './testAutomaton';
 export async function test(
 	logsPath: string,
 	configs: {
-		automaton: IAutomaton;
+		automatonInfo: IAutomatonInfo;
 		options: InputStringOption;
 	}[],
 	// eslint-disable-next-line
@@ -26,7 +26,10 @@ export async function test(
 	for (let index = 0; index < configs.length; index += 1) {
 		const config = configs[index];
 		const automatonTestInfo = AutomatonTestInfos[index];
-		const { automaton, options } = config;
+		const {
+			automatonInfo: { automaton, ...automatonTest },
+			options,
+		} = config;
 		const writeStreams = createFileWriteStreams(logsPath, automaton.label, {
 			aggregate: options.outputFiles?.aggregate ?? true,
 			case: options.outputFiles?.case ?? true,
@@ -46,7 +49,7 @@ export async function test(
 			for await (const chunks of readStream) {
 				const inputStrings = chunks.split('\n') as string[];
 				testAutomaton(
-					automaton,
+					automatonTest,
 					automatonTestInfo,
 					writeStreams.record,
 					inputStrings,
@@ -79,7 +82,7 @@ export async function test(
 				preAutomatonTestCb(generatedStrings.length);
 			}
 			testAutomaton(
-				automaton,
+				automatonTest,
 				automatonTestInfo,
 				writeStreams.record,
 				generatedStrings,

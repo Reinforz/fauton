@@ -44,12 +44,14 @@ export interface IFiniteAutomaton {
 	automatonId: string;
 }
 
-export interface IAutomaton {
+export interface IAutomatonInfo {
 	test: IAutomatonTestFn;
 	testLogic: IAutomatonTestLogicFn;
-	label: string;
-	alphabets: string[];
-	description?: string;
+	automaton: {
+		label: string;
+		alphabets: string[];
+		description?: string;
+	};
 }
 
 export interface AutomatonTestInfo {
