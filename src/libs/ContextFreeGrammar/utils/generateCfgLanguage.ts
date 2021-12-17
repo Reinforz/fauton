@@ -1,4 +1,4 @@
-import { MinPriorityQueue, PriorityQueueItem } from '@datastructures-js/priority-queue';
+import { LinkedList } from '@datastructures-js/linked-list';
 import { CFGOption } from '../../../types';
 import { removeNullProduction } from './removeNullProduction';
 
@@ -30,29 +30,24 @@ export function generateCfgLanguage(
 			startVariable,
 		});
 	}
-	const toTraverse = new MinPriorityQueue<IQueueItem>();
+	const linkedList = new LinkedList<IQueueItem>();
 	// A set to keep track of all the words that have been traversed
 	const traversedSet = new Set(startVariable);
 	const variablesSet = new Set(variables);
 
-	toTraverse.enqueue(
-		{
-			path: [],
-			word: startVariable,
-			label: startVariable,
-			rules: [],
-		},
-		0
-	);
+	linkedList.insertFirst({
+		path: [],
+		word: startVariable,
+		label: startVariable,
+		rules: [],
+	});
 
 	const cfgLanguageRecord: Record<string, IQueueItem> = {};
 	const cfgLanguage: Set<string> = new Set();
 
-	while (toTraverse.size() > 0) {
-		const queueItem = toTraverse.dequeue() as PriorityQueueItem<IQueueItem>;
-		const {
-			element: { path, word, rules },
-		} = queueItem;
+	while (linkedList.count()) {
+		const queueItem = linkedList.removeFirst()!;
+		const { path, word, rules } = queueItem.getValue();
 		// Extracting all the variables of the word
 
 		if (word.length <= maxStringLength) {
@@ -73,18 +68,15 @@ export function generateCfgLanguage(
 					transformedProductionRules[variable].forEach((substitution, substitutionIndex) => {
 						// Replace the variable in the word with the substitution
 						const substitutedWord = word.replace(variable, substitution);
-						if (!traversedSet.has(substitutedWord)) {
+						if (!traversedSet.has(substitutedWord) && substitutedWord.length <= maxStringLength) {
 							const newPath = [...path, word];
 							traversedSet.add(substitutedWord);
-							toTraverse.enqueue(
-								{
-									rules: [...rules, [variable, substitutionIndex]],
-									path: newPath,
-									word: substitutedWord,
-									label: newPath.join(' -> '),
-								},
-								substitutedWord.length
-							);
+							linkedList.insertLast({
+								rules: [...rules, [variable, substitutionIndex]],
+								path: newPath,
+								word: substitutedWord,
+								label: newPath.join(' -> '),
+							});
 						}
 					});
 				});

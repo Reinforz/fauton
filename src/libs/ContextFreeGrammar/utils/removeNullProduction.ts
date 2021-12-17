@@ -54,6 +54,7 @@ export function removeNullProduction(
 	while (true) {
 		let epsilonProductionVariableIndex = -1;
 		let epsilonProductionVariableSubstitutionIndex = -1;
+		// TODO: Move to a separate module for unit testing purposes
 		// Finding the variable which contains empty substitution
 		for (let variableIndex = 0; variableIndex < variables.length; variableIndex += 1) {
 			const variable = variables[variableIndex];
