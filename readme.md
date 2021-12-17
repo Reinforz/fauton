@@ -60,17 +60,19 @@
 
 # Features
 
-1. Test any valid dfa/nfa/ε-nfa/regex
+1. Test any valid dfa/nfa/ε-nfa/regex/cfg
 2. Supports arbitrary alphabets
 3. Easy to use api to generate input strings
 4. ε-nfa to nfa conversion
 5. ε-nfa/nfa to dfa conversion
 6. Generate artifacts files for each automaton
-7. Highly customizable
-8. Full typescript support
-9. Simple concise error messages for invalid finite automaton
-10. Generate full graph for ε-nfa given a string
-11. Generate ε closure of a single state
+7. CFG Language generation
+8. Highly customizable
+9. Full typescript support
+10. Simple concise error messages for invalid finite automaton
+11. Generate full graph for ε-nfa given a string
+12. Generate ε closure of a single state
+13. Check if a cfg can ever be terminated
 
 # Motivation
 

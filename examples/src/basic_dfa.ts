@@ -1,4 +1,4 @@
-import { DeterministicFiniteAutomaton, FiniteAutomataTest } from 'fauton';
+import { AutomataTest, DeterministicFiniteAutomaton } from 'fauton';
 import path from 'path';
 
 const startsWithBC = new DeterministicFiniteAutomaton(
@@ -19,10 +19,10 @@ const startsWithBC = new DeterministicFiniteAutomaton(
 	}
 );
 
-const finiteAutomataTest = new FiniteAutomataTest(path.join(__dirname, 'logs'));
+const finiteAutomataTest = new AutomataTest(path.join(__dirname, 'logs'));
 finiteAutomataTest.test([
 	{
-		automaton: startsWithBC,
+		automatonInfo: startsWithBC,
 		options: {
 			type: 'generate',
 			combo: {

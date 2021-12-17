@@ -1,4 +1,4 @@
-import { FiniteAutomataTest, NonDeterministicFiniteAutomaton } from 'fauton';
+import { AutomataTest, NonDeterministicFiniteAutomaton } from 'fauton';
 import path from 'path';
 
 const startsWithAB = new NonDeterministicFiniteAutomaton(
@@ -18,10 +18,10 @@ const startsWithAB = new NonDeterministicFiniteAutomaton(
 	}
 );
 
-const finiteAutomataTest = new FiniteAutomataTest(path.join(__dirname, 'logs'));
+const finiteAutomataTest = new AutomataTest(path.join(__dirname, 'logs'));
 finiteAutomataTest.test([
 	{
-		automaton: startsWithAB,
+		automatonInfo: startsWithAB,
 		options: {
 			type: 'generate',
 			combo: {

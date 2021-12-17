@@ -1,4 +1,4 @@
-import { DeterministicFiniteAutomaton, FiniteAutomataTest } from 'fauton';
+import { AutomataTest, DeterministicFiniteAutomaton } from 'fauton';
 import path from 'path';
 
 const DivisibleBy3 = new DeterministicFiniteAutomaton(
@@ -39,10 +39,10 @@ const NotDivisibleBy2And3 = DivisibleBy2.AND(DivisibleBy3).NOT();
 
 const DivisibleBy3Or2ButNotByBoth = DivisibleBy2Or3.AND(NotDivisibleBy2And3);
 
-const finiteAutomataTest = new FiniteAutomataTest(path.resolve(__dirname, 'logs'));
+const finiteAutomataTest = new AutomataTest(path.resolve(__dirname, 'logs'));
 finiteAutomataTest.test([
 	{
-		automaton: DivisibleBy3Or2ButNotByBoth,
+		automatonInfo: DivisibleBy3Or2ButNotByBoth,
 		options: {
 			type: 'generate',
 			combo: {

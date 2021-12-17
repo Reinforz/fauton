@@ -1,4 +1,4 @@
-import { FiniteAutomataTest, RegularExpression } from 'fauton';
+import { AutomataTest, RegularExpression } from 'fauton';
 import path from 'path';
 
 const regex = new RegularExpression(
@@ -19,11 +19,11 @@ const regex = new RegularExpression(
 	}
 );
 
-const finiteAutomataTest = new FiniteAutomataTest(path.join(__dirname, 'logs'));
+const finiteAutomataTest = new AutomataTest(path.join(__dirname, 'logs'));
 
 finiteAutomataTest.test([
 	{
-		automaton: regex,
+		automatonInfo: regex,
 		options: {
 			type: 'generate',
 			combo: {

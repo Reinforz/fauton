@@ -1,4 +1,4 @@
-import { DeterministicFiniteAutomaton, FiniteAutomataTest, FiniteAutomatonUtils } from 'fauton';
+import { AutomataTest, DeterministicFiniteAutomaton, FiniteAutomatonUtils } from 'fauton';
 import path from 'path';
 
 const dfa = new DeterministicFiniteAutomaton(() => true, {
@@ -26,11 +26,11 @@ minimized_dfa.testLogic = (inputString) => {
 		.automatonTestResult;
 };
 
-const finiteAutomataTest = new FiniteAutomataTest(path.join(__dirname, 'logs'));
+const finiteAutomataTest = new AutomataTest(path.join(__dirname, 'logs'));
 
 finiteAutomataTest.test([
 	{
-		automaton: minimized_dfa,
+		automatonInfo: minimized_dfa,
 		options: {
 			type: 'generate',
 			combo: {
