@@ -59,22 +59,3 @@ describe('.generateRandomUnique', () => {
 		expect(randomStrings2.includes('c'));
 	});
 });
-
-describe('.generateCfgLanguage', () => {
-	it(`Should generate the language of a CFG`, () => {
-		const cfgLanguage = GenerateString.generateCfgLanguage(
-			{
-				startVariable: 'S',
-				terminals: ['0', '1', '+', '-'],
-				transitionRecord: {
-					S: ['N', 'SEN'],
-					N: ['0', '1'],
-					E: ['+', '-'],
-				},
-				variables: ['S', 'N', 'E'],
-			},
-			3
-		);
-		console.log(cfgLanguage);
-	});
-});

@@ -45,7 +45,9 @@ export function generateCfgLanguage(
 		0
 	);
 
-	const cfgLanguage: Record<string, IQueueItem> = {};
+	const cfgLanguageRecord: Record<string, IQueueItem> = {};
+	const cfgLanguage: Set<string> = new Set();
+
 	while (toTraverse.size() > 0) {
 		const queueItem = toTraverse.dequeue() as PriorityQueueItem<IQueueItem>;
 		const {
@@ -55,14 +57,15 @@ export function generateCfgLanguage(
 
 		if (word.length <= maxStringLength) {
 			const variablesInWord = word.split('').filter((letter) => variablesSet.has(letter));
-			if (variablesInWord.length === 0 && !cfgLanguage[word]) {
+			if (variablesInWord.length === 0 && !cfgLanguageRecord[word]) {
 				const newPath = [...path, word];
-				cfgLanguage[word] = {
+				cfgLanguageRecord[word] = {
 					path: newPath,
 					rules,
 					word,
 					label: newPath.join(' -> '),
 				};
+				cfgLanguage.add(word);
 			} else {
 				variablesInWord.forEach((variable) => {
 					transformedTransitionRecord[variable].forEach((substitution, substitutionIndex) => {
@@ -86,5 +89,9 @@ export function generateCfgLanguage(
 			}
 		}
 	}
-	return cfgLanguage;
+	return {
+		tree: cfgLanguageRecord,
+		language: Array.from(cfgLanguage),
+		transitionRecord: transformedTransitionRecord,
+	};
 }
