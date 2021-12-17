@@ -681,7 +681,7 @@ const cfgLanguage = GenerateString.generateCfgLanguage(
 	{
 		startVariable: 'S',
 		terminals: ['0', '1', '+', '-', '/', '*', '(', ')'],
-		transitionRecord: {
+		productionRules: {
 			S: ['S', 'SEN', '(S)', 'N'],
 			N: ['0', '1'],
 			E: ['+', '-', '/', '*'],
@@ -708,7 +708,7 @@ console.log(Object.keys(cfgLanguage));
 ```js
 import { ContextFreeGrammarUtils } from 'fauton';
 const nullProductionRemovedTransition = ContextFreeGrammarUtils.removeNullProduction({
-	transitionRecord: {
+	productionRules: {
 		S: ['ABAC'],
 		A: ['aA', ''],
 		B: ['bB', ''],

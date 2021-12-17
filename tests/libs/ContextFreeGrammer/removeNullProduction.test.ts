@@ -3,7 +3,7 @@ import { arrayEquivalency } from '../../setEquivalency';
 
 it(`Should remove null production from transition record`, () => {
 	const nullProductionRemovedTransition = removeNullProduction({
-		transitionRecord: {
+		productionRules: {
 			S: ['ABAC'],
 			A: ['aA', ''],
 			B: ['bB', ''],
@@ -32,7 +32,7 @@ it(`Should remove null production from transition record`, () => {
 it(`Should not remove null production from transition record if start symbol contains epsilon`, () => {
 	const nullProductionRemovedTransition = removeNullProduction({
 		startVariable: 'S',
-		transitionRecord: {
+		productionRules: {
 			S: ['A', 'B', 'C'],
 			A: ['aAf', '', 'B'],
 			B: ['bBe', '', 'C'],

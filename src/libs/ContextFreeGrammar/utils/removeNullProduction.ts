@@ -40,6 +40,35 @@ function createProductionCombinations(
 	return [newSubstitutions, containsEpsilon] as const;
 }
 
+export function findFirstNullProductionRule(
+	cfgOption: Pick<CFGOption, 'variables' | 'productionRules' | 'startVariable'>
+) {
+	const { productionRules, variables, startVariable } = cfgOption;
+	// Which variable produces null production
+	let epsilonProductionVariableIndex = -1;
+	// Which particular rule of the variable produces null production
+	let epsilonProductionVariableSubstitutionIndex = -1;
+	// TODO: Move to a separate module for unit testing purposes
+	// Finding the variable which contains empty substitution
+	for (let variableIndex = 0; variableIndex < variables.length; variableIndex += 1) {
+		const variable = variables[variableIndex];
+		// Making sure we are not checking the start variable, as the start variable can contain epsilon
+		if (variable !== startVariable) {
+			// Finding the index of the first epsilon substitution
+			const nullSubstitutionIndex = productionRules[variable].findIndex(
+				(substitution) => substitution.length === 0
+			);
+			if (nullSubstitutionIndex !== -1) {
+				epsilonProductionVariableIndex = variableIndex;
+				epsilonProductionVariableSubstitutionIndex = nullSubstitutionIndex;
+				break;
+			}
+		}
+	}
+
+	return [epsilonProductionVariableIndex, epsilonProductionVariableSubstitutionIndex] as const;
+}
+
 /**
  * Removes all the null production and returns a new transition record
  * @param cfgOption Variables and transition record for cfg
@@ -52,25 +81,8 @@ export function removeNullProduction(
 
 	// eslint-disable-next-line
 	while (true) {
-		let epsilonProductionVariableIndex = -1;
-		let epsilonProductionVariableSubstitutionIndex = -1;
-		// TODO: Move to a separate module for unit testing purposes
-		// Finding the variable which contains empty substitution
-		for (let variableIndex = 0; variableIndex < variables.length; variableIndex += 1) {
-			const variable = variables[variableIndex];
-			// Making sure we are not checking the start variable, as the start variable can contain epsilon
-			if (variable !== startVariable) {
-				// Finding the index of the first epsilon substitution
-				const nullSubstitutionIndex = productionRules[variable].findIndex(
-					(substitution) => substitution.length === 0
-				);
-				if (nullSubstitutionIndex !== -1) {
-					epsilonProductionVariableIndex = variableIndex;
-					epsilonProductionVariableSubstitutionIndex = nullSubstitutionIndex;
-					break;
-				}
-			}
-		}
+		const [epsilonProductionVariableIndex, epsilonProductionVariableSubstitutionIndex] =
+			findFirstNullProductionRule(cfgOption);
 
 		if (epsilonProductionVariableIndex === -1) {
 			break;
