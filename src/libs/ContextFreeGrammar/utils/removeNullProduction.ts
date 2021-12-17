@@ -51,7 +51,6 @@ export function findFirstNullProductionRule(
 	let epsilonProductionVariableIndex = -1;
 	// Which particular rule of the variable produces null production
 	let epsilonProductionVariableSubstitutionIndex = -1;
-	// TODO: Move to a separate module for unit testing purposes
 	// Finding the variable which contains empty substitution
 	for (let variableIndex = 0; variableIndex < variables.length; variableIndex += 1) {
 		const variable = variables[variableIndex];
