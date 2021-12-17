@@ -31,10 +31,20 @@ export interface TransformedFiniteAutomaton {
 
 // eslint-disable-next-line
 export type IAutomatonTestLogicFn = (inputString: string, automatonTestResult: boolean) => boolean;
+// eslint-disable-next-line
+export type IAutomatonTestFn = (inputString: string) => boolean;
 export interface IFiniteAutomaton {
 	testLogic: IAutomatonTestLogicFn;
 	automaton: TransformedFiniteAutomaton;
 	automatonId: string;
+}
+
+export interface IAutomaton {
+	test: IAutomatonTestFn;
+	testLogic: IAutomatonTestLogicFn;
+	label: string;
+	alphabets: string[];
+	description?: string;
 }
 
 export interface AutomatonTestInfo {

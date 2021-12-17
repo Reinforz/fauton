@@ -5,6 +5,8 @@ import { removeNullProduction } from './ContextFreeGrammar/utils/removeNullProdu
 
 interface IQueueItem {
 	path: string[];
+	label: string;
+	rules: Array<[string, number]>;
 	word: string;
 }
 
@@ -113,33 +115,44 @@ export class GenerateString {
 			{
 				path: [],
 				word: startVariable,
+				label: startVariable,
+				rules: [],
 			},
 			0
 		);
 
-		const cfgLanguage: Record<string, string[]> = {};
+		const cfgLanguage: Record<string, IQueueItem> = {};
 		while (toTraverse.size() > 0) {
 			const queueItem = toTraverse.dequeue() as PriorityQueueItem<IQueueItem>;
 			const {
-				element: { path, word },
+				element: { path, word, rules },
 			} = queueItem;
 			// Extracting all the variables of the word
 
 			if (word.length <= maxStringLength) {
 				const variablesInWord = word.split('').filter((letter) => variablesSet.has(letter));
 				if (variablesInWord.length === 0 && !cfgLanguage[word]) {
-					cfgLanguage[word] = path;
+					const newPath = [...path, word];
+					cfgLanguage[word] = {
+						path: newPath,
+						rules,
+						word,
+						label: newPath.join(' -> '),
+					};
 				} else {
 					variablesInWord.forEach((variable) => {
-						transformedTransitionRecord[variable].forEach((substitution) => {
+						transformedTransitionRecord[variable].forEach((substitution, substitutionIndex) => {
 							// Replace the variable in the word with the substitution
 							const substitutedWord = word.replace(variable, substitution);
 							if (!traversedSet.has(substitutedWord)) {
+								const newPath = [...path, word];
 								traversedSet.add(substitutedWord);
 								toTraverse.enqueue(
 									{
-										path: [...path, word],
+										rules: [...rules, [variable, substitutionIndex]],
+										path: newPath,
 										word: substitutedWord,
+										label: newPath.join(' -> '),
 									},
 									substitutedWord.length
 								);

@@ -1,17 +1,15 @@
 import fs from 'fs';
-import { AutomatonTestInfo, InputStringOption } from '../../../types';
+import { AutomatonTestInfo, IAutomaton, InputStringOption } from '../../../types';
 import { countFileLines } from '../../../utils/countFileLines';
 import { generateAggregateMessage } from '../../../utils/generateAggregateMessage';
-import { FiniteAutomaton } from '../../FiniteAutomaton';
 import { GenerateString } from '../../GenerateString';
-import { RegularExpression } from '../../RegularExpression';
 import { createFileWriteStreams } from './createFileWriteStreams';
 import { testAutomaton } from './testAutomaton';
 
 export async function test(
 	logsPath: string,
 	configs: {
-		automaton: FiniteAutomaton | RegularExpression;
+		automaton: IAutomaton;
 		options: InputStringOption;
 	}[],
 	// eslint-disable-next-line
@@ -27,9 +25,9 @@ export async function test(
 
 	for (let index = 0; index < configs.length; index += 1) {
 		const config = configs[index];
-		const AutomatonTestInfo = AutomatonTestInfos[index];
+		const automatonTestInfo = AutomatonTestInfos[index];
 		const { automaton, options } = config;
-		const writeStreams = createFileWriteStreams(logsPath, automaton.automaton.label, {
+		const writeStreams = createFileWriteStreams(logsPath, automaton.label, {
 			aggregate: options.outputFiles?.aggregate ?? true,
 			case: options.outputFiles?.case ?? true,
 			correct: options.outputFiles?.correct ?? true,
@@ -49,7 +47,7 @@ export async function test(
 				const inputStrings = chunks.split('\n') as string[];
 				testAutomaton(
 					automaton,
-					AutomatonTestInfo,
+					automatonTestInfo,
 					writeStreams.record,
 					inputStrings,
 					postAutomatonTestCb
@@ -61,13 +59,13 @@ export async function test(
 				if (options.random) {
 					generatedStrings = GenerateString.generateRandomUnique(
 						options.random.total,
-						automaton.automaton.alphabets,
+						automaton.alphabets,
 						options.random.minLength,
 						options.random.maxLength
 					);
 				} else {
 					generatedStrings = GenerateString.generateAllCombosWithinLength(
-						automaton.automaton.alphabets,
+						automaton.alphabets,
 						options.combo!.maxLength,
 						options.combo!.startLength ?? 1
 					);
@@ -81,7 +79,7 @@ export async function test(
 			}
 			testAutomaton(
 				automaton,
-				AutomatonTestInfo,
+				automatonTestInfo,
 				writeStreams.record,
 				generatedStrings,
 				postAutomatonTestCb
@@ -94,9 +92,9 @@ export async function test(
 			endStreams,
 		} = writeStreams;
 		const { withoutColors, withColors } = generateAggregateMessage(
-			automaton.automaton.label,
-			automaton.automaton.description,
-			AutomatonTestInfo
+			automaton.label,
+			automaton.description,
+			automatonTestInfo
 		);
 
 		// eslint-disable-next-line

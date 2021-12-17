@@ -52,13 +52,13 @@ export class FiniteAutomataTest {
 
 	testAutomata(
 		finiteAutomaton: FiniteAutomaton | RegularExpression,
-		AutomatonTestInfo: AutomatonTestInfo,
+		automatonTestInfo: AutomatonTestInfo,
 		writeStreams: IWriteStreams,
 		inputStrings: string[]
 	) {
 		FiniteAutomataTestUtils.testAutomaton(
 			finiteAutomaton,
-			AutomatonTestInfo,
+			automatonTestInfo,
 			writeStreams,
 			inputStrings,
 			() => {
@@ -75,7 +75,14 @@ export class FiniteAutomataTest {
 	) {
 		FiniteAutomataTestUtils.test(
 			this.#logsPath,
-			configs,
+			configs.map((config) => ({
+				automaton: {
+					...config.automaton.automaton,
+					test: config.automaton.test,
+					testLogic: config.automaton.testLogic,
+				},
+				options: config.options,
+			})),
 			(totalInputStrings: number) => {
 				this.#cliProgressBar.start(totalInputStrings, 0, {
 					speed: 'N/A',
