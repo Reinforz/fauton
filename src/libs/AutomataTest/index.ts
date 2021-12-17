@@ -3,10 +3,10 @@
 import cliProgress from 'cli-progress';
 import colors from 'colors';
 import fs from 'fs';
-import { AutomatonTestInfo, InputStringOption, IOutputFiles } from '../../types';
+import { AutomatonTestInfo, IAutomaton, InputStringOption, IOutputFiles } from '../../types';
 import { FiniteAutomaton } from '../FiniteAutomaton';
 import { RegularExpression } from '../RegularExpression';
-import * as FiniteAutomataTestUtils from './utils';
+import * as AutomataTestUtils from './utils';
 
 export type IAutomataTestConfig =
 	| {
@@ -22,7 +22,7 @@ export type IAutomataTestConfig =
 
 type IWriteStreams = Record<`${keyof IOutputFiles}WriteStream`, null | fs.WriteStream>;
 
-export class FiniteAutomataTest {
+export class AutomataTest {
 	#cliProgressBar: cliProgress.SingleBar;
 
 	#logsPath: string;
@@ -43,11 +43,7 @@ export class FiniteAutomataTest {
 	}
 
 	createFileWriteStreams(automatonLabel: string, outputFiles: Partial<IOutputFiles>) {
-		return FiniteAutomataTestUtils.createFileWriteStreams(
-			this.#logsPath,
-			automatonLabel,
-			outputFiles
-		);
+		return AutomataTestUtils.createFileWriteStreams(this.#logsPath, automatonLabel, outputFiles);
 	}
 
 	testAutomata(
@@ -56,7 +52,7 @@ export class FiniteAutomataTest {
 		writeStreams: IWriteStreams,
 		inputStrings: string[]
 	) {
-		FiniteAutomataTestUtils.testAutomaton(
+		AutomataTestUtils.testAutomaton(
 			finiteAutomaton,
 			automatonTestInfo,
 			writeStreams,
@@ -69,20 +65,13 @@ export class FiniteAutomataTest {
 
 	async test(
 		configs: {
-			automaton: FiniteAutomaton | RegularExpression;
+			automaton: IAutomaton;
 			options: InputStringOption;
 		}[]
 	) {
-		FiniteAutomataTestUtils.test(
+		AutomataTestUtils.test(
 			this.#logsPath,
-			configs.map((config) => ({
-				automaton: {
-					...config.automaton.automaton,
-					test: config.automaton.test,
-					testLogic: config.automaton.testLogic,
-				},
-				options: config.options,
-			})),
+			configs,
 			(totalInputStrings: number) => {
 				this.#cliProgressBar.start(totalInputStrings, 0, {
 					speed: 'N/A',
@@ -95,4 +84,4 @@ export class FiniteAutomataTest {
 	}
 }
 
-export { FiniteAutomataTestUtils };
+export { AutomataTestUtils };

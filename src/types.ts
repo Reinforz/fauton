@@ -16,6 +16,11 @@ export interface InputFiniteAutomaton {
 	epsilon_transitions?: Record<string, (string | number)[]>;
 }
 
+export interface CFGAutomaton extends CFGOption {
+	label: string;
+	description?: string;
+}
+
 export interface TransformedFiniteAutomaton {
 	append?: string;
 	alphabets: string[];
