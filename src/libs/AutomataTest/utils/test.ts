@@ -13,8 +13,8 @@ export async function test(
 		options: InputStringOption;
 	}[],
 	// eslint-disable-next-line
-	preAutomatonTestCb: (totalInputStrings: number) => void,
-	postAutomatonTestCb: () => void
+	preAutomatonTestCb?: (totalInputStrings: number) => void,
+	postAutomatonTestCb?: () => void
 ) {
 	const AutomatonTestInfos: AutomatonTestInfo[] = configs.map(() => ({
 		falsePositives: 0,
@@ -67,7 +67,8 @@ export async function test(
 					generatedStrings = GenerateString.generateAllCombosWithinLength(
 						automaton.alphabets,
 						options.combo!.maxLength,
-						options.combo!.startLength ?? 1
+						options.combo!.startLength ?? 1,
+						options.languageChecker
 					);
 				}
 			} else {

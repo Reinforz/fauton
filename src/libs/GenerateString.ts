@@ -24,19 +24,19 @@ export class GenerateString {
 		maxLength: number,
 		startLength?: number,
 		// eslint-disable-next-line
-		cb?: LanguageChecker
+		languageChecker?: LanguageChecker
 	) {
-		const generatedStrings: Set<string> = new Set();
+		const generatedStrings: Array<string> = [];
 
 		function generateAllKLength(generatedString: string, stringLength: number) {
 			if (stringLength === 0) {
-				if (cb) {
-					const shouldAdd = cb(generatedString);
+				if (languageChecker) {
+					const shouldAdd = languageChecker(generatedString);
 					if (shouldAdd) {
-						generatedStrings.add(generatedString);
+						generatedStrings.push(generatedString);
 					}
 				} else {
-					generatedStrings.add(generatedString);
+					generatedStrings.push(generatedString);
 				}
 				return;
 			}
@@ -49,7 +49,7 @@ export class GenerateString {
 			generateAllKLength('', length);
 		}
 
-		return Array.from(generatedStrings);
+		return generatedStrings;
 	}
 
 	/**

@@ -75,34 +75,39 @@ export interface IOutputFiles {
 }
 
 export type InputStringOption =
-	| {
-			type: 'generate';
-			random?: {
-				total: number;
-				minLength: number;
-				maxLength: number;
-			};
-			combo?: undefined | null;
-			outputFiles?: Partial<IOutputFiles>;
-	  }
-	| {
-			type: 'generate';
-			combo: {
-				maxLength: number;
-				startLength?: number;
-			};
-			random?: undefined | null;
-			outputFiles?: Partial<IOutputFiles>;
-	  }
-	| {
-			type: 'file';
-			filePath: string;
-			outputFiles?: Partial<IOutputFiles>;
-	  }
-	| {
-			type: 'custom';
-			inputs: string[];
-			outputFiles?: Partial<IOutputFiles>;
+	| (
+			| {
+					type: 'generate';
+					random?: {
+						total: number;
+						minLength: number;
+						maxLength: number;
+					};
+					combo?: undefined | null;
+					outputFiles?: Partial<IOutputFiles>;
+			  }
+			| {
+					type: 'generate';
+					combo: {
+						maxLength: number;
+						startLength?: number;
+					};
+					random?: undefined | null;
+					outputFiles?: Partial<IOutputFiles>;
+			  }
+			| {
+					type: 'file';
+					filePath: string;
+					outputFiles?: Partial<IOutputFiles>;
+			  }
+			| {
+					type: 'custom';
+					inputs: string[];
+					outputFiles?: Partial<IOutputFiles>;
+			  }
+	  ) & {
+			// A predicate that checks whether the string should be part of the language
+			languageChecker?: LanguageChecker;
 	  };
 
 export type GeneratedAutomatonOptions = Partial<
