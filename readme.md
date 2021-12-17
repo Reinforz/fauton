@@ -29,6 +29,8 @@
   - [Dfa minimization](#dfa-minimization)
   - [Dfa equivalency by testing](#dfa-equivalency-by-testing)
   - [Testing regular expressions](#testing-regular-expressions)
+  - [Generate language of a CFG](#generate-language-of-a-cfg)
+  - [Remove null production from CFG](#remove-null-production-from-cfg)
 - [Conditions for DFA](#conditions-for-dfa)
 - [Transitions Record Transformation](#transitions-record-transformation)
   - [dfa](#dfa)
@@ -58,6 +60,8 @@
 
 **Please note that I won't be following semver at the initial stages, as there could be a lot of (breaking) changes between each release which will all be patch**
 
+**Also I might have to convert this project to a monorepo. So expect huge changes in the upcoming versions**
+
 # Features
 
 1. Test any valid dfa/nfa/ε-nfa/regex/cfg
@@ -73,6 +77,7 @@
 11. Generate full graph for ε-nfa given a string
 12. Generate ε closure of a single state
 13. Check if a cfg can ever be terminated
+14. Removing null production for a CFG
 
 # Motivation
 
@@ -663,6 +668,66 @@ finiteAutomataTest.test([
 		},
 	},
 ]);
+```
+
+## Generate language of a CFG
+
+Lets try to generate all the possible strings of the language of a CFG up to a certain length
+
+```js
+import { GenerateString } from 'fauton';
+
+const cfgLanguage = GenerateString.generateCfgLanguage(
+	{
+		startVariable: 'S',
+		terminals: ['0', '1', '+', '-', '/', '*', '(', ')'],
+		transitionRecord: {
+			S: ['S', 'SEN', '(S)', 'N'],
+			N: ['0', '1'],
+			E: ['+', '-', '/', '*'],
+		},
+		variables: ['S', 'N', 'E'],
+	},
+	3
+);
+console.log(Object.keys(cfgLanguage));
+```
+
+```sh
+[
+  '0',   '1',   '(1)', '(0)',
+  '1*1', '1+0', '0+0', '1/0',
+  '0/0', '1/1', '0/1', '1-1',
+  '0-1', '1*0', '0*0', '1-0',
+  '0-0', '1+1', '0+1', '0*1'
+]
+```
+
+## Remove null production from CFG
+
+```js
+import { ContextFreeGrammarUtils } from 'fauton';
+const nullProductionRemovedTransition = ContextFreeGrammarUtils.removeNullProduction({
+	transitionRecord: {
+		S: ['ABAC'],
+		A: ['aA', ''],
+		B: ['bB', ''],
+		C: ['c'],
+	},
+	variables: ['S', 'A', 'B', 'C'],
+	startVariable: 'S',
+});
+console.log(nullProductionRemovedTransition);
+```
+
+```sh
+# Notice that there are no production rules that produces epsilon values
+{
+  S: ['AAC', 'ABAC', 'ABC', 'AC', 'BAC', 'BC', 'C'],
+  A: ['aA', 'a'],
+  B: ['bB', 'b'],
+  C: ['c']
+}
 ```
 
 Take a look at [examples](./examples) folder for more examples.
