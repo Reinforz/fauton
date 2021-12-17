@@ -1,10 +1,13 @@
 import { CFGOption } from '../../../types';
 
-function createProductionCombinations(
+export function createProductionCombinations(
 	substitution: string,
-	epsilonProducingVariable: string,
-	epsilonProducingVariableCount: number
+	epsilonProducingVariable: string
 ) {
+	const epsilonProducingVariableCount = substitution
+		.split('')
+		.filter((letter) => letter === epsilonProducingVariable).length;
+
 	const totalCombinations = 2 ** epsilonProducingVariableCount;
 	const newSubstitutions: string[] = [];
 	let containsEpsilon = false;
@@ -37,7 +40,7 @@ function createProductionCombinations(
 			newSubstitutions.push(newSubstitution);
 		}
 	}
-	return [newSubstitutions, containsEpsilon] as const;
+	return [newSubstitutions, containsEpsilon, epsilonProducingVariableCount] as const;
 }
 
 export function findFirstNullProductionRule(
@@ -98,20 +101,13 @@ export function removeNullProduction(
 				([productionRuleVariable, productionRuleSubstitutions]) => {
 					const newSubstitutions: string[] = [];
 					productionRuleSubstitutions.forEach((substitution) => {
-						// Count the number of e production variable in the substitution
-						const epsilonProductionVariableCount = substitution
-							.split('')
-							.filter((letter) => letter === epsilonProductionVariable).length;
 						// If there are no variables that produces epsilon
 						// No need to update the substitution
+						const [productionCombinations, containsEpsilon, epsilonProductionVariableCount] =
+							createProductionCombinations(substitution, epsilonProductionVariable);
 						if (epsilonProductionVariableCount === 0) {
 							newSubstitutions.push(substitution);
 						} else {
-							const [productionCombinations, containsEpsilon] = createProductionCombinations(
-								substitution,
-								epsilonProductionVariable,
-								epsilonProductionVariableCount
-							);
 							// Generate all possible combination of the production rule, with and without the epsilon producing variable
 							newSubstitutions.push(...productionCombinations);
 							// Only add epsilon if the variable is start variable and combination contains epsilon
