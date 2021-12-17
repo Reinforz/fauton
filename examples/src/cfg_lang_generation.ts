@@ -1,6 +1,6 @@
-import { GenerateString } from 'fauton';
+import { ContextFreeGrammarUtils } from 'fauton';
 
-const cfgLanguage = GenerateString.generateCfgLanguage(
+const cfgLanguage = ContextFreeGrammarUtils.generateCfgLanguage(
 	{
 		startVariable: 'S',
 		terminals: ['0', '1', '+', '-', '/', '*', '(', ')'],
