@@ -4,7 +4,7 @@ const cfgLanguage = ContextFreeGrammarUtils.generateCfgLanguage(
 	{
 		startVariable: 'S',
 		terminals: ['0', '1', '+', '-', '/', '*', '(', ')'],
-		transitionRecord: {
+		productionRules: {
 			S: ['S', 'SEN', '(S)', 'N'],
 			N: ['0', '1'],
 			E: ['+', '-', '/', '*'],

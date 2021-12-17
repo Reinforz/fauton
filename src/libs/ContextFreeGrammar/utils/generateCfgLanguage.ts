@@ -21,11 +21,11 @@ export function generateCfgLanguage(
 	maxStringLength: number,
 	removedNullProduction?: boolean
 ) {
-	const { transitionRecord, variables, startVariable } = cfgOptions;
-	let transformedTransitionRecord = transitionRecord;
+	const { productionRules, variables, startVariable } = cfgOptions;
+	let transformedProductionRules = productionRules;
 	if (!removedNullProduction) {
-		transformedTransitionRecord = removeNullProduction({
-			transitionRecord,
+		transformedProductionRules = removeNullProduction({
+			productionRules,
 			variables,
 			startVariable,
 		});
@@ -57,6 +57,7 @@ export function generateCfgLanguage(
 
 		if (word.length <= maxStringLength) {
 			const variablesInWord = word.split('').filter((letter) => variablesSet.has(letter));
+			// If there are no variables, we've generated a concrete word of the language
 			if (variablesInWord.length === 0 && !cfgLanguageRecord[word]) {
 				const newPath = [...path, word];
 				cfgLanguageRecord[word] = {
@@ -67,8 +68,9 @@ export function generateCfgLanguage(
 				};
 				cfgLanguage.add(word);
 			} else {
+				// Loop through each of the variables in the word
 				variablesInWord.forEach((variable) => {
-					transformedTransitionRecord[variable].forEach((substitution, substitutionIndex) => {
+					transformedProductionRules[variable].forEach((substitution, substitutionIndex) => {
 						// Replace the variable in the word with the substitution
 						const substitutedWord = word.replace(variable, substitution);
 						if (!traversedSet.has(substitutedWord)) {
@@ -89,9 +91,11 @@ export function generateCfgLanguage(
 			}
 		}
 	}
+
+	// Returning the production rule as it might be different if we have removed null production rules
 	return {
 		tree: cfgLanguageRecord,
 		language: Array.from(cfgLanguage),
-		transitionRecord: transformedTransitionRecord,
+		productionRules: transformedProductionRules,
 	};
 }

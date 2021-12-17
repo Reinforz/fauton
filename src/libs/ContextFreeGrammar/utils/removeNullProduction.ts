@@ -46,9 +46,9 @@ function createProductionCombinations(
  * @returns New transition record with null production removed
  */
 export function removeNullProduction(
-	cfgOption: Pick<CFGOption, 'variables' | 'transitionRecord' | 'startVariable'>
+	cfgOption: Pick<CFGOption, 'variables' | 'productionRules' | 'startVariable'>
 ) {
-	const { transitionRecord, variables, startVariable } = cfgOption;
+	const { productionRules, variables, startVariable } = cfgOption;
 
 	// eslint-disable-next-line
 	while (true) {
@@ -60,7 +60,7 @@ export function removeNullProduction(
 			// Making sure we are not checking the start variable, as the start variable can contain epsilon
 			if (variable !== startVariable) {
 				// Finding the index of the first epsilon substitution
-				const nullSubstitutionIndex = transitionRecord[variable].findIndex(
+				const nullSubstitutionIndex = productionRules[variable].findIndex(
 					(substitution) => substitution.length === 0
 				);
 				if (nullSubstitutionIndex !== -1) {
@@ -76,15 +76,15 @@ export function removeNullProduction(
 		} else {
 			const epsilonProductionVariable = variables[epsilonProductionVariableIndex];
 			// Remove the null substitution
-			transitionRecord[epsilonProductionVariable].splice(
+			productionRules[epsilonProductionVariable].splice(
 				epsilonProductionVariableSubstitutionIndex,
 				1
 			);
-			// We need to loop through each item in transition record as we dont know how removing epsilon would impact the other substitutions
-			Object.entries(transitionRecord).forEach(
-				([transitionRecordVariable, transitionRecordSubstitutions]) => {
+			// We need to loop through each item in production rules as we dont know how removing epsilon would impact the other substitutions
+			Object.entries(productionRules).forEach(
+				([productionRuleVariable, productionRuleSubstitutions]) => {
 					const newSubstitutions: string[] = [];
-					transitionRecordSubstitutions.forEach((substitution) => {
+					productionRuleSubstitutions.forEach((substitution) => {
 						// Count the number of e production variable in the substitution
 						const epsilonProductionVariableCount = substitution
 							.split('')
@@ -102,17 +102,17 @@ export function removeNullProduction(
 							// Generate all possible combination of the production rule, with and without the epsilon producing variable
 							newSubstitutions.push(...productionCombinations);
 							// Only add epsilon if the variable is start variable and combination contains epsilon
-							if (transitionRecordVariable === startVariable && containsEpsilon) {
+							if (productionRuleVariable === startVariable && containsEpsilon) {
 								newSubstitutions.push('');
 							}
 						}
 					});
 
 					// Making sure that there are no duplicates
-					transitionRecord[transitionRecordVariable] = Array.from(new Set(newSubstitutions));
+					productionRules[productionRuleVariable] = Array.from(new Set(newSubstitutions));
 				}
 			);
 		}
 	}
-	return transitionRecord;
+	return productionRules;
 }

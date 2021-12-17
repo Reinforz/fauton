@@ -5,16 +5,16 @@ import { isAllTerminal } from './isAllTerminal';
 /* eslint-disable no-loop-func */
 
 export function checkForTermination(cfgOption: Omit<CFGOption, 'startVariable'>) {
-	const { terminals, variables, transitionRecord } = cfgOption;
+	const { terminals, variables, productionRules } = cfgOption;
 
 	let terminableVariables: Set<string> = new Set();
-	const transitionRecordKeySet = new Set(Object.keys(transitionRecord));
+	const productRulesKeySet = new Set(Object.keys(productionRules));
 	const variablesSet = new Set(variables);
 	let done = false;
 
 	// Check if any of the variable in the word is terminable or not
 	function checkAnyVariableIsTerminable(nonTerminableVariable: string) {
-		return transitionRecord[nonTerminableVariable].some((word) => {
+		return productionRules[nonTerminableVariable].some((word) => {
 			// Extracting variables from word
 			const variablesFromWord = word.split('').filter((letter) => variablesSet.has(letter));
 			// Checking if all the extracted variables are terminable
@@ -26,10 +26,10 @@ export function checkForTermination(cfgOption: Omit<CFGOption, 'startVariable'>)
 		done = true;
 		const tempTerminableVariables = new Set(Array.from(terminableVariables));
 		// Current non terminable variables
-		const nonTerminableVariables = setDifference(transitionRecordKeySet, terminableVariables);
+		const nonTerminableVariables = setDifference(productRulesKeySet, terminableVariables);
 		nonTerminableVariables.forEach((nonTerminableVariable) => {
 			// Check if some of the words contains only terminals
-			const doesSomeWordContainOnlyTerminals = transitionRecord[nonTerminableVariable].some(
+			const doesSomeWordContainOnlyTerminals = productionRules[nonTerminableVariable].some(
 				(substitutedWord) => isAllTerminal(terminals, substitutedWord)
 			);
 			// Check if any of the variables from the words are terminable or not
@@ -44,9 +44,9 @@ export function checkForTermination(cfgOption: Omit<CFGOption, 'startVariable'>)
 		terminableVariables = tempTerminableVariables;
 	}
 	// return the variables that are not terminable
-	if (terminableVariables.size !== transitionRecordKeySet.size) {
+	if (terminableVariables.size !== productRulesKeySet.size) {
 		return false;
-		// return Array.from(setDifference(transitionRecordKeySet, terminableVariables));
+		// return Array.from(setDifference(productRulesKeySet, terminableVariables));
 	} else {
 		return true;
 	}

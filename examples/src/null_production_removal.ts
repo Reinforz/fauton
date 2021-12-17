@@ -1,6 +1,6 @@
 import { ContextFreeGrammarUtils } from 'fauton';
 const nullProductionRemovedTransition = ContextFreeGrammarUtils.removeNullProduction({
-	transitionRecord: {
+	productionRules: {
 		S: ['ABAC'],
 		A: ['aA', ''],
 		B: ['bB', ''],

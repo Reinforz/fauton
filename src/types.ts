@@ -172,7 +172,7 @@ export interface LiteralRegexNode {
 export interface CFGOption {
 	variables: string[];
 	terminals: string[];
-	transitionRecord: Record<string, string[]>;
+	productionRules: Record<string, string[]>;
 	startVariable: string;
 }
 
