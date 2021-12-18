@@ -21,7 +21,7 @@ export function removeEmptyProduction(cfgOption: Pick<CFGOption, 'variables' | '
 	Object.entries(productionRules).forEach(([productionVariable, productionRulesSubstitutions]) => {
 		productionRules[productionVariable] = productionRulesSubstitutions.filter(
 			(productionRulesSubstitution) =>
-				!emptyProductionVariables.some(
+				emptyProductionVariables.every(
 					(emptyProductionVariable) =>
 						!productionRulesSubstitution.includes(emptyProductionVariable)
 				)
@@ -31,6 +31,6 @@ export function removeEmptyProduction(cfgOption: Pick<CFGOption, 'variables' | '
 	return {
 		productionRules,
 		// Returning a new set of variables without the empty rules one
-		variables: setDifference(new Set(variables), new Set(emptyProductionVariables)),
+		variables: Array.from(setDifference(new Set(variables), new Set(emptyProductionVariables))),
 	};
 }
