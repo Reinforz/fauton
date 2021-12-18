@@ -77,7 +77,8 @@
 11. Generate full graph for ε-nfa given a string
 12. Generate ε closure of a single state
 13. Check if a cfg can ever be terminated
-14. Removing null production for a CFG
+14. Removing null production rules for a CFG
+15. Removing unit production rules for a CFG
 
 # Motivation
 
