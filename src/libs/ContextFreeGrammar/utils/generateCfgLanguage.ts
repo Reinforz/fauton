@@ -16,24 +16,19 @@ interface IQueueItem {
  * @param maxStringLength Maximum length of the generated string
  * @returns A record of generated string and the path taken to generate them
  */
-export function generateCfgLanguage(
-	cfgOptions: CFGOption,
-	maxStringLength: number,
-	removedNullProduction?: boolean
-) {
+export function generateCfgLanguage(cfgOptions: CFGOption, maxStringLength: number) {
 	const { productionRules, variables, startVariable } = cfgOptions;
-	let transformedProductionRules = productionRules;
-	if (!removedNullProduction) {
-		transformedProductionRules = removeNullProduction({
+	const { productionRules: transformedProductionRules, variables: transformedVariables } =
+		removeNullProduction({
 			productionRules,
 			variables,
 			startVariable,
 		});
-	}
+
 	const linkedList = new LinkedList<IQueueItem>();
 	// A set to keep track of all the words that have been traversed
 	const traversedSet = new Set(startVariable);
-	const variablesSet = new Set(variables);
+	const variablesSet = new Set(transformedVariables);
 
 	linkedList.insertFirst({
 		path: [],
