@@ -31,6 +31,7 @@
   - [Testing regular expressions](#testing-regular-expressions)
   - [Generate language of a CFG](#generate-language-of-a-cfg)
   - [Remove null production from CFG](#remove-null-production-from-cfg)
+  - [Removing all unreachable production rules from CFG](#removing-all-unreachable-production-rules-from-cfg)
 - [Conditions for DFA](#conditions-for-dfa)
 - [Transitions Record Transformation](#transitions-record-transformation)
   - [dfa](#dfa)
@@ -79,6 +80,7 @@
 13. Check if a cfg can ever be terminated
 14. Removing null production rules for a CFG
 15. Removing unit production rules for a CFG
+16. Removing unreachable production rules for a CFG
 
 # Motivation
 
@@ -728,6 +730,36 @@ console.log(nullProductionRemovedTransition);
   A: ['aA', 'a'],
   B: ['bB', 'b'],
   C: ['c']
+}
+```
+
+## Removing all unreachable production rules from CFG
+
+```js
+import { ContextFreeGrammarUtils } from 'fauton';
+
+console.log(
+	ContextFreeGrammarUtils.removeUnreachableProduction({
+		productionRules: {
+			S: ['AB'],
+			A: ['aA', 'a'],
+			B: ['bB', 'b'],
+			C: ['cC', 'c'],
+		},
+		startVariable: 'S',
+		variables: ['S', 'A', 'B', 'C'],
+	})
+);
+```
+
+```sh
+{
+  productionRules: {
+    S: ['AB'],
+    A: ['aA', 'a'],
+    B: ['bB', 'b'],
+  },
+  variables: ['S', 'A', 'B'],
 }
 ```
 
