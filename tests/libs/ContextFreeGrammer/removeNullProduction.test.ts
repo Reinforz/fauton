@@ -17,20 +17,13 @@ it(`Should remove null production from transition record`, () => {
 		startVariable: 'S',
 	});
 
-	expect(
-		arrayEquivalency(nullProductionRemovedTransition.S, [
-			'AAC',
-			'ABAC',
-			'ABC',
-			'AC',
-			'BAC',
-			'BC',
-			'C',
-		])
-	).toBe(true);
-	expect(arrayEquivalency(nullProductionRemovedTransition.A, ['aA', 'a'])).toBe(true);
-	expect(arrayEquivalency(nullProductionRemovedTransition.B, ['bB', 'b'])).toBe(true);
-	expect(arrayEquivalency(nullProductionRemovedTransition.C, ['c'])).toBe(true);
+	const { productionRules } = nullProductionRemovedTransition;
+	expect(arrayEquivalency(productionRules.S, ['AAC', 'ABAC', 'ABC', 'AC', 'BAC', 'BC', 'C'])).toBe(
+		true
+	);
+	expect(arrayEquivalency(productionRules.A, ['aA', 'a'])).toBe(true);
+	expect(arrayEquivalency(productionRules.B, ['bB', 'b'])).toBe(true);
+	expect(arrayEquivalency(productionRules.C, ['c'])).toBe(true);
 });
 
 it(`Should not remove null production from transition record if start symbol contains epsilon`, () => {
@@ -46,10 +39,13 @@ it(`Should not remove null production from transition record if start symbol con
 	});
 
 	expect(nullProductionRemovedTransition).toStrictEqual({
-		S: ['A', '', 'B', 'C'],
-		A: ['af', 'aAf', 'B'],
-		B: ['be', 'bBe', 'C'],
-		C: ['cd', 'cCd'],
+		productionRules: {
+			S: ['A', '', 'B', 'C'],
+			A: ['af', 'aAf', 'B'],
+			B: ['be', 'bBe', 'C'],
+			C: ['cd', 'cCd'],
+		},
+		variables: ['S', 'A', 'B', 'C'],
 	});
 });
 
