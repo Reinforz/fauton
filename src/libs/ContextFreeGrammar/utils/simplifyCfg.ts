@@ -5,12 +5,12 @@ import { removeUnitProduction } from './removeUnitProduction';
 import { removeUselessProduction } from './removeUselessProduction';
 
 export function simplifyCfg(cfgOption: CFGOption) {
+	removeNullProduction(cfgOption);
+	removeUnitProduction(cfgOption);
 	const reducedVariables = removeUselessProduction(cfgOption);
 	const updatedCfg = {
 		...cfgOption,
 		variables: reducedVariables,
 	};
-	removeNullProduction(updatedCfg);
-	removeUnitProduction(updatedCfg);
 	return removeEmptyProduction(updatedCfg);
 }

@@ -1,3 +1,4 @@
+import { LinkedList } from '@datastructures-js/linked-list';
 import { CFGOption } from '../../../types';
 
 export function createProductionCombinations(
@@ -72,6 +73,46 @@ export function findFirstNullProductionRule(
 }
 
 /**
+ * Adds epsilon to production rules that references nullable variables
+ * @param cfgOption Variables array and production rules record of cfg
+ */
+export function addNullProduction(cfgOption: Pick<CFGOption, 'variables' | 'productionRules'>) {
+	const { productionRules, variables } = cfgOption;
+	const linkedList = new LinkedList<string>();
+	// A set of nullable variables which directly leads to epsilon
+	const nullableVariablesSet = new Set();
+
+	variables
+		.filter((variable) =>
+			productionRules[variable].some((productionRule) => productionRule.length === 0)
+		)
+		.forEach((directNullableVariable) => {
+			linkedList.insertFirst(directNullableVariable);
+			nullableVariablesSet.add(directNullableVariable);
+		});
+
+	while (linkedList.count()) {
+		const nullableVariable = linkedList.removeFirst().getValue();
+		// Find all the variables that indirectly references nullable variables
+		const indirectNullableVariable: string[] = [];
+		variables.forEach((variable) => {
+			productionRules[variable].forEach((productionRule, productionRuleIndex) => {
+				if (productionRule === nullableVariable) {
+					// If one of the rule references the nullable variable, make it nullable as well
+					productionRules[variable][productionRuleIndex] = '';
+					indirectNullableVariable.push(variable);
+					// If we haven't traversed this nullable variable yet, add it to the linked list
+					if (!nullableVariablesSet.has(nullableVariable)) {
+						nullableVariablesSet.add(nullableVariable);
+						linkedList.insertFirst(variable);
+					}
+				}
+			});
+		});
+	}
+}
+
+/**
  * Removes all the null production and returns a new transition record
  * @param cfgOption Variables and transition record for cfg
  * @returns New transition record with null production removed
@@ -109,10 +150,6 @@ export function removeNullProduction(
 						} else {
 							// Generate all possible combination of the production rule, with and without the epsilon producing variable
 							newSubstitutions.push(...productionCombinations);
-							// Only add epsilon if the variable is start variable and combination contains epsilon
-							// if (productionRuleVariable === startVariable && containsEpsilon) {
-							// 	newSubstitutions.push('');
-							// }
 						}
 					});
 
