@@ -1,5 +1,4 @@
 import { CFGOption } from '../../../types';
-import { removeEmptyProduction } from './removeEmptyProduction';
 
 export function createProductionCombinations(
 	substitution: string,
@@ -80,7 +79,7 @@ export function findFirstNullProductionRule(
 export function removeNullProduction(
 	cfgOption: Pick<CFGOption, 'variables' | 'productionRules' | 'startVariable'>
 ) {
-	const { productionRules, variables, startVariable } = cfgOption;
+	const { productionRules, variables } = cfgOption;
 
 	// eslint-disable-next-line
 	while (true) {
@@ -103,7 +102,7 @@ export function removeNullProduction(
 					productionRuleSubstitutions.forEach((substitution) => {
 						// If there are no variables that produces epsilon
 						// No need to update the substitution
-						const [productionCombinations, containsEpsilon, epsilonProductionVariableCount] =
+						const [productionCombinations, , epsilonProductionVariableCount] =
 							createProductionCombinations(substitution, epsilonProductionVariable);
 						if (epsilonProductionVariableCount === 0) {
 							newSubstitutions.push(substitution);
@@ -111,9 +110,9 @@ export function removeNullProduction(
 							// Generate all possible combination of the production rule, with and without the epsilon producing variable
 							newSubstitutions.push(...productionCombinations);
 							// Only add epsilon if the variable is start variable and combination contains epsilon
-							if (productionRuleVariable === startVariable && containsEpsilon) {
-								newSubstitutions.push('');
-							}
+							// if (productionRuleVariable === startVariable && containsEpsilon) {
+							// 	newSubstitutions.push('');
+							// }
 						}
 					});
 
@@ -123,9 +122,4 @@ export function removeNullProduction(
 			);
 		}
 	}
-
-	return removeEmptyProduction({
-		productionRules,
-		variables,
-	});
 }

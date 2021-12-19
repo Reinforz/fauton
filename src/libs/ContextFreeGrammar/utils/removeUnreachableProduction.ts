@@ -9,12 +9,8 @@ import { setDifference } from '../../../utils';
  */
 export function removeUnreachableProduction(
 	cfgOption: Pick<CFGOption, 'productionRules' | 'startVariable' | 'variables'>
-): Pick<CFGOption, 'productionRules' | 'variables'> {
+) {
 	const { productionRules, startVariable, variables } = cfgOption;
-
-	const copiedProductionRules = JSON.parse(
-		JSON.stringify(productionRules)
-	) as CFGOption['productionRules'];
 
 	const variablesSet = new Set(variables);
 	const unvisitedVariables = new LinkedList<string>();
@@ -40,11 +36,8 @@ export function removeUnreachableProduction(
 	const nonReachableVariables = Array.from(setDifference(variablesSet, visitedVariables));
 	// Delete the production rules for each of the unreachable variables
 	nonReachableVariables.forEach((nonReachableVariable) => {
-		delete copiedProductionRules[nonReachableVariable];
+		delete productionRules[nonReachableVariable];
 	});
-
-	return {
-		variables: Array.from(visitedVariables),
-		productionRules: copiedProductionRules,
-	};
+	// There is no need to update the production rules as unreachable variables are not referenced there
+	return Array.from(visitedVariables);
 }

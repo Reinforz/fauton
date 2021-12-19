@@ -1,8 +1,8 @@
 import { CFGOption } from '../../../types';
-import { setDifference } from '../../../utils/setDifference';
+import { removeProductionRules } from './removeProductionRules';
 
 /**
- * Removes empty production variables and updates rules to remove those rules that references empty production variables
+ * Removes productions that has no rules and updates rules to remove those rules that references empty production variables
  * @param cfgOption Variables array and production rules record of cfg
  * @returns New production rules and variables without empty rule variables
  */
@@ -12,25 +12,9 @@ export function removeEmptyProduction(cfgOption: Pick<CFGOption, 'variables' | '
 	const emptyProductionVariables = variables.filter(
 		(variable) => productionRules[variable].length === 0
 	);
-	// Remove empty production variables from the production rules record
-	emptyProductionVariables.forEach((emptyProductionVariable) => {
-		delete productionRules[emptyProductionVariable];
-	});
-
-	// Now we need to remove all the production rules that references any empty production variables
-	Object.entries(productionRules).forEach(([productionVariable, productionRulesSubstitutions]) => {
-		productionRules[productionVariable] = productionRulesSubstitutions.filter(
-			(productionRulesSubstitution) =>
-				emptyProductionVariables.every(
-					(emptyProductionVariable) =>
-						!productionRulesSubstitution.includes(emptyProductionVariable)
-				)
-		);
-	});
-
-	return {
+	return removeProductionRules({
 		productionRules,
-		// Returning a new set of variables without the empty rules one
-		variables: Array.from(setDifference(new Set(variables), new Set(emptyProductionVariables))),
-	};
+		removedVariables: emptyProductionVariables,
+		variables,
+	});
 }

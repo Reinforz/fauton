@@ -1,19 +1,26 @@
 import { CFGOption } from '../../../types';
 import { setDifference } from '../../../utils/setDifference';
 import { isAllTerminal } from './isAllTerminal';
+import {} from './removeEmptyProduction';
+import { removeProductionRules } from './removeProductionRules';
 
 /* eslint-disable no-loop-func */
 
 /**
- * Checks if all the production rules of a cfg are terminable
+ * Removes production rules which doesn't derive any terminals or terminable variables
  * @param cfgOption terminals, variables and production rules of cfg
- * @returns True if all production rules are terminable, false otherwise
+ * @returns An array of variables that are all terminable
  */
-export function checkForTermination(cfgOption: Omit<CFGOption, 'startVariable'>) {
+export function removeNonTerminableProduction(cfgOption: Omit<CFGOption, 'startVariable'>) {
 	const { terminals, variables, productionRules } = cfgOption;
 
 	// A set to keep track of variables which are terminable, ie we can reach a terminal from these variables
-	let terminableVariables: Set<string> = new Set();
+	// Initialize it with variables that derives only terminals in any of its production rules
+	let terminableVariables: Set<string> = new Set(
+		variables.filter((variable) =>
+			productionRules[variable].some((productionRule) => isAllTerminal(terminals, productionRule))
+		)
+	);
 	const variablesSet = new Set(variables);
 	let done = false;
 
@@ -34,17 +41,12 @@ export function checkForTermination(cfgOption: Omit<CFGOption, 'startVariable'>)
 		// Current non terminable variables
 		const nonTerminableVariables = setDifference(variablesSet, terminableVariables);
 		nonTerminableVariables.forEach((nonTerminableVariable) => {
-			// Check if some of the words contains only terminals
-			const doesSomeWordContainOnlyTerminals = productionRules[nonTerminableVariable].some(
-				(substitutedWord) => isAllTerminal(terminals, substitutedWord)
-			);
 			// Check if any of the variables from the words are terminable or not
-			const isAnyVariableTerminable =
-				doesSomeWordContainOnlyTerminals || checkAnyVariableIsTerminable(nonTerminableVariable);
+			const isAnyVariableTerminable = checkAnyVariableIsTerminable(nonTerminableVariable);
 			// The variable is terminable if:-
 			// Any of the words of the production rules contain only terminals for example ["ab", "AB"]
 			// Or the word contains only terminable variables
-			if (doesSomeWordContainOnlyTerminals || isAnyVariableTerminable) {
+			if (isAnyVariableTerminable) {
 				// Set the done flag to false, as we need to check other variables which references this one to check whether they are terminal or not
 				done = false;
 				tempTerminableVariables.add(nonTerminableVariable);
@@ -53,11 +55,10 @@ export function checkForTermination(cfgOption: Omit<CFGOption, 'startVariable'>)
 		// Update the current terminable variables set with the temp one
 		terminableVariables = tempTerminableVariables;
 	}
-	// If all the variables are not terminable then we have non terminable variables
-	if (terminableVariables.size !== variablesSet.size) {
-		return false;
-		// return Array.from(setDifference(productRulesKeySet, terminableVariables));
-	} else {
-		return true;
-	}
+
+	return removeProductionRules({
+		productionRules,
+		variables,
+		removedVariables: Array.from(setDifference(variablesSet, terminableVariables)),
+	});
 }

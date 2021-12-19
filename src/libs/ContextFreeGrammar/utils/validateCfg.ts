@@ -1,5 +1,4 @@
 import { CFGOption } from '../../../types';
-import { checkForTermination } from './checkForTermination';
 
 export function validateCfg(cfgOption: CFGOption) {
 	const { startVariable, terminals, productionRules, variables } = cfgOption;
@@ -34,11 +33,6 @@ export function validateCfg(cfgOption: CFGOption) {
 			}
 		});
 	});
-	// Check if the substitutions will terminate at some point or not
-	const willTerminate = checkForTermination({ variables, terminals, productionRules });
-	if (!willTerminate) {
-		throw new Error(`Your transition function will never terminate.`);
-	}
 	// Check if the starting variable is part of variables
 	if (!variablesSet.has(startVariable)) {
 		throw new Error(`Starting variable must be part of variables array`);
