@@ -12,13 +12,17 @@ interface IQueueItem {
 /**
  * Generates all the strings of a given cfg within certain length along with the path taken to generate them
  * @param cfgOptions Variables, terminals and transition Record for the cfg
- * @param totalStrings Total number of strings that should be generated
  * @param maxStringLength Maximum length of the generated string
+ * @param skipSimplification Should the cfg simplification process be skipped, useful if you already have a simplified cfg, and dont want to spend additional computational power behind it, also sometimes you dont want to simplify cfg as it updates the production rules
  * @returns A record of generated string and the path taken to generate them
  */
-export function generateCfgLanguage(cfgOptions: CFGOption, maxStringLength: number) {
-	const { productionRules, startVariable } = cfgOptions;
-	const updatedVariables = simplifyCfg(cfgOptions);
+export function generateCfgLanguage(
+	cfgOptions: CFGOption,
+	maxStringLength: number,
+	skipSimplification?: boolean
+) {
+	const { productionRules, startVariable, variables } = cfgOptions;
+	const updatedVariables = skipSimplification ? variables : simplifyCfg(cfgOptions);
 	const linkedList = new LinkedList<IQueueItem>();
 	// A set to keep track of all the words that have been traversed
 	const traversedSet = new Set(startVariable);

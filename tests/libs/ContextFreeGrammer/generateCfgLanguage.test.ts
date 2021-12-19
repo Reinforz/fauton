@@ -12,7 +12,8 @@ it(`Should generate the language of a CFG`, () => {
 			},
 			variables: ['S', 'N', 'E'],
 		},
-		3
+		3,
+		true
 	);
 
 	expect(cfgLanguage.tree).toStrictEqual({
