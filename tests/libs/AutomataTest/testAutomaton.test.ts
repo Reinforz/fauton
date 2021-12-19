@@ -1,12 +1,12 @@
 import fs from 'fs';
+import { testAutomaton } from '../../../src/libs/AutomataTest/utils/testAutomaton';
 import { DeterministicFiniteAutomaton } from '../../../src/libs/DeterministicFiniteAutomaton';
-import { testAutomaton } from '../../../src/libs/FiniteAutomataTest/utils/testAutomaton';
-import { FiniteAutomatonTestInfo, IOutputFiles } from '../../../src/types';
+import { AutomatonTestInfo, IOutputFiles } from '../../../src/types';
 
 type IWriteStreams = Record<`${keyof IOutputFiles}WriteStream`, null | fs.WriteStream>;
 
 it(`Should work`, () => {
-	const finiteAutomatonTestInfo: FiniteAutomatonTestInfo = {
+	const finiteAutomatonTestInfo: AutomatonTestInfo = {
 		falseNegatives: 0,
 		falsePositives: 0,
 		trueNegatives: 0,

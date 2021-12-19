@@ -1,11 +1,11 @@
 import { CFGOption } from '../../../types';
-import { reduceCfg } from './reduceCfg';
 import { removeEmptyProduction } from './removeEmptyProduction';
 import { removeNullProduction } from './removeNullProduction';
 import { removeUnitProduction } from './removeUnitProduction';
+import { removeUselessProduction } from './removeUselessProduction';
 
 export function simplifyCfg(cfgOption: CFGOption) {
-	const reducedVariables = reduceCfg(cfgOption);
+	const reducedVariables = removeUselessProduction(cfgOption);
 	const updatedCfg = {
 		...cfgOption,
 		variables: reducedVariables,

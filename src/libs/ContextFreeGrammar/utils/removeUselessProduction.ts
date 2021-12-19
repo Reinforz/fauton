@@ -7,7 +7,7 @@ import { removeUnreachableProduction } from './removeUnreachableProduction';
  * @param cfgOption Variables, start symbol and production rules of a cfg
  * @returns An array of terminable and reachable variables
  */
-export function reduceCfg(cfgOption: CFGOption) {
+export function removeUselessProduction(cfgOption: CFGOption) {
 	const updatedVariables = removeNonTerminableProduction(cfgOption);
 	return removeUnreachableProduction({
 		...cfgOption,

@@ -1,23 +1,21 @@
 import { removeUnreachableProduction } from '../../../src/libs/ContextFreeGrammar/utils/removeUnreachableProduction';
 
 it(`Should remove unreachable production rules and variables`, () => {
-	expect(
-		removeUnreachableProduction({
-			productionRules: {
-				S: ['AB'],
-				A: ['aA', 'a'],
-				B: ['bB', 'b'],
-				C: ['cC', 'c'],
-			},
-			startVariable: 'S',
-			variables: ['S', 'A', 'B', 'C'],
-		})
-	).toStrictEqual({
+	const cfgOption = {
 		productionRules: {
 			S: ['AB'],
 			A: ['aA', 'a'],
 			B: ['bB', 'b'],
+			C: ['cC', 'c'],
 		},
-		variables: ['S', 'A', 'B'],
+		startVariable: 'S',
+		variables: ['S', 'A', 'B', 'C'],
+	};
+
+	expect(removeUnreachableProduction(cfgOption)).toStrictEqual(['S', 'A', 'B']);
+	expect(cfgOption.productionRules).toStrictEqual({
+		S: ['AB'],
+		A: ['aA', 'a'],
+		B: ['bB', 'b'],
 	});
 });
