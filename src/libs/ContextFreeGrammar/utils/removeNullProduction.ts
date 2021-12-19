@@ -44,43 +44,15 @@ export function createProductionCombinations(
 	return [newSubstitutions, containsEpsilon, epsilonProducingVariableCount] as const;
 }
 
-export function findFirstNullProductionRule(
-	cfgOption: Pick<CFGOption, 'variables' | 'productionRules' | 'startVariable'>
-) {
-	const { productionRules, variables, startVariable } = cfgOption;
-	// Which variable produces null production
-	let epsilonProductionVariableIndex = -1;
-	// Which particular rule of the variable produces null production
-	let epsilonProductionVariableSubstitutionIndex = -1;
-	// Finding the variable which contains empty substitution
-	for (let variableIndex = 0; variableIndex < variables.length; variableIndex += 1) {
-		const variable = variables[variableIndex];
-		// Making sure we are not checking the start variable, as the start variable can contain epsilon
-		if (variable !== startVariable) {
-			// Finding the index of the first epsilon substitution
-			const nullSubstitutionIndex = productionRules[variable].findIndex(
-				(substitution) => substitution.length === 0
-			);
-			if (nullSubstitutionIndex !== -1) {
-				epsilonProductionVariableIndex = variableIndex;
-				epsilonProductionVariableSubstitutionIndex = nullSubstitutionIndex;
-				break;
-			}
-		}
-	}
-
-	return [epsilonProductionVariableIndex, epsilonProductionVariableSubstitutionIndex] as const;
-}
-
 /**
  * Adds epsilon to production rules that references nullable variables
  * @param cfgOption Variables array and production rules record of cfg
  */
-export function addNullProduction(cfgOption: Pick<CFGOption, 'variables' | 'productionRules'>) {
+export function findNullableVariables(cfgOption: Pick<CFGOption, 'variables' | 'productionRules'>) {
 	const { productionRules, variables } = cfgOption;
 	const linkedList = new LinkedList<string>();
 	// A set of nullable variables which directly leads to epsilon
-	const nullableVariablesSet = new Set();
+	const nullableVariablesSet: Set<string> = new Set();
 
 	variables
 		.filter((variable) =>
@@ -94,22 +66,28 @@ export function addNullProduction(cfgOption: Pick<CFGOption, 'variables' | 'prod
 	while (linkedList.count()) {
 		const nullableVariable = linkedList.removeFirst().getValue();
 		// Find all the variables that indirectly references nullable variables
-		const indirectNullableVariable: string[] = [];
 		variables.forEach((variable) => {
-			productionRules[variable].forEach((productionRule, productionRuleIndex) => {
-				if (productionRule === nullableVariable) {
-					// If one of the rule references the nullable variable, make it nullable as well
-					productionRules[variable][productionRuleIndex] = '';
-					indirectNullableVariable.push(variable);
-					// If we haven't traversed this nullable variable yet, add it to the linked list
-					if (!nullableVariablesSet.has(nullableVariable)) {
+			// No need to check variables that are already nullable for nullability
+			if (!nullableVariablesSet.has(variable)) {
+				// Loop through each production rules of the variable and check if any of the rules are nullable
+				for (let index = 0; index < productionRules[variable].length; index += 1) {
+					const productionRule = productionRules[variable][index];
+					// Check if the production rule's letter are all nullable
+					if (
+						productionRule
+							.split('')
+							.every((productionRuleLetter) => nullableVariablesSet.has(productionRuleLetter))
+					) {
 						nullableVariablesSet.add(nullableVariable);
 						linkedList.insertFirst(variable);
+						break;
 					}
 				}
-			});
+			}
 		});
 	}
+
+	return Array.from(nullableVariablesSet);
 }
 
 /**
@@ -120,43 +98,36 @@ export function addNullProduction(cfgOption: Pick<CFGOption, 'variables' | 'prod
 export function removeNullProduction(
 	cfgOption: Pick<CFGOption, 'variables' | 'productionRules' | 'startVariable'>
 ) {
-	const { productionRules, variables } = cfgOption;
+	const { productionRules } = cfgOption;
+	const nullableVariables = findNullableVariables(cfgOption);
 
-	// eslint-disable-next-line
-	while (true) {
-		const [epsilonProductionVariableIndex, epsilonProductionVariableSubstitutionIndex] =
-			findFirstNullProductionRule(cfgOption);
-
-		if (epsilonProductionVariableIndex === -1) {
-			break;
-		} else {
-			const epsilonProductionVariable = variables[epsilonProductionVariableIndex];
-			// Remove the null substitution
-			productionRules[epsilonProductionVariable].splice(
-				epsilonProductionVariableSubstitutionIndex,
-				1
-			);
-			// We need to loop through each item in production rules as we dont know how removing epsilon would impact the other substitutions
-			Object.entries(productionRules).forEach(
-				([productionRuleVariable, productionRuleSubstitutions]) => {
-					const newSubstitutions: string[] = [];
-					productionRuleSubstitutions.forEach((substitution) => {
+	nullableVariables.forEach((nullableVariable) => {
+		Object.entries(productionRules).forEach(
+			([productionRuleVariable, productionRuleSubstitutions]) => {
+				const newSubstitutions: string[] = [];
+				productionRuleSubstitutions.forEach((substitution) => {
+					// No need to proceed further if we are inside a null string
+					if (substitution.length) {
 						// If there are no variables that produces epsilon
 						// No need to update the substitution
-						const [productionCombinations, , epsilonProductionVariableCount] =
-							createProductionCombinations(substitution, epsilonProductionVariable);
-						if (epsilonProductionVariableCount === 0) {
+						const substitutionLetterSet = new Set(substitution.split(''));
+						// If our substitution doesn't contain any nullable variable no need to generate combinations
+						if (!substitutionLetterSet.has(nullableVariable)) {
 							newSubstitutions.push(substitution);
 						} else {
+							const [productionCombinations] = createProductionCombinations(
+								substitution,
+								nullableVariable
+							);
 							// Generate all possible combination of the production rule, with and without the epsilon producing variable
 							newSubstitutions.push(...productionCombinations);
 						}
-					});
+					}
+				});
 
-					// Making sure that there are no duplicates
-					productionRules[productionRuleVariable] = Array.from(new Set(newSubstitutions));
-				}
-			);
-		}
-	}
+				// Making sure that there are no duplicates
+				productionRules[productionRuleVariable] = Array.from(new Set(newSubstitutions));
+			}
+		);
+	});
 }
