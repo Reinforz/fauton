@@ -16,14 +16,18 @@ export function findFirstUnitProductionRule(
 		const variable = variables[variableIndex];
 		// For each variable, loop through its production rules
 		for (
-			let productionRuleIndex = 0;
-			productionRuleIndex < productionRules[variable].length;
-			productionRuleIndex += 1
+			let productionRuleSubstitutionIndex = 0;
+			productionRuleSubstitutionIndex < productionRules[variable].length;
+			productionRuleSubstitutionIndex += 1
 		) {
-			const productionRule = productionRules[variable][productionRuleIndex];
-			// If the production rule is of length one and its a known variable
-			if (productionRule.length === 1 && variablesSet.has(productionRule)) {
-				return [variable, productionRuleIndex] as const;
+			const productionRuleSubstitution = productionRules[variable][productionRuleSubstitutionIndex];
+			const productionRuleSubstitutionChunks = productionRuleSubstitution.split(' ');
+			// If the production rule substitution is of length one and its a variable
+			if (
+				productionRuleSubstitutionChunks.length === 1 &&
+				variablesSet.has(productionRuleSubstitution)
+			) {
+				return [variable, productionRuleSubstitutionIndex] as const;
 			}
 		}
 	}
@@ -41,15 +45,15 @@ export function removeUnitProduction(cfgOption: Pick<CFGOption, 'variables' | 'p
 	);
 	// Only continue if there is any unit production rule
 	while (unitProductionRule) {
-		const [unitProductionVariable, unitProductionRuleIndex] = unitProductionRule;
+		const [unitProductionVariable, productionRuleSubstitutionIndex] = unitProductionRule;
 		// Get all the production rules of the unit production variable
 		const unitProductionRules = cfgOption.productionRules[unitProductionVariable];
-		const offendingVariableRules =
-			cfgOption.productionRules[unitProductionRules[unitProductionRuleIndex]];
+		const unitProducingVariableRules =
+			cfgOption.productionRules[unitProductionRules[productionRuleSubstitutionIndex]];
 		// Remove the rule that generates unit production
-		unitProductionRules.splice(unitProductionRuleIndex, 1);
+		unitProductionRules.splice(productionRuleSubstitutionIndex, 1);
 		// Add all the rules of the unit production rule
-		unitProductionRules.push(...offendingVariableRules);
+		unitProductionRules.push(...unitProducingVariableRules);
 		unitProductionRule = findFirstUnitProductionRule(
 			cfgOption.variables,
 			cfgOption.productionRules
