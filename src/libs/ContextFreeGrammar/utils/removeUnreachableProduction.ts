@@ -15,19 +15,29 @@ export function removeUnreachableProduction(
 	const variablesSet = new Set(variables);
 	const unvisitedVariables = new LinkedList<string>();
 	unvisitedVariables.insertFirst(startVariable);
-	const visitedVariables = new Set(startVariable);
+	const visitedVariables: Set<string> = new Set();
+	visitedVariables.add(startVariable);
 
 	// While we have unvisited variables
 	while (unvisitedVariables.count()) {
 		const unvisitedVariable = unvisitedVariables.removeFirst();
 		// For each of the unvisited variable, check which variables we can reach
-		productionRules[unvisitedVariable.getValue()].forEach((productionRule) => {
-			for (let index = 0; index < productionRule.length; index += 1) {
-				const productionRuleLetter = productionRule[index];
+		productionRules[unvisitedVariable.getValue()].forEach((productionRuleSubstitution) => {
+			const productionRuleSubstitutionChunks = productionRuleSubstitution.split(' ');
+			for (
+				let productionRuleSubstitutionChunksIndex = 0;
+				productionRuleSubstitutionChunksIndex < productionRuleSubstitutionChunks.length;
+				productionRuleSubstitutionChunksIndex += 1
+			) {
+				const productionRuleSubstitutionChunk =
+					productionRuleSubstitutionChunks[productionRuleSubstitutionChunksIndex];
 				// If the letter is a variable, and we haven't visited the variable yet
-				if (variablesSet.has(productionRuleLetter) && !visitedVariables.has(productionRuleLetter)) {
-					visitedVariables.add(productionRuleLetter);
-					unvisitedVariables.insertLast(productionRuleLetter);
+				if (
+					variablesSet.has(productionRuleSubstitutionChunk) &&
+					!visitedVariables.has(productionRuleSubstitutionChunk)
+				) {
+					visitedVariables.add(productionRuleSubstitutionChunk);
+					unvisitedVariables.insertLast(productionRuleSubstitutionChunk);
 				}
 			}
 		});

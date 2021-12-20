@@ -3,19 +3,19 @@ import { removeUnreachableProduction } from '../../../src/libs/ContextFreeGramma
 it(`Should remove unreachable production rules and variables`, () => {
 	const cfgOption = {
 		productionRules: {
-			S: ['AB'],
-			A: ['aA', 'a'],
-			B: ['bB', 'b'],
-			C: ['cC', 'c'],
+			Sub: ['Adj Verb'],
+			Adj: ['an Adj', 'an'],
+			Verb: ['be Verb', 'be'],
+			Conj: ['can Conj', 'can'],
 		},
-		startVariable: 'S',
-		variables: ['S', 'A', 'B', 'C'],
+		startVariable: 'Sub',
+		variables: ['Sub', 'Adj', 'Verb', 'Conj'],
 	};
 
-	expect(removeUnreachableProduction(cfgOption)).toStrictEqual(['S', 'A', 'B']);
+	expect(removeUnreachableProduction(cfgOption)).toStrictEqual(['Sub', 'Adj', 'Verb']);
 	expect(cfgOption.productionRules).toStrictEqual({
-		S: ['AB'],
-		A: ['aA', 'a'],
-		B: ['bB', 'b'],
+		Sub: ['Adj Verb'],
+		Adj: ['an Adj', 'an'],
+		Verb: ['be Verb', 'be'],
 	});
 });
