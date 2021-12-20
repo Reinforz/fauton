@@ -5,9 +5,10 @@ export function createProductionCombinations(
 	substitution: string,
 	epsilonProducingVariable: string
 ) {
-	const epsilonProducingVariableCount = substitution
-		.split('')
-		.filter((letter) => letter === epsilonProducingVariable).length;
+	const substitutionChunks = substitution.split(' ');
+	const epsilonProducingVariableCount = substitutionChunks.filter(
+		(letter) => letter === epsilonProducingVariable
+	).length;
 
 	const totalCombinations = 2 ** epsilonProducingVariableCount;
 	const newSubstitutions: string[] = [];
@@ -15,30 +16,30 @@ export function createProductionCombinations(
 
 	for (let index = 0; index < totalCombinations; index += 1) {
 		let nthVariable = 0;
-		let newSubstitution = '';
+		const newSubstitutionChunks: string[] = [];
 		for (
-			let substitutionIndex = 0;
-			substitutionIndex < substitution.length;
-			substitutionIndex += 1
+			let substitutionChunkIndex = 0;
+			substitutionChunkIndex < substitutionChunks.length;
+			substitutionChunkIndex += 1
 		) {
-			const substitutionLetter = substitution[substitutionIndex];
-			if (substitutionLetter === epsilonProducingVariable) {
+			const substitutionChunk = substitutionChunks[substitutionChunkIndex];
+			if (substitutionChunk === epsilonProducingVariable) {
 				// If nthVariable is 4, it will generate the following combo, 10, 11, 01, 00
 				// 11 means both the epsilon variable will be included, 00 means none will be included
 				if (index & (1 << nthVariable)) {
-					newSubstitution += substitutionLetter;
+					newSubstitutionChunks.push(substitutionChunk);
 				}
 				nthVariable += 1;
 			} else {
-				newSubstitution += substitutionLetter;
+				newSubstitutionChunks.push(substitutionChunk);
 			}
 		}
 		// Set the contains epsilon flag to true if we have an epsilon string
-		if (!newSubstitution.length) {
+		if (!newSubstitutionChunks.length) {
 			containsEpsilon = true;
 		} else {
 			// Only add the substitution if we dont have any epsilon
-			newSubstitutions.push(newSubstitution);
+			newSubstitutions.push(newSubstitutionChunks.join(' '));
 		}
 	}
 	return [newSubstitutions, containsEpsilon, epsilonProducingVariableCount] as const;
@@ -71,12 +72,14 @@ export function findNullableVariables(cfgOption: Pick<CFGOption, 'variables' | '
 			if (!nullableVariablesSet.has(variable)) {
 				// Loop through each production rules of the variable and check if any of the rules are nullable
 				for (let index = 0; index < productionRules[variable].length; index += 1) {
-					const productionRule = productionRules[variable][index];
-					// Check if the production rule's letter are all nullable
+					const productionRuleSubstitutions = productionRules[variable][index];
+					// Check if the production rule's substitutions are all nullable, then they are indirectly nullable
 					if (
-						productionRule
-							.split('')
-							.every((productionRuleLetter) => nullableVariablesSet.has(productionRuleLetter))
+						productionRuleSubstitutions
+							.split(' ')
+							.every((productionRuleSubstitution) =>
+								nullableVariablesSet.has(productionRuleSubstitution)
+							)
 					) {
 						nullableVariablesSet.add(nullableVariable);
 						linkedList.insertFirst(variable);
@@ -104,29 +107,29 @@ export function removeNullProduction(
 	nullableVariables.forEach((nullableVariable) => {
 		Object.entries(productionRules).forEach(
 			([productionRuleVariable, productionRuleSubstitutions]) => {
-				const newSubstitutions: string[] = [];
+				const newSubstitutionsChunks: string[] = [];
 				productionRuleSubstitutions.forEach((substitution) => {
 					// No need to proceed further if we are inside a null string
 					if (substitution.length) {
 						// If there are no variables that produces epsilon
 						// No need to update the substitution
-						const substitutionLetterSet = new Set(substitution.split(''));
+						const substitutionChunks = new Set(substitution.split(' '));
 						// If our substitution doesn't contain any nullable variable no need to generate combinations
-						if (!substitutionLetterSet.has(nullableVariable)) {
-							newSubstitutions.push(substitution);
+						if (!substitutionChunks.has(nullableVariable)) {
+							newSubstitutionsChunks.push(substitution);
 						} else {
 							const [productionCombinations] = createProductionCombinations(
 								substitution,
 								nullableVariable
 							);
 							// Generate all possible combination of the production rule, with and without the epsilon producing variable
-							newSubstitutions.push(...productionCombinations);
+							newSubstitutionsChunks.push(...productionCombinations);
 						}
 					}
 				});
 
 				// Making sure that there are no duplicates
-				productionRules[productionRuleVariable] = Array.from(new Set(newSubstitutions));
+				productionRules[productionRuleVariable] = Array.from(new Set(newSubstitutionsChunks));
 			}
 		);
 	});

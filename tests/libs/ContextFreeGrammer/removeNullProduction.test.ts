@@ -8,89 +8,97 @@ import { arrayEquivalency } from '../../setEquivalency';
 describe('Should remove null production from transition record', () => {
 	it(`Sample 1`, () => {
 		const productionRules = {
-			S: ['ABAC'],
-			A: ['aA', ''],
-			B: ['bB', ''],
-			C: ['c'],
+			Sub: ['Adj Verb Adj Conj'],
+			Adj: ['a Adj', ''],
+			Verb: ['b Verb', ''],
+			Conj: ['c'],
 		};
 		removeNullProduction({
 			productionRules,
-			variables: ['S', 'A', 'B', 'C'],
-			startVariable: 'S',
+			variables: ['Sub', 'Adj', 'Verb', 'Conj'],
+			startVariable: 'Sub',
 		});
 
 		expect(
-			arrayEquivalency(productionRules.S, ['AAC', 'ABAC', 'ABC', 'AC', 'BAC', 'BC', 'C'])
+			arrayEquivalency(productionRules.Sub, [
+				'Adj Adj Conj',
+				'Adj Verb Adj Conj',
+				'Adj Verb Conj',
+				'Adj Conj',
+				'Verb Adj Conj',
+				'Verb Conj',
+				'Conj',
+			])
 		).toBe(true);
-		expect(arrayEquivalency(productionRules.A, ['aA', 'a'])).toBe(true);
-		expect(arrayEquivalency(productionRules.B, ['bB', 'b'])).toBe(true);
-		expect(arrayEquivalency(productionRules.C, ['c'])).toBe(true);
+		expect(arrayEquivalency(productionRules.Adj, ['a Adj', 'a'])).toBe(true);
+		expect(arrayEquivalency(productionRules.Verb, ['b Verb', 'b'])).toBe(true);
+		expect(arrayEquivalency(productionRules.Conj, ['c'])).toBe(true);
 	});
 
 	it(`Sample 2`, () => {
 		const productionRules = {
-			S: ['A', 'B', 'C'],
-			A: ['aAf', '', 'B'],
-			B: ['bBe', '', 'C'],
-			C: ['cCd', ''],
+			Sub: ['Adj', 'Verb', 'Conj'],
+			Adj: ['an Adj for', '', 'Verb'],
+			Verb: ['be Verb early', '', 'Conj'],
+			Conj: ['can Conj do', ''],
 		};
 		removeNullProduction({
-			startVariable: 'S',
+			startVariable: 'Sub',
 			productionRules,
-			variables: ['S', 'A', 'B', 'C'],
+			variables: ['Sub', 'Adj', 'Verb', 'Conj'],
 		});
 
 		expect(productionRules).toStrictEqual({
-			S: ['A', 'B', 'C'],
-			A: ['af', 'aAf', 'B'],
-			B: ['be', 'bBe', 'C'],
-			C: ['cd', 'cCd'],
+			Sub: ['Adj', 'Verb', 'Conj'],
+			Adj: ['an for', 'an Adj for', 'Verb'],
+			Verb: ['be early', 'be Verb early', 'Conj'],
+			Conj: ['can do', 'can Conj do'],
 		});
 	});
 
 	it(`Sample 3`, () => {
 		const productionRules = {
-			S: ['ASB', 'a'],
-			A: ['aAS', 'a', ''],
-			B: ['SbS', 'A', 'bb'],
+			Sub: ['Adj Sub Verb', 'another'],
+			Adj: ['another Adj Sub', 'another', ''],
+			Verb: ['Sub before Sub', 'Adj', 'before before'],
 		};
 		removeNullProduction({
-			startVariable: 'S',
+			startVariable: 'Sub',
 			productionRules,
-			variables: ['S', 'A', 'B'],
+			variables: ['Sub', 'Adj', 'Verb'],
 		});
 
 		expect(productionRules).toStrictEqual({
-			S: ['S', 'SB', 'AS', 'ASB', 'a'],
-			A: ['aS', 'aAS', 'a'],
-			B: ['SbS', 'A', 'bb'],
+			Sub: ['Sub', 'Sub Verb', 'Adj Sub', 'Adj Sub Verb', 'another'],
+			Adj: ['another Sub', 'another Adj Sub', 'another'],
+			Verb: ['Sub before Sub', 'Adj', 'before before'],
 		});
 	});
 });
 
 it(`Should create all combinations of production rules`, () => {
-	expect(createProductionCombinations('AbA', 'A')).toStrictEqual([
-		['b', 'Ab', 'bA', 'AbA'],
+	expect(createProductionCombinations('Adj be Adj', 'Adj')).toStrictEqual([
+		['be', 'Adj be', 'be Adj', 'Adj be Adj'],
 		false,
 		2,
 	]);
 });
 
-it(`Should add null production to production rules, that references nullable variables`, () => {
+it(`Should find all nullable variables`, () => {
 	const productionRules = {
-		S: ['AB', 'abc'],
-		A: [''],
-		B: ['A', 'b'],
-		C: ['c'],
-		D: ['AB', 'c'],
+		Sub: ['Adj Verb', 'an be can'],
+		Adj: [''],
+		Verb: ['Adj', 'be'],
+		Conj: ['can'],
+		Det: ['Adj Verb', 'can'],
 	};
 	expect(
 		arrayEquivalency(
 			findNullableVariables({
 				productionRules,
-				variables: ['S', 'A', 'B', 'C', 'D'],
+				variables: ['Sub', 'Adj', 'Verb', 'Conj', 'Det'],
 			}),
-			['A', 'B', 'D', 'S']
+			['Adj', 'Verb', 'Det', 'Sub']
 		)
 	).toBe(true);
 });
