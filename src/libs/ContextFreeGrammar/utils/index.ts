@@ -1,3 +1,4 @@
+export * from './convertToCnf';
 export * from './generateCfgLanguage';
 export * from './isAllTerminal';
 export * from './removeEmptyProduction';

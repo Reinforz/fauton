@@ -3,7 +3,8 @@ import { IContextFreeGrammar } from '../../../types';
 
 export function createProductionCombinations(
 	substitution: string,
-	epsilonProducingVariable: string
+	epsilonProducingVariable: string,
+	productionRuleVariable: string
 ) {
 	const substitutionChunks = substitution.split(' ');
 	const epsilonProducingVariableCount = substitutionChunks.filter(
@@ -38,8 +39,11 @@ export function createProductionCombinations(
 		if (!newSubstitutionChunks.length) {
 			containsEpsilon = true;
 		} else {
+			const newSubstitutionChunk = newSubstitutionChunks.join(' ');
 			// Only add the substitution if we dont have any epsilon
-			newSubstitutions.push(newSubstitutionChunks.join(' '));
+			if (newSubstitutionChunk !== productionRuleVariable) {
+				newSubstitutions.push(newSubstitutionChunk);
+			}
 		}
 	}
 	return [newSubstitutions, containsEpsilon, epsilonProducingVariableCount] as const;
@@ -122,7 +126,8 @@ export function removeNullProduction(
 						} else {
 							const [productionCombinations] = createProductionCombinations(
 								substitution,
-								nullableVariable
+								nullableVariable,
+								productionRuleVariable
 							);
 							// Generate all possible combination of the production rule, with and without the epsilon producing variable
 							newSubstitutionsChunks.push(...productionCombinations);
