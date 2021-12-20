@@ -148,7 +148,7 @@ it(`Should generate the language of a CFG`, () => {
 		},
 	});
 
-	expect(cfgLanguage.sentences).toStrictEqual([
+	expect(cfgLanguage.language).toStrictEqual([
 		'0',
 		'1',
 		'0 + 0',

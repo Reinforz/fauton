@@ -4,13 +4,13 @@ import { removeUnreachableProduction } from './removeUnreachableProduction';
 
 /**
  * Reduces an input cfg by removing non terminable and non reachable variables
- * @param cfgGrammar Variables, start symbol and production rules of a cfg
+ * @param cfg Variables, start symbol and production rules of a cfg
  * @returns An array of terminable and reachable variables
  */
-export function removeUselessProduction(cfgGrammar: IContextFreeGrammar) {
-	const updatedVariables = removeNonTerminableProduction(cfgGrammar);
+export function removeUselessProduction(cfg: IContextFreeGrammar) {
+	const updatedVariables = removeNonTerminableProduction(cfg);
 	return removeUnreachableProduction({
-		...cfgGrammar,
+		...cfg,
 		variables: updatedVariables,
 	});
 }

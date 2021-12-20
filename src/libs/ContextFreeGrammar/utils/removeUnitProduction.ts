@@ -36,29 +36,23 @@ export function findFirstUnitProductionRule(
 
 /**
  * Modifies the production rules of a cfg to remove unit production rules
- * @param cfgGrammar Variable and production rules of a cfg
+ * @param cfg Variable and production rules of a cfg
  */
 export function removeUnitProduction(
-	cfgGrammar: Pick<IContextFreeGrammar, 'variables' | 'productionRules'>
+	cfg: Pick<IContextFreeGrammar, 'variables' | 'productionRules'>
 ) {
-	let unitProductionRule = findFirstUnitProductionRule(
-		cfgGrammar.variables,
-		cfgGrammar.productionRules
-	);
+	let unitProductionRule = findFirstUnitProductionRule(cfg.variables, cfg.productionRules);
 	// Only continue if there is any unit production rule
 	while (unitProductionRule) {
 		const [unitProductionVariable, productionRuleSubstitutionIndex] = unitProductionRule;
 		// Get all the production rules of the unit production variable
-		const unitProductionRules = cfgGrammar.productionRules[unitProductionVariable];
+		const unitProductionRules = cfg.productionRules[unitProductionVariable];
 		const unitProducingVariableRules =
-			cfgGrammar.productionRules[unitProductionRules[productionRuleSubstitutionIndex]];
+			cfg.productionRules[unitProductionRules[productionRuleSubstitutionIndex]];
 		// Remove the rule that generates unit production
 		unitProductionRules.splice(productionRuleSubstitutionIndex, 1);
 		// Add all the rules of the unit production rule
 		unitProductionRules.push(...unitProducingVariableRules);
-		unitProductionRule = findFirstUnitProductionRule(
-			cfgGrammar.variables,
-			cfgGrammar.productionRules
-		);
+		unitProductionRule = findFirstUnitProductionRule(cfg.variables, cfg.productionRules);
 	}
 }

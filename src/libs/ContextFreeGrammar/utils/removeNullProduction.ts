@@ -47,12 +47,12 @@ export function createProductionCombinations(
 
 /**
  * Adds epsilon to production rules that references nullable variables
- * @param cfgGrammar Variables array and production rules record of cfg
+ * @param cfg Variables array and production rules record of cfg
  */
 export function findNullableVariables(
-	cfgGrammar: Pick<IContextFreeGrammar, 'variables' | 'productionRules'>
+	cfg: Pick<IContextFreeGrammar, 'variables' | 'productionRules'>
 ) {
-	const { productionRules, variables } = cfgGrammar;
+	const { productionRules, variables } = cfg;
 	const linkedList = new LinkedList<string>();
 	// A set of nullable variables which directly leads to epsilon
 	const nullableVariablesSet: Set<string> = new Set();
@@ -97,14 +97,14 @@ export function findNullableVariables(
 
 /**
  * Removes all the null production and returns a new transition record
- * @param cfgGrammar Variables and transition record for cfg
+ * @param cfg Variables and transition record for cfg
  * @returns New transition record with null production removed
  */
 export function removeNullProduction(
-	cfgGrammar: Pick<IContextFreeGrammar, 'variables' | 'productionRules' | 'startVariable'>
+	cfg: Pick<IContextFreeGrammar, 'variables' | 'productionRules' | 'startVariable'>
 ) {
-	const { productionRules } = cfgGrammar;
-	const nullableVariables = findNullableVariables(cfgGrammar);
+	const { productionRules } = cfg;
+	const nullableVariables = findNullableVariables(cfg);
 
 	nullableVariables.forEach((nullableVariable) => {
 		Object.entries(productionRules).forEach(

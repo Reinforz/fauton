@@ -178,3 +178,11 @@ export interface IContextFreeGrammar {
 
 // eslint-disable-next-line
 export type LanguageChecker = (inputString: string) => boolean;
+
+export interface ICfgLanguageGenerationOption {
+	minLength: number;
+	maxLength: number;
+	skipSimplification?: boolean;
+	skipValidation?: boolean;
+	generateTerminals?: boolean;
+}

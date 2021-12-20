@@ -4,12 +4,12 @@ import { removeNullProduction } from './removeNullProduction';
 import { removeUnitProduction } from './removeUnitProduction';
 import { removeUselessProduction } from './removeUselessProduction';
 
-export function simplifyCfg(cfgGrammar: IContextFreeGrammar) {
-	removeNullProduction(cfgGrammar);
-	removeUnitProduction(cfgGrammar);
-	const reducedVariables = removeUselessProduction(cfgGrammar);
+export function simplifyCfg(cfg: IContextFreeGrammar) {
+	removeNullProduction(cfg);
+	removeUnitProduction(cfg);
+	const reducedVariables = removeUselessProduction(cfg);
 	const updatedCfg = {
-		...cfgGrammar,
+		...cfg,
 		variables: reducedVariables,
 	};
 	return removeEmptyProduction(updatedCfg);

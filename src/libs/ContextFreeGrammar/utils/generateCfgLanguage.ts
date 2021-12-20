@@ -1,5 +1,5 @@
 import { LinkedList } from '@datastructures-js/linked-list';
-import { IContextFreeGrammar } from '../../../types';
+import { ICfgLanguageGenerationOption, IContextFreeGrammar } from '../../../types';
 import { simplifyCfg } from './simplifyCfg';
 import { validateCfg } from './validateCfg';
 
@@ -20,13 +20,7 @@ interface IQueueItem {
  */
 export function generateCfgLanguage(
 	cfgOptions: IContextFreeGrammar,
-	options: {
-		minLength: number;
-		maxLength: number;
-		skipSimplification?: boolean;
-		skipValidation?: boolean;
-		generateTerminals?: boolean;
-	}
+	options: ICfgLanguageGenerationOption
 ) {
 	const { productionRules, startVariable, variables } = cfgOptions;
 	const {
@@ -55,7 +49,7 @@ export function generateCfgLanguage(
 
 	const cfgLanguageRecord: Record<string, IQueueItem> = {};
 	// A set to keep track of all the strings of the language
-	const cfgSentences: Set<string> = new Set();
+	const cfgLanguage: Set<string> = new Set();
 
 	while (linkedList.count()) {
 		const queueItem = linkedList.removeFirst()!;
@@ -77,7 +71,7 @@ export function generateCfgLanguage(
 					label: path.join(' -> '),
 					chunks,
 				};
-				cfgSentences.add(sentence);
+				cfgLanguage.add(sentence);
 			} else {
 				// Loop through each of the variables in the sentence
 				variablesInWord.forEach((variable) => {
@@ -126,7 +120,7 @@ export function generateCfgLanguage(
 	// Returning the production rule as it might be different if we have removed null production rules
 	return {
 		tree: cfgLanguageRecord,
-		sentences: Array.from(cfgSentences),
+		language: Array.from(cfgLanguage),
 		productionRules,
 	};
 }

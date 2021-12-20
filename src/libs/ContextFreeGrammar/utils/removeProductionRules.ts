@@ -2,11 +2,11 @@ import { IContextFreeGrammar } from '../../../types';
 import { setDifference } from '../../../utils/setDifference';
 
 export function removeProductionRules(
-	cfgGrammar: Pick<IContextFreeGrammar, 'productionRules' | 'variables'> & {
+	cfg: Pick<IContextFreeGrammar, 'productionRules' | 'variables'> & {
 		removedVariables: string[];
 	}
 ) {
-	const { productionRules, removedVariables, variables } = cfgGrammar;
+	const { productionRules, removedVariables, variables } = cfg;
 	// Remove production variables from the production rules record
 	removedVariables.forEach((removedVariable) => {
 		delete productionRules[removedVariable];

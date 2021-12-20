@@ -1,7 +1,7 @@
 import { IContextFreeGrammar } from '../../../types';
 
-export function validateCfg(cfgGrammar: IContextFreeGrammar) {
-	const { startVariable, terminals, productionRules, variables } = cfgGrammar;
+export function validateCfg(cfg: IContextFreeGrammar) {
+	const { startVariable, terminals, productionRules, variables } = cfg;
 	// Check if all the variables is present in transition record
 	const productionRulesEntries = Object.entries(productionRules);
 	if (productionRulesEntries.length !== variables.length) {

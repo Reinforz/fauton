@@ -1,4 +1,9 @@
-import { CFGAutomaton, IAutomatonInfo, IAutomatonTestLogicFn } from '../../types';
+import {
+	CFGAutomaton,
+	IAutomatonInfo,
+	IAutomatonTestLogicFn,
+	ICfgLanguageGenerationOption,
+} from '../../types';
 import * as ContextFreeGrammarUtils from './utils';
 import { generateCfgLanguage } from './utils/generateCfgLanguage';
 import { validateCfg } from './utils/validateCfg';
@@ -10,20 +15,24 @@ export class ContextFreeGrammar implements IAutomatonInfo {
 
 	automaton: CFGAutomaton & { alphabets: string[] };
 
-	grammarLanguage: Set<string>;
+	cfgLanguage: Set<string>;
 
-	constructor(testLogic: IAutomatonTestLogicFn, automaton: CFGAutomaton) {
+	constructor(
+		testLogic: IAutomatonTestLogicFn,
+		automaton: CFGAutomaton,
+		cfgLanguageGenerationOption: ICfgLanguageGenerationOption
+	) {
 		validateCfg(automaton);
 		this.testLogic = testLogic;
-		const { language } = generateCfgLanguage(automaton);
-		this.grammarLanguage = new Set(language);
+		const { language } = generateCfgLanguage(automaton, cfgLanguageGenerationOption);
+		this.cfgLanguage = new Set(language);
 		this.automaton = {
 			...automaton,
 			alphabets: automaton.terminals,
 		};
 	}
 
-	test(inputString: string) {
-		return this.grammarLanguage.has(inputString);
+	test(sentence: string) {
+		return this.cfgLanguage.has(sentence);
 	}
 }

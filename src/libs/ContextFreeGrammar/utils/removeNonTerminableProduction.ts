@@ -8,13 +8,11 @@ import { removeProductionRules } from './removeProductionRules';
 
 /**
  * Removes production rules which doesn't derive any terminals or terminable variables
- * @param cfgGrammar terminals, variables and production rules of cfg
+ * @param cfg terminals, variables and production rules of cfg
  * @returns An array of variables that are all terminable
  */
-export function removeNonTerminableProduction(
-	cfgGrammar: Omit<IContextFreeGrammar, 'startVariable'>
-) {
-	const { terminals, variables, productionRules } = cfgGrammar;
+export function removeNonTerminableProduction(cfg: Omit<IContextFreeGrammar, 'startVariable'>) {
+	const { terminals, variables, productionRules } = cfg;
 
 	// A set to keep track of variables which are terminable, ie we can reach a terminal from these variables
 	// Initialize it with variables that derives only terminals in any of its production rules

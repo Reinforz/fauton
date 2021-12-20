@@ -4,13 +4,13 @@ import { setDifference } from '../../../utils';
 
 /**
  * Removes unreachable variables and production of a cfg
- * @param cfgGrammar Production rules, start variable and variables array of cfg
+ * @param cfg Production rules, start variable and variables array of cfg
  * @returns A new production rule record and variables with unreachable variable and rules removed
  */
 export function removeUnreachableProduction(
-	cfgGrammar: Pick<IContextFreeGrammar, 'productionRules' | 'startVariable' | 'variables'>
+	cfg: Pick<IContextFreeGrammar, 'productionRules' | 'startVariable' | 'variables'>
 ) {
-	const { productionRules, startVariable, variables } = cfgGrammar;
+	const { productionRules, startVariable, variables } = cfg;
 
 	const variablesSet = new Set(variables);
 	const unvisitedVariables = new LinkedList<string>();
