@@ -3,22 +3,22 @@ import { removeNonTerminableProduction } from '../../../src/libs/ContextFreeGram
 it(`Should remove non terminable production rules and variables`, () => {
 	const cfgOption = {
 		productionRules: {
-			S: ['AC', 'B'],
-			A: ['a'],
-			C: ['c', 'BC'],
-			E: ['aA', 'e'],
-			B: ['B'],
+			S: ['Adj Con', 'Verb'],
+			Adj: ['another'],
+			Con: ['can', 'Verb Con'],
+			E: ['another Adj', 'early'],
+			Verb: ['Verb'],
 		},
 		startVariable: 'S',
-		variables: ['S', 'A', 'C', 'E', 'B'],
-		terminals: ['a', 'c', 'e'],
+		variables: ['S', 'Adj', 'Con', 'E', 'Verb'],
+		terminals: ['another', 'can', 'early'],
 	};
 
-	expect(removeNonTerminableProduction(cfgOption)).toStrictEqual(['S', 'A', 'C', 'E']);
+	expect(removeNonTerminableProduction(cfgOption)).toStrictEqual(['S', 'Adj', 'Con', 'E']);
 	expect(cfgOption.productionRules).toStrictEqual({
-		S: ['AC'],
-		A: ['a'],
-		C: ['c'],
-		E: ['aA', 'e'],
+		S: ['Adj Con'],
+		Adj: ['another'],
+		Con: ['can'],
+		E: ['another Adj', 'early'],
 	});
 });

@@ -24,11 +24,13 @@ export function removeNonTerminableProduction(cfgOption: Omit<CFGOption, 'startV
 	const variablesSet = new Set(variables);
 	let done = false;
 
-	// Check if any of the variable in the word is terminable or not
-	function checkAnyVariableIsTerminable(nonTerminableVariable: string) {
-		return productionRules[nonTerminableVariable].some((word) => {
-			// Extracting variables from word
-			const variablesFromWord = word.split('').filter((letter) => variablesSet.has(letter));
+	// Check if any of the rule is contains only terminable variables
+	function checkAnyRuleIsTerminable(nonTerminableVariable: string) {
+		return productionRules[nonTerminableVariable].some((productionRuleSubstitution) => {
+			// Extracting variables from substitutions
+			const variablesFromWord = productionRuleSubstitution
+				.split(' ')
+				.filter((chunk) => variablesSet.has(chunk));
 			// Checking if all the extracted variables are terminable
 			return variablesFromWord.every((variable) => terminableVariables.has(variable));
 		});
@@ -41,11 +43,8 @@ export function removeNonTerminableProduction(cfgOption: Omit<CFGOption, 'startV
 		// Current non terminable variables
 		const nonTerminableVariables = setDifference(variablesSet, terminableVariables);
 		nonTerminableVariables.forEach((nonTerminableVariable) => {
-			// Check if any of the variables from the words are terminable or not
-			const isAnyVariableTerminable = checkAnyVariableIsTerminable(nonTerminableVariable);
-			// The variable is terminable if:-
-			// Any of the words of the production rules contain only terminals for example ["ab", "AB"]
-			// Or the word contains only terminable variables
+			const isAnyVariableTerminable = checkAnyRuleIsTerminable(nonTerminableVariable);
+			// The variable is terminable if the word contains only terminable variables
 			if (isAnyVariableTerminable) {
 				// Set the done flag to false, as we need to check other variables which references this one to check whether they are terminal or not
 				done = false;
