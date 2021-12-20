@@ -16,7 +16,7 @@ export interface InputFiniteAutomaton {
 	epsilon_transitions?: Record<string, (string | number)[]>;
 }
 
-export interface CFGAutomaton extends CFGOption {
+export interface CFGAutomaton extends IContextFreeGrammar {
 	label: string;
 	description?: string;
 }
@@ -169,7 +169,7 @@ export interface LiteralRegexNode {
 	operands: [string | number];
 }
 
-export interface CFGOption {
+export interface IContextFreeGrammar {
 	variables: string[];
 	terminals: string[];
 	productionRules: Record<string, string[]>;

@@ -1,16 +1,16 @@
-import { CFGOption } from '../../../types';
+import { IContextFreeGrammar } from '../../../types';
 import { removeNonTerminableProduction } from './removeNonTerminableProduction';
 import { removeUnreachableProduction } from './removeUnreachableProduction';
 
 /**
  * Reduces an input cfg by removing non terminable and non reachable variables
- * @param cfgOption Variables, start symbol and production rules of a cfg
+ * @param cfgGrammar Variables, start symbol and production rules of a cfg
  * @returns An array of terminable and reachable variables
  */
-export function removeUselessProduction(cfgOption: CFGOption) {
-	const updatedVariables = removeNonTerminableProduction(cfgOption);
+export function removeUselessProduction(cfgGrammar: IContextFreeGrammar) {
+	const updatedVariables = removeNonTerminableProduction(cfgGrammar);
 	return removeUnreachableProduction({
-		...cfgOption,
+		...cfgGrammar,
 		variables: updatedVariables,
 	});
 }

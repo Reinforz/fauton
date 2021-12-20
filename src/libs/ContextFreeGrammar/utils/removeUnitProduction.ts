@@ -1,4 +1,4 @@
-import { CFGAutomaton, CFGOption } from '../../../types';
+import { CFGAutomaton, IContextFreeGrammar } from '../../../types';
 
 /**
  * Returns the first occurrence of unit production inside production rules
@@ -36,27 +36,29 @@ export function findFirstUnitProductionRule(
 
 /**
  * Modifies the production rules of a cfg to remove unit production rules
- * @param cfgOption Variable and production rules of a cfg
+ * @param cfgGrammar Variable and production rules of a cfg
  */
-export function removeUnitProduction(cfgOption: Pick<CFGOption, 'variables' | 'productionRules'>) {
+export function removeUnitProduction(
+	cfgGrammar: Pick<IContextFreeGrammar, 'variables' | 'productionRules'>
+) {
 	let unitProductionRule = findFirstUnitProductionRule(
-		cfgOption.variables,
-		cfgOption.productionRules
+		cfgGrammar.variables,
+		cfgGrammar.productionRules
 	);
 	// Only continue if there is any unit production rule
 	while (unitProductionRule) {
 		const [unitProductionVariable, productionRuleSubstitutionIndex] = unitProductionRule;
 		// Get all the production rules of the unit production variable
-		const unitProductionRules = cfgOption.productionRules[unitProductionVariable];
+		const unitProductionRules = cfgGrammar.productionRules[unitProductionVariable];
 		const unitProducingVariableRules =
-			cfgOption.productionRules[unitProductionRules[productionRuleSubstitutionIndex]];
+			cfgGrammar.productionRules[unitProductionRules[productionRuleSubstitutionIndex]];
 		// Remove the rule that generates unit production
 		unitProductionRules.splice(productionRuleSubstitutionIndex, 1);
 		// Add all the rules of the unit production rule
 		unitProductionRules.push(...unitProducingVariableRules);
 		unitProductionRule = findFirstUnitProductionRule(
-			cfgOption.variables,
-			cfgOption.productionRules
+			cfgGrammar.variables,
+			cfgGrammar.productionRules
 		);
 	}
 }

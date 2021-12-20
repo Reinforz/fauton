@@ -1,4 +1,4 @@
-import { CFGOption } from '../../../types';
+import { IContextFreeGrammar } from '../../../types';
 import { setDifference } from '../../../utils/setDifference';
 import { isAllTerminal } from './isAllTerminal';
 import {} from './removeEmptyProduction';
@@ -8,11 +8,13 @@ import { removeProductionRules } from './removeProductionRules';
 
 /**
  * Removes production rules which doesn't derive any terminals or terminable variables
- * @param cfgOption terminals, variables and production rules of cfg
+ * @param cfgGrammar terminals, variables and production rules of cfg
  * @returns An array of variables that are all terminable
  */
-export function removeNonTerminableProduction(cfgOption: Omit<CFGOption, 'startVariable'>) {
-	const { terminals, variables, productionRules } = cfgOption;
+export function removeNonTerminableProduction(
+	cfgGrammar: Omit<IContextFreeGrammar, 'startVariable'>
+) {
+	const { terminals, variables, productionRules } = cfgGrammar;
 
 	// A set to keep track of variables which are terminable, ie we can reach a terminal from these variables
 	// Initialize it with variables that derives only terminals in any of its production rules

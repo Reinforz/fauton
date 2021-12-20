@@ -12,10 +12,10 @@ export class ContextFreeGrammar implements IAutomatonInfo {
 
 	grammarLanguage: Set<string>;
 
-	constructor(testLogic: IAutomatonTestLogicFn, automaton: CFGAutomaton, maxLength: number) {
+	constructor(testLogic: IAutomatonTestLogicFn, automaton: CFGAutomaton) {
 		validateCfg(automaton);
 		this.testLogic = testLogic;
-		const { language } = generateCfgLanguage(automaton, maxLength);
+		const { language } = generateCfgLanguage(automaton);
 		this.grammarLanguage = new Set(language);
 		this.automaton = {
 			...automaton,

@@ -1,16 +1,16 @@
 import { LinkedList } from '@datastructures-js/linked-list';
-import { CFGOption } from '../../../types';
+import { IContextFreeGrammar } from '../../../types';
 import { setDifference } from '../../../utils';
 
 /**
  * Removes unreachable variables and production of a cfg
- * @param cfgOption Production rules, start variable and variables array of cfg
+ * @param cfgGrammar Production rules, start variable and variables array of cfg
  * @returns A new production rule record and variables with unreachable variable and rules removed
  */
 export function removeUnreachableProduction(
-	cfgOption: Pick<CFGOption, 'productionRules' | 'startVariable' | 'variables'>
+	cfgGrammar: Pick<IContextFreeGrammar, 'productionRules' | 'startVariable' | 'variables'>
 ) {
-	const { productionRules, startVariable, variables } = cfgOption;
+	const { productionRules, startVariable, variables } = cfgGrammar;
 
 	const variablesSet = new Set(variables);
 	const unvisitedVariables = new LinkedList<string>();

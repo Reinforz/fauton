@@ -1,7 +1,7 @@
 import { removeNonTerminableProduction } from '../../../src/libs/ContextFreeGrammar/utils/removeNonTerminableProduction';
 
 it(`Should remove non terminable production rules and variables`, () => {
-	const cfgOption = {
+	const cfgGrammar = {
 		productionRules: {
 			S: ['Adj Con', 'Verb'],
 			Adj: ['another'],
@@ -14,8 +14,8 @@ it(`Should remove non terminable production rules and variables`, () => {
 		terminals: ['another', 'can', 'early'],
 	};
 
-	expect(removeNonTerminableProduction(cfgOption)).toStrictEqual(['S', 'Adj', 'Con', 'E']);
-	expect(cfgOption.productionRules).toStrictEqual({
+	expect(removeNonTerminableProduction(cfgGrammar)).toStrictEqual(['S', 'Adj', 'Con', 'E']);
+	expect(cfgGrammar.productionRules).toStrictEqual({
 		S: ['Adj Con'],
 		Adj: ['another'],
 		Con: ['can'],

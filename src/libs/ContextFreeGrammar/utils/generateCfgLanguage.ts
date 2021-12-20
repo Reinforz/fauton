@@ -1,5 +1,5 @@
 import { LinkedList } from '@datastructures-js/linked-list';
-import { CFGOption } from '../../../types';
+import { IContextFreeGrammar } from '../../../types';
 import { simplifyCfg } from './simplifyCfg';
 import { validateCfg } from './validateCfg';
 
@@ -19,7 +19,7 @@ interface IQueueItem {
  * @returns A record of generated string and the path taken to generate them
  */
 export function generateCfgLanguage(
-	cfgOptions: CFGOption,
+	cfgOptions: IContextFreeGrammar,
 	options: {
 		minLength: number;
 		maxLength: number;

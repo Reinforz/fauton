@@ -1,5 +1,5 @@
 import { LinkedList } from '@datastructures-js/linked-list';
-import { CFGOption } from '../../../types';
+import { IContextFreeGrammar } from '../../../types';
 
 export function createProductionCombinations(
 	substitution: string,
@@ -47,10 +47,12 @@ export function createProductionCombinations(
 
 /**
  * Adds epsilon to production rules that references nullable variables
- * @param cfgOption Variables array and production rules record of cfg
+ * @param cfgGrammar Variables array and production rules record of cfg
  */
-export function findNullableVariables(cfgOption: Pick<CFGOption, 'variables' | 'productionRules'>) {
-	const { productionRules, variables } = cfgOption;
+export function findNullableVariables(
+	cfgGrammar: Pick<IContextFreeGrammar, 'variables' | 'productionRules'>
+) {
+	const { productionRules, variables } = cfgGrammar;
 	const linkedList = new LinkedList<string>();
 	// A set of nullable variables which directly leads to epsilon
 	const nullableVariablesSet: Set<string> = new Set();
@@ -95,14 +97,14 @@ export function findNullableVariables(cfgOption: Pick<CFGOption, 'variables' | '
 
 /**
  * Removes all the null production and returns a new transition record
- * @param cfgOption Variables and transition record for cfg
+ * @param cfgGrammar Variables and transition record for cfg
  * @returns New transition record with null production removed
  */
 export function removeNullProduction(
-	cfgOption: Pick<CFGOption, 'variables' | 'productionRules' | 'startVariable'>
+	cfgGrammar: Pick<IContextFreeGrammar, 'variables' | 'productionRules' | 'startVariable'>
 ) {
-	const { productionRules } = cfgOption;
-	const nullableVariables = findNullableVariables(cfgOption);
+	const { productionRules } = cfgGrammar;
+	const nullableVariables = findNullableVariables(cfgGrammar);
 
 	nullableVariables.forEach((nullableVariable) => {
 		Object.entries(productionRules).forEach(
