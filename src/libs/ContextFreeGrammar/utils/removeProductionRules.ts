@@ -9,14 +9,20 @@ export function removeProductionRules(
 	removedVariables.forEach((removedVariable) => {
 		delete productionRules[removedVariable];
 	});
+	const removedVariablesSet = new Set(removedVariables);
 
 	// Now we need to remove all the production rules that references any removed production variables
 	Object.entries(productionRules).forEach(([productionVariable, productionRulesSubstitutions]) => {
 		productionRules[productionVariable] = productionRulesSubstitutions.filter(
-			(productionRulesSubstitution) =>
-				removedVariables.every(
-					(removedVariable) => !productionRulesSubstitution.includes(removedVariable)
-				)
+			(productionRulesSubstitution) => {
+				// productionRulesSubstitution = Verb Adj Noun
+				const productionRulesSubstitutionChunksSet = new Set(
+					productionRulesSubstitution.split(' ')
+				);
+				const difference = setDifference(productionRulesSubstitutionChunksSet, removedVariablesSet);
+				// If we dont need to remove any variables then the size before and after the set difference would be similar
+				return difference.size === productionRulesSubstitutionChunksSet.size;
+			}
 		);
 	});
 
