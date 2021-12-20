@@ -185,4 +185,6 @@ export interface ICfgLanguageGenerationOption {
 	skipSimplification?: boolean;
 	skipValidation?: boolean;
 	generateTerminals?: boolean;
+	generateVariables?: boolean;
+	autoCapitalize?: boolean;
 }

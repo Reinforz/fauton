@@ -22,16 +22,19 @@ export function generateCfgLanguage(
 	cfgOptions: IContextFreeGrammar,
 	options: ICfgLanguageGenerationOption
 ) {
-	const { productionRules, startVariable, variables } = cfgOptions;
+	const { productionRules, startVariable } = cfgOptions;
 	const {
 		/* generateTerminals = false,  */ minLength,
 		maxLength,
 		skipSimplification = false,
 		skipValidation = false,
+		generateVariables = false,
+		autoCapitalize = true,
 	} = options;
 	if (!skipValidation) {
 		validateCfg(cfgOptions);
 	}
+	const variables = generateVariables ? Object.keys(productionRules) : cfgOptions.variables;
 	const simplifiedVariables = skipSimplification ? variables : simplifyCfg(cfgOptions);
 
 	const linkedList = new LinkedList<IQueueItem>();
@@ -96,7 +99,10 @@ export function generateCfgLanguage(
 								tempChunks = [...leftChunks, ...substitutionChunks, ...rightChunks];
 							});
 						}
-						const substitutedWord = tempChunks.join(' ');
+						let substitutedWord = tempChunks.join(' ');
+						substitutedWord = autoCapitalize
+							? substitutedWord[0].toUpperCase() + substitutedWord.slice(1)
+							: substitutedWord;
 						if (!traversedSet.has(substitutedWord) && tempChunks.length <= maxLength) {
 							const newPath = [
 								...path,
