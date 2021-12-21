@@ -22,6 +22,7 @@ export function generateNewVariable(variables: string[]) {
 	let newVariable =
 		CAPITAL_LETTERS[randomIntFromInterval(0, CAPITAL_LETTERS.length - 1)] +
 		DIGITS[randomIntFromInterval(0, DIGITS.length - 1)];
+
 	// While the new variable is present in our variables set we need to keep on creating it
 	while (variablesSet.has(newVariable)) {
 		// New variable will be a combination of capital letter and a digit

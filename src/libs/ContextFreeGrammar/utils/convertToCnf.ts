@@ -1,4 +1,5 @@
 import { IContextFreeGrammar } from '../../../types';
+import { setDifference } from '../../../utils';
 import { generateNewVariable } from './generateNewVariable';
 import { simplifyCfg } from './simplifyCfg';
 
@@ -123,10 +124,17 @@ export function processLongSubstitutions(
  * **Example**: `["A", ["a b A", "b a b"]]`
  * @returns A tuple ([production rule variable, production rule substitution chunks, production rule substitution index ]) if a substitution was found else null
  */
-export function findSubstitutionOfLengthTwo(productionRuleEntries: Array<[string, string[]]>) {
+export function findSubstitutionOfLengthTwo(
+	productionRuleEntries: Array<[string, string[]]>,
+	variables: string[]
+) {
+	const variablesSet = new Set(variables);
 	return findSubstitution(
 		productionRuleEntries,
-		(productionRuleSubstitutionChunks) => productionRuleSubstitutionChunks.length === 2
+		// If there are two chunks and both of them are not variables
+		(productionRuleSubstitutionChunks) =>
+			productionRuleSubstitutionChunks.length === 2 &&
+			setDifference(new Set(productionRuleSubstitutionChunks), variablesSet).size !== 0
 	);
 }
 
@@ -145,7 +153,7 @@ export function processSubstitutionsOfLengthTwo(
 
 	function processSubstitutionOfLengthTwo() {
 		// Find the first substitution of length two
-		const lengthTwoRule = findSubstitutionOfLengthTwo(productionRuleEntries);
+		const lengthTwoRule = findSubstitutionOfLengthTwo(productionRuleEntries, variables);
 		// If it doesn't exist return false, this will break the loop beneath
 		if (!lengthTwoRule) {
 			return false;
@@ -181,13 +189,15 @@ export function processSubstitutionsOfLengthTwo(
 			}
 			const newVariable2 =
 				generatedVariablesTerminalRecord[rightChunk] ?? generateNewVariable(variables);
+
+			if (!generatedVariablesTerminalRecord[rightChunk]) {
+				generatedVariablesTerminalRecord[rightChunk] = newVariable2;
+			}
+
 			productionRules[newVariable1] = [leftChunk];
 			productionRules[newVariable2] = [rightChunk];
 			productionRules[productionRuleVariable].splice(productionRuleSubstitutionsIndex, 1);
 			productionRules[productionRuleVariable].push(`${newVariable1} ${newVariable2}`);
-			if (!generatedVariablesTerminalRecord[rightChunk]) {
-				generatedVariablesTerminalRecord[rightChunk] = newVariable2;
-			}
 		}
 		// If only the left chunk is terminal
 		// Example: ["a", "C"] => ["A", "C"] => A = ["a"]
@@ -210,6 +220,7 @@ export function processSubstitutionsOfLengthTwo(
 			productionRules[newVariable] = [rightChunk];
 			productionRules[productionRuleVariable].splice(productionRuleSubstitutionsIndex, 1);
 			productionRules[productionRuleVariable].push(`${leftChunk} ${newVariable}`);
+
 			if (!generatedVariablesTerminalRecord[rightChunk]) {
 				generatedVariablesTerminalRecord[rightChunk] = newVariable;
 			}
