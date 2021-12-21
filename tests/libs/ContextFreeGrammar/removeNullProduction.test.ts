@@ -69,7 +69,7 @@ describe('Should remove null production from transition record', () => {
 		});
 
 		expect(productionRules).toStrictEqual({
-			Sub: ['Sub', 'Sub Verb', 'Adj Sub', 'Adj Sub Verb', 'another'],
+			Sub: ['Sub Verb', 'Adj Sub', 'Adj Sub Verb', 'another'],
 			Adj: ['another Sub', 'another Adj Sub', 'another'],
 			Verb: ['Sub before Sub', 'Adj', 'before before'],
 		});
@@ -77,8 +77,8 @@ describe('Should remove null production from transition record', () => {
 });
 
 it(`Should create all combinations of production rules`, () => {
-	expect(createProductionCombinations('Adj be Adj', 'Adj')).toStrictEqual([
-		['be', 'Adj be', 'be Adj', 'Adj be Adj'],
+	expect(createProductionCombinations('Adj be Adj', 'Adj', 'be')).toStrictEqual([
+		['Adj be', 'be Adj', 'Adj be Adj'],
 		false,
 		2,
 	]);
