@@ -41,6 +41,14 @@ describe('.generateAllCombosWithinLength', () => {
 			'ccc',
 		]);
 	});
+
+	it(`Should generate string combinations when callback is present`, () => {
+		const mockFn = jest.fn();
+		expect(
+			GenerateString.generateAllCombosWithinLength(['a', 'b'], 2, undefined, mockFn)
+		).toStrictEqual(['a', 'b', 'aa', 'ab', 'ba', 'bb']);
+		expect(mockFn.mock.calls).toEqual([['a'], ['b'], ['aa'], ['ab'], ['ba'], ['bb']]);
+	});
 });
 
 describe('.generateRandomUnique', () => {

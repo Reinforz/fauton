@@ -103,7 +103,7 @@ describe('.processSubstitutionsOfLengthTwo', () => {
 	it(`Should process substitutions of length two`, () => {
 		const productionRules: IContextFreeGrammar['productionRules'] = {
 				A: ['a', 'A A', 'B a', 'a a', 'a B'],
-				B: ['b B', 'a', 'c d'],
+				B: ['b B', 'a', 'c d', 'B a'],
 			},
 			variables: string[] = ['A', 'B'];
 
@@ -133,7 +133,7 @@ describe('.processSubstitutionsOfLengthTwo', () => {
 
 		expect(productionRules).toStrictEqual({
 			A: ['a', 'A A', 'B A0', 'A0 A0', 'A0 B'],
-			B: ['a', 'B0 B', 'C0 D0'],
+			B: ['a', 'B0 B', 'C0 D0', 'B A0'],
 			A0: ['a'],
 			B0: ['b'],
 			C0: ['c'],
