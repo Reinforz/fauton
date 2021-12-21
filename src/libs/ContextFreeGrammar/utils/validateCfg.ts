@@ -28,7 +28,7 @@ export function validateCfg(cfg: IContextFreeGrammar) {
 
 				if (!isTerminal && !isVariable) {
 					throw new Error(
-						`Transition record substitution letter ${productionRuleSubstitutionChunk} is neither a variable nor a terminal`
+						`Transition record substitution chunk ${productionRuleSubstitutionChunk} is neither a variable nor a terminal`
 					);
 				}
 			}
