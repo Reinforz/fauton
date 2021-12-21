@@ -1,5 +1,6 @@
 export * from './convertToCnf';
 export * from './generateCfgLanguage';
+export * from './generateNewVariable';
 export * from './isAllTerminal';
 export * from './removeEmptyProduction';
 export * from './removeNonTerminableProduction';
