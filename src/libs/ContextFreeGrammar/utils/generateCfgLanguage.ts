@@ -14,7 +14,7 @@ interface IQueueItem {
 /**
  * Generates all the strings of a given cfg within certain length along with the path taken to generate them
  * @param cfgOptions Variables and transition Record for the cfg
- * @param maxLength Maximum length of the generated string
+ * @param maxChunkLength Maximum length of the generated string
  * @param skipSimplification Should the cfg simplification process be skipped, useful if you already have a simplified cfg, and dont want to spend additional computational power behind it, also sometimes you dont want to simplify cfg as it updates the production rules
  * @returns A record of generated string and the path taken to generate them
  */
@@ -24,12 +24,14 @@ export function generateCfgLanguage(
 ) {
 	const { productionRules, startVariable } = cfgOptions;
 	const {
-		/* generateTerminals = false,  */ minLength,
-		maxLength,
+		/* generateTerminals = false,  */ minChunkLength,
+		maxChunkLength,
 		skipSimplification = false,
 		skipValidation = false,
 		generateVariables = false,
-		autoCapitalize = true,
+		autoCapitalizeFirstChunk = true,
+		useSpaceWhenJoiningChunks = true,
+		parseDirection = 'left',
 	} = options;
 	// Generate the variables first and attach to cfg
 	// else if we are dynamically generating variables, most likely the input variables would be [],
@@ -59,19 +61,20 @@ export function generateCfgLanguage(
 	const cfgLanguageRecord: Record<string, IQueueItem> = {};
 	// A set to keep track of all the strings of the language
 	const cfgLanguage: Set<string> = new Set();
+	const chunkJoinSeparator = useSpaceWhenJoiningChunks ? ' ' : '';
 
 	while (linkedList.count()) {
 		const queueItem = linkedList.removeFirst()!;
 		const { path, chunks, sentence, rules } = queueItem.getValue();
 		// Extracting all the variables of the sentence
 
-		if (chunks.length <= maxLength) {
+		if (chunks.length <= maxChunkLength) {
 			const variablesInWord = chunks.filter((chunk) => variablesSet.has(chunk));
 			// If there are no variables, we've generated a concrete sentence of the language
 			if (
 				variablesInWord.length === 0 &&
 				!cfgLanguageRecord[sentence] &&
-				chunks.length >= minLength
+				chunks.length >= minChunkLength
 			) {
 				cfgLanguageRecord[sentence] = {
 					path,
@@ -82,8 +85,10 @@ export function generateCfgLanguage(
 				};
 				cfgLanguage.add(sentence);
 			} else {
+				const updatedVariables =
+					parseDirection === 'left' ? variablesInWord : variablesInWord.reverse();
 				// Loop through each of the variables in the sentence
-				variablesInWord.forEach((variable) => {
+				updatedVariables.forEach((variable) => {
 					productionRules[variable].forEach((substitution, substitutionIndex) => {
 						// Keeping a temporary chunk as we dont want to update the previous chunks
 						let tempChunks: string[] = [];
@@ -93,7 +98,8 @@ export function generateCfgLanguage(
 							rightChunks: string[] = [];
 						// Replace the variable in the sentence with the substitution
 						// Find the variable index inside the sentence chunks
-						const chunksVariableIndex = chunks.findIndex((chunk) => chunk === variable);
+						const chunksVariableIndex =
+							parseDirection === 'left' ? chunks.indexOf(variable) : chunks.lastIndexOf(variable);
 						// If the Chunks contain the variable
 						if (chunksVariableIndex !== -1) {
 							chunks.forEach((chunk, chunkIndex) => {
@@ -105,20 +111,23 @@ export function generateCfgLanguage(
 								tempChunks = [...leftChunks, ...substitutionChunks, ...rightChunks];
 							});
 						}
-						let substitutedWord = tempChunks.join(' ');
-						substitutedWord = autoCapitalize
-							? substitutedWord[0].toUpperCase() + substitutedWord.slice(1)
-							: substitutedWord;
-						if (!traversedSet.has(substitutedWord) && tempChunks.length <= maxLength) {
+						let newSentence = tempChunks.join(chunkJoinSeparator);
+						// If auto capitalize is enabled, capitalize the first chunk
+						newSentence = autoCapitalizeFirstChunk
+							? newSentence[0].toUpperCase() + newSentence.slice(1)
+							: newSentence;
+						// If we haven't traversed this sentence, and total chunks is less than maximum chunk length
+						if (!traversedSet.has(newSentence) && tempChunks.length <= maxChunkLength) {
+							// Construct the new path, and add (bracket) around the new substitute to show which one was substituted
 							const newPath = [
 								...path,
-								[...leftChunks, `(${substitution})`, ...rightChunks].join(' '),
+								[...leftChunks, `(${substitution})`, ...rightChunks].join(chunkJoinSeparator),
 							];
-							traversedSet.add(substitutedWord);
+							traversedSet.add(newSentence);
 							linkedList.insertLast({
 								rules: [...rules, [variable, substitutionIndex]],
 								path: newPath,
-								sentence: substitutedWord,
+								sentence: newSentence,
 								label: newPath.join(' -> '),
 								chunks: tempChunks,
 							});

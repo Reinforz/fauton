@@ -87,7 +87,7 @@ export type InputStringOption =
 					type: 'generate';
 					random?: {
 						total: number;
-						minLength: number;
+						minChunkLength: number;
 						maxLength: number;
 					};
 					combo?: undefined | null;
@@ -180,11 +180,13 @@ export interface IContextFreeGrammar {
 export type LanguageChecker = (inputString: string) => boolean;
 
 export interface ICfgLanguageGenerationOption {
-	minLength: number;
-	maxLength: number;
+	minChunkLength: number;
+	maxChunkLength: number;
 	skipSimplification?: boolean;
 	skipValidation?: boolean;
 	generateTerminals?: boolean;
 	generateVariables?: boolean;
-	autoCapitalize?: boolean;
+	autoCapitalizeFirstChunk?: boolean;
+	useSpaceWhenJoiningChunks?: boolean;
+	parseDirection?: 'left' | 'right';
 }
