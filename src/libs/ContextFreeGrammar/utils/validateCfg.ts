@@ -17,17 +17,18 @@ export function validateCfg(cfg: IContextFreeGrammar) {
 			);
 		}
 		// Check if all the substitutions contain either variable or terminal
-		productionRuleSubstitutions.forEach((substitutedWord) => {
-			for (let index = 0; index < substitutedWord.length; index += 1) {
-				const substitutedLetter = substitutedWord[index];
+		productionRuleSubstitutions.forEach((productionRuleSubstitution) => {
+			const productionRuleSubstitutionChunks = productionRuleSubstitution.split(' ');
+			for (let index = 0; index < productionRuleSubstitutionChunks.length; index += 1) {
+				const productionRuleSubstitutionChunk = productionRuleSubstitutionChunks[index];
 				// Check if the letter is a terminal
-				const isTerminal = terminalsSet.has(substitutedLetter);
+				const isTerminal = terminalsSet.has(productionRuleSubstitutionChunk);
 				// Check if the letter is a variable
-				const isVariable = variablesSet.has(substitutedLetter);
+				const isVariable = variablesSet.has(productionRuleSubstitutionChunk);
 
 				if (!isTerminal && !isVariable) {
 					throw new Error(
-						`Transition record substitution letter ${substitutedLetter} is neither a variable nor a terminal`
+						`Transition record substitution letter ${productionRuleSubstitutionChunk} is neither a variable nor a terminal`
 					);
 				}
 			}

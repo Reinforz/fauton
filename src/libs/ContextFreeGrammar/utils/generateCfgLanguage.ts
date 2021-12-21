@@ -31,10 +31,16 @@ export function generateCfgLanguage(
 		generateVariables = false,
 		autoCapitalize = true,
 	} = options;
+	// Generate the variables first and attach to cfg
+	// else if we are dynamically generating variables, most likely the input variables would be [],
+	// Which will trigger a validation error
+	const variables = generateVariables ? Object.keys(productionRules) : cfgOptions.variables;
+	// eslint-disable-next-line
+	cfgOptions.variables = variables;
+
 	if (!skipValidation) {
 		validateCfg(cfgOptions);
 	}
-	const variables = generateVariables ? Object.keys(productionRules) : cfgOptions.variables;
 	const simplifiedVariables = skipSimplification ? variables : simplifyCfg(cfgOptions);
 
 	const linkedList = new LinkedList<IQueueItem>();

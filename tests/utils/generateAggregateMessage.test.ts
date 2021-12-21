@@ -19,8 +19,8 @@ it(`Should generate correct aggregate message values`, () => {
 		trueNegativesPercentage: 55.55556,
 	});
 
-	// To cover case where description is present
-	generateAggregateMessage('dfa', 'dfa description', {
+	// To cover case where description is present and label is not present
+	generateAggregateMessage(undefined, 'dfa description', {
 		falseNegatives: 5,
 		falsePositives: 10,
 		trueNegatives: 50,
