@@ -5,14 +5,17 @@ const cfgLanguage = ContextFreeGrammarUtils.generateCfgLanguage(
 		startVariable: 'S',
 		terminals: ['0', '1', '+', '-', '/', '*', '(', ')'],
 		productionRules: {
-			S: ['S', 'SEN', '(S)', 'N'],
+			S: ['S', 'S E N', '(S)', 'N'],
 			N: ['0', '1'],
 			E: ['+', '-', '/', '*'],
 		},
 		variables: ['S', 'N', 'E'],
 	},
 	// Maximum length of the string
-	3
+	{
+		maxLength: 3,
+		minLength: 1,
+	}
 );
 
-console.log(Object.keys(cfgLanguage));
+console.log(cfgLanguage.language);
