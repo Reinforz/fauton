@@ -87,7 +87,7 @@ export type InputStringOption =
 					type: 'generate';
 					random?: {
 						total: number;
-						minChunkLength: number;
+						minLength: number;
 						maxLength: number;
 					};
 					combo?: undefined | null;

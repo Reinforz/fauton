@@ -1,6 +1,12 @@
 import { IContextFreeGrammar } from '../../../types';
 import { setCrossProduct } from '../../../utils';
 
+/**
+ * Parses a sentence given a cfg
+ * @param cfg Input cfg production rules and start variable
+ * @param sentenceChunks An array of sentence chunks
+ * @returns Boolean value on whether the sentence is part of the grammar and steps that the CYK algo took to resolve it
+ */
 export function cykParse(
 	cfg: Pick<IContextFreeGrammar, 'productionRules' | 'startVariable'>,
 	sentenceChunks: string[]
@@ -10,6 +16,7 @@ export function cykParse(
 	const productionRulesEntries = Object.entries(productionRules);
 
 	const cykTable: Array<Array<Set<string>>> = [];
+	// Initialize the cykTable first, a left right angled triangle with height and base equal to the length of sentence chunks
 	for (let i = 0; i < stringChunksLength; i += 1) {
 		const cytTableRows: Array<Set<string>> = [];
 		for (let j = 0; j <= i; j += 1) {
@@ -18,49 +25,65 @@ export function cykParse(
 		cykTable.push(cytTableRows);
 	}
 
-	// A record that maps which nodes (terminals and Variable Variable) is reachable by which variables
+	// A record that maps which nodes (T, VV) is reachable by which variables
 	const nodeVariablesRecord: Record<string, Set<string>> = {};
 
+	// Populating the nodeVariables record
+	// Loop through each of the production rules
 	productionRulesEntries.forEach(([productionRuleVariable, productionRuleSubstitutions]) => {
+		// Loop through each of the substitutions
 		productionRuleSubstitutions.forEach((productionRuleSubstitution) => {
+			// Add the substitution to the record, it it doesn't exist
 			if (!nodeVariablesRecord[productionRuleSubstitution]) {
 				nodeVariablesRecord[productionRuleSubstitution] = new Set();
 			}
+			// Add the production rule variable to the set
 			nodeVariablesRecord[productionRuleSubstitution].add(productionRuleVariable);
 		});
 	});
 
-	// filling the bottom row
+	// filling the bottom row, with values from the record, since the bottom row will contain only direct terminals
 	sentenceChunks.forEach((sentenceChunk, sentenceChunkIndex) => {
 		cykTable[stringChunksLength - 1][sentenceChunkIndex] = nodeVariablesRecord[sentenceChunk];
 	});
 
-	// Start from the row top of the bottom row
+	// Start from the row top of the bottom row, all the way to the first row
 	for (let cykTableRow = stringChunksLength - 2; cykTableRow >= 0; cykTableRow -= 1) {
+		// The total number of combinations that is possible from the current row
+		// if input is aabab and we are in row index 2, total combinations are aa+bab, aab+ab
+		const totalCombinations = stringChunksLength - (cykTableRow + 1); // Adding 1 as row is 0 index based;
+		// Loop from left most column to the right most column, since its a left right angled triangle, the number of column will be the same as the number of rows
 		for (let cykTableCol = 0; cykTableCol <= cykTableRow; cykTableCol += 1) {
+			// Each cell will contain a set of variables that can be derived from all the cross products
 			const variablesContainingCrossProduct: Set<string> = new Set();
-			const totalCombinations = stringChunksLength - (cykTableRow + 1); // Adding 1 as row is 0 index based;
 			for (
 				let combinationNumber = 1;
 				combinationNumber <= totalCombinations;
 				combinationNumber += 1
 			) {
+				// The combinationNumber'th bottom cell from the current cell
 				const bottomRowCell = cykTable[cykTableRow + combinationNumber][cykTableCol],
-					rightMostDiagonalCell =
+					// The combinationNumber'th right diagonal cell from the current cell
+					rightDiagonalCell =
 						cykTable[stringChunksLength - combinationNumber][
 							stringChunksLength - cykTableRow + cykTableCol - combinationNumber
 						];
-				const crossProduct = setCrossProduct(bottomRowCell, rightMostDiagonalCell);
+				// Get the cross product of all the variables in those two cells
+				const crossProduct = setCrossProduct(bottomRowCell, rightDiagonalCell);
 				crossProduct.forEach((crossProductItem) => {
+					// Making sure that cross product item is present in the record
 					if (nodeVariablesRecord[crossProductItem]) {
+						// Loop through all the cross product items and add them to the above set
 						nodeVariablesRecord[crossProductItem].forEach((variable) => {
 							variablesContainingCrossProduct.add(variable);
 						});
 					}
 				});
 			}
+			// Update the set for the corresponding cell
 			cykTable[cykTableRow][cykTableCol] = variablesContainingCrossProduct;
 		}
 	}
+	// If the first cell has the startVariable, the sentence is valid for the grammar
 	return cykTable[0][0].has(startVariable);
 }
