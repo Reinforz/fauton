@@ -1,6 +1,165 @@
 import { generateCfgLanguage } from '../../../src/libs/ContextFreeGrammar/utils/generateCfgLanguage';
+import { arrayEquivalency } from '../../setEquivalency';
 
-it(`Should generate the language of a CFG`, () => {
+it(`Should generate the language of a CFG by parsing from rightmost`, () => {
+	const cfgLanguage = generateCfgLanguage(
+		{
+			startVariable: 'S',
+			terminals: ['0', '1', '+', '-'],
+			productionRules: {
+				S: ['Num', 'S Op Num'],
+				Num: ['0', '1'],
+				Op: ['+', '-'],
+			},
+			variables: ['S', 'Num', 'Op'],
+		},
+		{
+			maxChunkLength: 3,
+			minChunkLength: 1,
+			generateTerminals: false,
+			skipSimplification: true,
+			skipValidation: true,
+			parseDirection: 'right',
+			useSpaceWhenJoiningChunks: false,
+		}
+	);
+
+	expect(cfgLanguage.tree).toStrictEqual({
+		'0': {
+			path: ['S', '(Num)', '(0)'],
+			rules: [
+				['S', 0],
+				['Num', 0],
+			],
+			sentence: '0',
+			label: 'S -> (Num) -> (0)',
+			chunks: ['0'],
+		},
+		'1': {
+			path: ['S', '(Num)', '(1)'],
+			rules: [
+				['S', 0],
+				['Num', 1],
+			],
+			sentence: '1',
+			label: 'S -> (Num) -> (1)',
+			chunks: ['1'],
+		},
+		'0+0': {
+			path: ['S', '(S Op Num)', 'S Op (0)', 'S (+) 0', '(Num) + 0', '(0) + 0'],
+			rules: [
+				['S', 1],
+				['Num', 0],
+				['Op', 0],
+				['S', 0],
+				['Num', 0],
+			],
+			sentence: '0+0',
+			label: 'S -> (S Op Num) -> S Op (0) -> S (+) 0 -> (Num) + 0 -> (0) + 0',
+			chunks: ['0', '+', '0'],
+		},
+		'1+0': {
+			path: ['S', '(S Op Num)', 'S Op (0)', 'S (+) 0', '(Num) + 0', '(1) + 0'],
+			rules: [
+				['S', 1],
+				['Num', 0],
+				['Op', 0],
+				['S', 0],
+				['Num', 1],
+			],
+			sentence: '1+0',
+			label: 'S -> (S Op Num) -> S Op (0) -> S (+) 0 -> (Num) + 0 -> (1) + 0',
+			chunks: ['1', '+', '0'],
+		},
+		'0-0': {
+			path: ['S', '(S Op Num)', 'S Op (0)', 'S (-) 0', '(Num) - 0', '(0) - 0'],
+			rules: [
+				['S', 1],
+				['Num', 0],
+				['Op', 1],
+				['S', 0],
+				['Num', 0],
+			],
+			sentence: '0-0',
+			label: 'S -> (S Op Num) -> S Op (0) -> S (-) 0 -> (Num) - 0 -> (0) - 0',
+			chunks: ['0', '-', '0'],
+		},
+		'1-0': {
+			path: ['S', '(S Op Num)', 'S Op (0)', 'S (-) 0', '(Num) - 0', '(1) - 0'],
+			rules: [
+				['S', 1],
+				['Num', 0],
+				['Op', 1],
+				['S', 0],
+				['Num', 1],
+			],
+			sentence: '1-0',
+			label: 'S -> (S Op Num) -> S Op (0) -> S (-) 0 -> (Num) - 0 -> (1) - 0',
+			chunks: ['1', '-', '0'],
+		},
+		'0+1': {
+			path: ['S', '(S Op Num)', 'S Op (1)', 'S (+) 1', '(Num) + 1', '(0) + 1'],
+			rules: [
+				['S', 1],
+				['Num', 1],
+				['Op', 0],
+				['S', 0],
+				['Num', 0],
+			],
+			sentence: '0+1',
+			label: 'S -> (S Op Num) -> S Op (1) -> S (+) 1 -> (Num) + 1 -> (0) + 1',
+			chunks: ['0', '+', '1'],
+		},
+		'1+1': {
+			path: ['S', '(S Op Num)', 'S Op (1)', 'S (+) 1', '(Num) + 1', '(1) + 1'],
+			rules: [
+				['S', 1],
+				['Num', 1],
+				['Op', 0],
+				['S', 0],
+				['Num', 1],
+			],
+			sentence: '1+1',
+			label: 'S -> (S Op Num) -> S Op (1) -> S (+) 1 -> (Num) + 1 -> (1) + 1',
+			chunks: ['1', '+', '1'],
+		},
+		'0-1': {
+			path: ['S', '(S Op Num)', 'S Op (1)', 'S (-) 1', '(Num) - 1', '(0) - 1'],
+			rules: [
+				['S', 1],
+				['Num', 1],
+				['Op', 1],
+				['S', 0],
+				['Num', 0],
+			],
+			sentence: '0-1',
+			label: 'S -> (S Op Num) -> S Op (1) -> S (-) 1 -> (Num) - 1 -> (0) - 1',
+			chunks: ['0', '-', '1'],
+		},
+		'1-1': {
+			path: ['S', '(S Op Num)', 'S Op (1)', 'S (-) 1', '(Num) - 1', '(1) - 1'],
+			rules: [
+				['S', 1],
+				['Num', 1],
+				['Op', 1],
+				['S', 0],
+				['Num', 1],
+			],
+			sentence: '1-1',
+			label: 'S -> (S Op Num) -> S Op (1) -> S (-) 1 -> (Num) - 1 -> (1) - 1',
+			chunks: ['1', '-', '1'],
+		},
+	});
+
+	expect(
+		arrayEquivalency(
+			['0', '1', '0+0', '0-0', '1+0', '1-0', '0+1', '0-1', '1+1', '1-1'],
+			cfgLanguage.language
+		)
+	).toBe(true);
+});
+
+it(`Should generate the language of a CFG by parsing from leftmost`, () => {
 	const cfgLanguage = generateCfgLanguage(
 		{
 			startVariable: 'S',

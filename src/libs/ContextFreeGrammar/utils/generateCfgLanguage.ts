@@ -121,7 +121,7 @@ export function generateCfgLanguage(
 							// Construct the new path, and add (bracket) around the new substitute to show which one was substituted
 							const newPath = [
 								...path,
-								[...leftChunks, `(${substitution})`, ...rightChunks].join(chunkJoinSeparator),
+								[...leftChunks, `(${substitution})`, ...rightChunks].join(' '),
 							];
 							traversedSet.add(newSentence);
 							linkedList.insertLast({
