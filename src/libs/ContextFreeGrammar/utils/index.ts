@@ -1,4 +1,5 @@
 export * from './convertToCnf';
+export * from './cykParse';
 export * from './generateCfgLanguage';
 export * from './generateNewVariable';
 export * from './isAllTerminal';
