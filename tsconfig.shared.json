@@ -10,7 +10,6 @@
     "sourceMap": true,
     "declaration": true,
     "moduleResolution": "node",
-    "removeComments": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
