@@ -82,8 +82,8 @@ export function cykParse(
 		// if input is aabab and we are in row index 2, total combinations are aa+bab, aab+ab
 		const totalCombinations = stringChunksLength - (cykTableRow + 1); // Adding 1 as row is 0 index based;
 		// Loop from left most column to the right most column, since its a left right angled triangle, the number of column will be the same as the number of rows
-		const combinations: typeof cykTable[0][0]['combinations'] = [];
 		for (let cykTableCol = 0; cykTableCol <= cykTableRow; cykTableCol += 1) {
+			const combinations: typeof cykTable[0][0]['combinations'] = [];
 			// Each cell will contain a set of variables that can be derived from all the cross products
 			const variablesContainingCrossProduct: Set<string> = new Set();
 			for (

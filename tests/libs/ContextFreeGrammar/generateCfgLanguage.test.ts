@@ -13,8 +13,8 @@ it(`Should generate the language of a CFG`, () => {
 			variables: ['S', 'Num', 'Op'],
 		},
 		{
-			maxLength: 3,
-			minLength: 1,
+			maxChunkLength: 3,
+			minChunkLength: 1,
 			generateTerminals: false,
 			skipSimplification: true,
 			skipValidation: true,
@@ -175,10 +175,10 @@ it(`Should not skip validation and simplification`, () => {
 			variables: [],
 		},
 		{
-			maxLength: 3,
-			minLength: 1,
+			maxChunkLength: 3,
+			minChunkLength: 1,
 			generateVariables: true,
-			autoCapitalize: false,
+			autoCapitalizeFirstChunk: false,
 		}
 	);
 
