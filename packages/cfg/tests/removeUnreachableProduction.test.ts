@@ -1,4 +1,4 @@
-import { removeUnreachableProduction } from '../../../src/libs/ContextFreeGrammar/utils/removeUnreachableProduction';
+import { removeUnreachableProduction } from '../libs/removeUnreachableProduction';
 
 it(`Should remove unreachable production rules and variables`, () => {
 	const cfg = {

@@ -1,4 +1,4 @@
-import { isAllTerminal } from '../../../src/libs/ContextFreeGrammar/utils/isAllTerminal';
+import { isAllTerminal } from '../../libs/utils/isAllTerminal';
 
 it(`Should return true if all is terminal`, () => {
 	expect(isAllTerminal(['The', 'A', 'An'], 'The A An')).toBe(true);

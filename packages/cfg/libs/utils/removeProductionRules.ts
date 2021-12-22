@@ -1,5 +1,5 @@
-import { IContextFreeGrammar } from '../types';
-import { setDifference } from './utils/setOperations';
+import { IContextFreeGrammar } from '../../types';
+import { setDifference } from './setOperations';
 
 export function removeProductionRules(
 	cfg: Pick<IContextFreeGrammar, 'productionRules' | 'variables'> & {

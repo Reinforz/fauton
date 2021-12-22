@@ -2,8 +2,8 @@ import {
 	createProductionCombinations,
 	findNullableVariables,
 	removeNullProduction,
-} from '../../../src/libs/ContextFreeGrammar/utils/removeNullProduction';
-import { arrayEquivalency } from '../../setEquivalency';
+} from '../libs/removeNullProduction';
+import { arrayEquivalency } from './setEquivalency';
 
 describe('Should remove null production from transition record', () => {
 	it(`Sample 1`, () => {

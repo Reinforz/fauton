@@ -1,4 +1,4 @@
-import { generateNewVariable } from '../../../src/libs/ContextFreeGrammar/utils/generateNewVariable';
+import { generateNewVariable } from '../../libs/utils/generateNewVariable';
 
 it(`Should generate new variable`, () => {
 	const newVariable = generateNewVariable(['1']);

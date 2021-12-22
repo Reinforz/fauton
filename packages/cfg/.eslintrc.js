@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
 	env: {
 		es2021: true,
@@ -7,7 +9,7 @@ module.exports = {
 	parser: '@typescript-eslint/parser',
 	ignorePatterns: ['dist', 'tests', 'examples', 'experiment'],
 	parserOptions: {
-		project: './tsconfig.json',
+		project: path.join(__dirname, './tsconfig.json'),
 		ecmaVersion: 12,
 		sourceType: 'module',
 	},

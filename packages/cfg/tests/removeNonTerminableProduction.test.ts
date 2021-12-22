@@ -1,4 +1,4 @@
-import { removeNonTerminableProduction } from '../../../src/libs/ContextFreeGrammar/utils/removeNonTerminableProduction';
+import { removeNonTerminableProduction } from '../libs/removeNonTerminableProduction';
 
 it(`Should remove non terminable production rules and variables`, () => {
 	const cfg = {

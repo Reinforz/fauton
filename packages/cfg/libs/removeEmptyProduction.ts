@@ -1,5 +1,5 @@
 import { IContextFreeGrammar } from '../types';
-import { removeProductionRules } from './removeProductionRules';
+import { removeProductionRules } from './utils/removeProductionRules';
 
 /**
  * Removes productions that has no rules and updates rules to remove those rules that references empty production variables

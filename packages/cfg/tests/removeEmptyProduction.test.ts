@@ -1,4 +1,4 @@
-import { removeEmptyProduction } from '../../../src/libs/ContextFreeGrammar/utils/removeEmptyProduction';
+import { removeEmptyProduction } from '../libs/removeEmptyProduction';
 
 it(`Should remove empty production variables from production rules record and variables array`, () => {
 	const productionRules = {

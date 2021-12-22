@@ -1,4 +1,4 @@
-import { cykParse } from '../../../src/libs/ContextFreeGrammar/utils/cykParse';
+import { cykParse } from '../libs/cykParse';
 
 it(`Should parse the sentence and generate cyk parse information`, () => {
 	expect(

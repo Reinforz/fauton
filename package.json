@@ -49,7 +49,6 @@
   "author": "Safwan Shaheer <devorein00@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@datastructures-js/linked-list": "^5.1.1",
     "cli-progress": "^3.9.1",
     "colors": "^1.4.0",
     "shortid": "^2.2.16"
@@ -76,5 +75,8 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "workspaces": [
+    "packages/cfg"
+  ]
 }

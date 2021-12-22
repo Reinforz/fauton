@@ -25,12 +25,7 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "incremental": false,
-    "types": [
-      "node",
-      "jest"
-    ]
-  },
-  "exclude": [
-    "node_modules"
-  ]
+    "baseUrl": "./",
+    "watch": false
+  }
 }

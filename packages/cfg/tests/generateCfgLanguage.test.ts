@@ -1,5 +1,5 @@
-import { generateCfgLanguage } from '../../../src/libs/ContextFreeGrammar/utils/generateCfgLanguage';
-import { arrayEquivalency } from '../../setEquivalency';
+import { generateCfgLanguage } from '../libs/generateCfgLanguage';
+import { arrayEquivalency } from './setEquivalency';
 
 it(`Should generate the language of a CFG by parsing from rightmost`, () => {
 	const cfgLanguage = generateCfgLanguage(

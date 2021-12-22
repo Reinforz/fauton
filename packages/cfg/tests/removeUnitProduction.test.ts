@@ -1,7 +1,4 @@
-import {
-	findFirstUnitProductionRule,
-	removeUnitProduction,
-} from '../../../src/libs/ContextFreeGrammar/utils/removeUnitProduction';
+import { findFirstUnitProductionRule, removeUnitProduction } from '../libs/removeUnitProduction';
 
 describe('.findFirstUnitProductionRule', () => {
 	it(`Should find first unit production rule`, () => {

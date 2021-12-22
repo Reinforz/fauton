@@ -1,4 +1,4 @@
-import { validateCfg } from '../../../src/libs/ContextFreeGrammar/utils/validateCfg';
+import { validateCfg } from '../libs/validateCfg';
 
 it(`Should throw error if transition record contains a variable that is not present in variables array`, () => {
 	try {

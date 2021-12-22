@@ -4,8 +4,8 @@ import {
 	findSubstitutionOfLengthTwo,
 	processLongSubstitutions,
 	processSubstitutionsOfLengthTwo,
-} from '../../../src/libs/ContextFreeGrammar/utils/convertToCnf';
-import { IContextFreeGrammar } from '../../../src/types';
+} from '../libs/convertToCnf';
+import { IContextFreeGrammar } from '../types';
 
 describe('.findLongSubstitution', () => {
 	it(`Should find long substitutions`, () => {
