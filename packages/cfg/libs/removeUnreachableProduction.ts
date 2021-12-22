@@ -1,5 +1,5 @@
 import { LinkedList } from '@datastructures-js/linked-list';
-import { IContextFreeGrammar } from '../types';
+import { IContextFreeGrammar } from './types';
 import { setDifference } from './utils/setOperations';
 
 /**

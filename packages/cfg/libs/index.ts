@@ -10,6 +10,7 @@ import { removeUselessProduction } from './removeUselessProduction';
 import { simplifyCfg } from './simplifyCfg';
 import { validateCfg } from './validateCfg';
 
+export * from '../types';
 export {
 	convertToCnf,
 	cykParse,

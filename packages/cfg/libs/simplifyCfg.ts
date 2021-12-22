@@ -1,8 +1,8 @@
-import { IContextFreeGrammar } from '../types';
 import { removeEmptyProduction } from './removeEmptyProduction';
 import { removeNullProduction } from './removeNullProduction';
 import { removeUnitProduction } from './removeUnitProduction';
 import { removeUselessProduction } from './removeUselessProduction';
+import { IContextFreeGrammar } from './types';
 
 export function simplifyCfg(cfg: IContextFreeGrammar) {
 	removeNullProduction(cfg);

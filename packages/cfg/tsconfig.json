@@ -2,8 +2,8 @@
   "extends": "../../tsconfig.shared.json",
   "include": [
     "./libs/index.ts",
+    "./libs/types.ts",
     "./libs/utils/index.ts",
-    "./experiment",
     "./examples"
   ],
   "compilerOptions": {

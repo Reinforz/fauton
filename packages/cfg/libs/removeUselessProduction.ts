@@ -1,6 +1,6 @@
-import { IContextFreeGrammar } from '../types';
 import { removeNonTerminableProduction } from './removeNonTerminableProduction';
 import { removeUnreachableProduction } from './removeUnreachableProduction';
+import { IContextFreeGrammar } from './types';
 
 /**
  * Reduces an input cfg by removing non terminable and non reachable variables

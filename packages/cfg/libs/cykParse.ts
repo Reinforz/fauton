@@ -1,4 +1,4 @@
-import { IContextFreeGrammar } from '../types';
+import { IContextFreeGrammar } from './types';
 import { setCrossProduct } from './utils/setOperations';
 
 interface CykTableCellCombination<Type extends Set<string> | Array<string>> {

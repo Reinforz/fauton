@@ -1,5 +1,5 @@
-import { IContextFreeGrammar } from '../types';
 import { simplifyCfg } from './simplifyCfg';
+import { IContextFreeGrammar } from './types';
 import { generateNewVariable } from './utils/generateNewVariable';
 import { setDifference } from './utils/setOperations';
 

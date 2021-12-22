@@ -1,4 +1,4 @@
-import { IContextFreeGrammar } from '../types';
+import { IContextFreeGrammar } from './types';
 
 /**
  * Returns the first occurrence of unit production inside production rules

@@ -1,4 +1,4 @@
-import { IContextFreeGrammar } from '../types';
+import { IContextFreeGrammar } from './types';
 
 export function validateCfg(cfg: IContextFreeGrammar) {
 	const { startVariable, terminals, productionRules, variables } = cfg;
