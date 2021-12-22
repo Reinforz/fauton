@@ -1,5 +1,5 @@
 import { LinkedList } from '@datastructures-js/linked-list';
-import { ICfgLanguageGenerationOption, IContextFreeGrammar } from '../../../types';
+import { ICfgLanguageGenerationOption, IContextFreeGrammar } from '../types';
 import { simplifyCfg } from './simplifyCfg';
 import { validateCfg } from './validateCfg';
 

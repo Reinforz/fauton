@@ -1,8 +1,7 @@
-import { IContextFreeGrammar } from '../../../types';
-import { setDifference } from '../../../utils/setDifference';
-import { isAllTerminal } from './isAllTerminal';
-import {} from './removeEmptyProduction';
+import { IContextFreeGrammar } from '../types';
 import { removeProductionRules } from './removeProductionRules';
+import { isAllTerminal } from './utils/isAllTerminal';
+import { setDifference } from './utils/setOperations';
 
 /* eslint-disable no-loop-func */
 

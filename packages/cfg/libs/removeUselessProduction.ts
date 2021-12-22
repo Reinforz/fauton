@@ -1,4 +1,4 @@
-import { IContextFreeGrammar } from '../../../types';
+import { IContextFreeGrammar } from '../types';
 import { removeNonTerminableProduction } from './removeNonTerminableProduction';
 import { removeUnreachableProduction } from './removeUnreachableProduction';
 

@@ -1,0 +1,11 @@
+# Node files
+package-lock.json
+**/*.tgz
+
+# source files
+**/*.ts
+!**/dist
+!**/*.d.ts
+**/src
+/workflows
+/.github

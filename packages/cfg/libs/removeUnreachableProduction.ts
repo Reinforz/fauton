@@ -1,6 +1,6 @@
 import { LinkedList } from '@datastructures-js/linked-list';
-import { IContextFreeGrammar } from '../../../types';
-import { setDifference } from '../../../utils';
+import { IContextFreeGrammar } from '../types';
+import { setDifference } from './utils/setOperations';
 
 /**
  * Removes unreachable variables and production of a cfg

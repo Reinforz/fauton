@@ -1,4 +1,4 @@
-import { CFGAutomaton, IContextFreeGrammar } from '../../../types';
+import { IContextFreeGrammar } from '../types';
 
 /**
  * Returns the first occurrence of unit production inside production rules
@@ -8,7 +8,7 @@ import { CFGAutomaton, IContextFreeGrammar } from '../../../types';
  */
 export function findFirstUnitProductionRule(
 	variables: string[],
-	productionRules: CFGAutomaton['productionRules']
+	productionRules: IContextFreeGrammar['productionRules']
 ) {
 	const variablesSet = new Set(variables);
 	// Loop through all the variables

@@ -1,7 +1,7 @@
-import { IContextFreeGrammar } from '../../../types';
-import { setDifference } from '../../../utils';
-import { generateNewVariable } from './generateNewVariable';
+import { IContextFreeGrammar } from '../types';
 import { simplifyCfg } from './simplifyCfg';
+import { generateNewVariable } from './utils/generateNewVariable';
+import { setDifference } from './utils/setOperations';
 
 /**
  *
