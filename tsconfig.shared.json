@@ -26,6 +26,10 @@
     "resolveJsonModule": true,
     "incremental": false,
     "baseUrl": "./",
-    "watch": false
+    "watch": false,
+    "types": [
+      "node",
+      "jest"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-import { IContextFreeGrammar } from '../types';
+import { IContextFreeGrammar } from './types';
 import { isAllTerminal } from './utils/isAllTerminal';
 import { removeProductionRules } from './utils/removeProductionRules';
 import { setDifference } from './utils/setOperations';
