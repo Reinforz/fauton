@@ -15,15 +15,6 @@ export interface InputFiniteAutomaton {
 	epsilon_transitions?: Record<string, (string | number)[]>;
 }
 
-export interface CFGAutomaton {
-	variables: string[];
-	terminals: string[];
-	transitions: Record<string, string[]>;
-	startVariable: string;
-	label: string;
-	description?: string;
-}
-
 export interface TransformedFiniteAutomaton {
 	append?: string;
 	alphabets: string[];
