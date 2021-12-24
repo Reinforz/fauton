@@ -31,6 +31,7 @@ module.exports = {
 				'unused-imports/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
 				'no-param-reassign': ['error', { props: false }],
 				'no-else-return': ['error', { allowElseIf: true }],
+        "@next/next/no-page-custom-font": "off"
 			},
 		},
 	],

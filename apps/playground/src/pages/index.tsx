@@ -44,6 +44,7 @@ const Index = () => {
           {contextFreeGrammars.length === 0 ? <div className="bg-gray-800 p-3 text-center rounded-sm">No Grammars created yet</div> : contextFreeGrammars.map((contextFreeGrammar, contextFreeGrammarIndex) => <Button onClick={() => setCurrentSelectedGrammar(contextFreeGrammar)} key={contextFreeGrammarIndex} label={`Grammar  ${contextFreeGrammarIndex + 1}`} />)}
         </div>
       </div>
+      {JSON.stringify(currentSelectedGrammar)}
 
       <div className="flex flex-col gap-3 w-full overflow-auto px-5">
         <div className="text-4xl font-bold">Create</div>
