@@ -1,4 +1,4 @@
-import { extractTerminalsFromCfg } from '../../libs/utils/extractTerminalsFromCfg';
+import { extractTerminalsFromCfg } from '../libs/extractTerminalsFromCfg';
 
 it(`should extract terminals from cfg`, () => {
 	expect(

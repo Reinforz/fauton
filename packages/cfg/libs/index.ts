@@ -2,6 +2,7 @@ import { convertGrammarToString } from './convertGrammarToString';
 import { convertStringToGrammar } from './convertStringToGrammar';
 import { convertToCnf } from './convertToCnf';
 import { cykParse } from './cykParse';
+import { extractTerminalsFromCfg } from './extractTerminalsFromCfg';
 import { generateCfgLanguage } from './generateCfgLanguage';
 import { removeEmptyProduction } from './removeEmptyProduction';
 import { removeNonTerminableProduction } from './removeNonTerminableProduction';
@@ -25,6 +26,7 @@ export {
 	removeUnitProduction,
 	removeUnreachableProduction,
 	removeUselessProduction,
+	extractTerminalsFromCfg,
 	simplifyCfg,
 	validateCfg,
 };

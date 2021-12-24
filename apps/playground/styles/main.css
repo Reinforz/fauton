@@ -3,7 +3,7 @@
 @tailwind variants;
 
 body {
-  font-family: 'Inconsolata', monospace;
+  font-family: 'Roboto', monospace;
   height: 100%;
 }
 

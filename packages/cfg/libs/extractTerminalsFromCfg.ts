@@ -1,4 +1,4 @@
-import { IContextFreeGrammar } from '../types';
+import { IContextFreeGrammar } from './types';
 
 /**
  * Extract terminals from cfg rules

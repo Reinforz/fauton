@@ -1,5 +1,5 @@
+import { extractTerminalsFromCfg } from './extractTerminalsFromCfg';
 import { IContextFreeGrammar } from './types';
-import { extractTerminalsFromCfg } from './utils/extractTerminalsFromCfg';
 
 /**
  * Convert a string representation of cfg object to a cfg object
