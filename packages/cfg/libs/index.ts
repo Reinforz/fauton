@@ -1,3 +1,4 @@
+import { convertStringToGrammar } from './convertStringToGrammar';
 import { convertToCnf } from './convertToCnf';
 import { cykParse } from './cykParse';
 import { generateCfgLanguage } from './generateCfgLanguage';
@@ -12,6 +13,7 @@ import { validateCfg } from './validateCfg';
 
 export * from './types';
 export {
+	convertStringToGrammar,
 	convertToCnf,
 	cykParse,
 	generateCfgLanguage,
