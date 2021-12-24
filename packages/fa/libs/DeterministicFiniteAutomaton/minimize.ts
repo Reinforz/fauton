@@ -1,4 +1,4 @@
-import { IFiniteAutomaton, TransformedFiniteAutomaton } from '../../types';
+import { IFiniteAutomaton, TransformedFiniteAutomaton } from '../types';
 import { checkEquivalenceBetweenStatesGroups } from './checkEquivalenceBetweenStatesGroups';
 import { generateEquivalenceStates } from './generateEquivalenceStates';
 import { generateStateGroupsRecord } from './generateStateGroupsRecord';

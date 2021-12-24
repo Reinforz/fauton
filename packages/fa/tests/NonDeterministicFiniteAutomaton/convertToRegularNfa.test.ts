@@ -1,4 +1,4 @@
-import { convertToRegularNfa } from '../../libs/NonDeterministicFiniteAutomaton/utils/convertToRegularNfa';
+import { convertToRegularNfa } from '../../libs/NonDeterministicFiniteAutomaton/convertToRegularNfa';
 import { IFiniteAutomaton } from '../../libs/types';
 
 it(`Should convert epsilon-nfa to regular nfa`, () => {

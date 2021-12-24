@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
-import { InputFiniteAutomaton, TransformedFiniteAutomaton } from '../../types';
-import { expandCharacterRanges } from '../../utils/expandCharacterRanges';
+import { InputFiniteAutomaton, TransformedFiniteAutomaton } from '../types';
+import { expandCharacterRanges } from '../utils/expandCharacterRanges';
 
 function expandCharacterRangesForArray(
 	characterRanges: (string | number)[],

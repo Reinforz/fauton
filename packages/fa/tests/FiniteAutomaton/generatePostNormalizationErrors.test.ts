@@ -1,4 +1,4 @@
-import { generatePostNormalizationErrors } from '../../libs/FiniteAutomaton/utils/generatePostNormalizationErrors';
+import { generatePostNormalizationErrors } from '../../libs/FiniteAutomaton/generatePostNormalizationErrors';
 
 it(`Should not generate any errors`, () => {
 	expect(

@@ -4,7 +4,7 @@ import {
 	InputFiniteAutomaton,
 	TFiniteAutomatonType,
 	TransformedFiniteAutomaton,
-} from '../../types';
+} from '../types';
 
 export function generatePreNormalizationErrors(
 	testLogic: IAutomatonTestLogicFn,

@@ -1,4 +1,4 @@
-import { minimize } from '../../libs/DeterministicFiniteAutomaton/utils/minimize';
+import { minimize } from '../../libs/DeterministicFiniteAutomaton/minimize';
 
 it(`Should minimize dfa where start and end states are different`, () => {
 	expect(

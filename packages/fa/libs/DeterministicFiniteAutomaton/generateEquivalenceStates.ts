@@ -1,4 +1,4 @@
-import { TransformedFiniteAutomaton } from '../../types';
+import { TransformedFiniteAutomaton } from '../types';
 import { generateStateGroupsRecord } from './generateStateGroupsRecord';
 
 export function generateEquivalenceStates(

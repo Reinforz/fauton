@@ -1,5 +1,5 @@
-import { checkEquivalenceBetweenStatesGroups } from '../../libs/DeterministicFiniteAutomaton/utils/checkEquivalenceBetweenStatesGroups';
-import { generateEquivalenceStates } from '../../libs/DeterministicFiniteAutomaton/utils/generateEquivalenceStates';
+import { checkEquivalenceBetweenStatesGroups } from '../../libs/DeterministicFiniteAutomaton/checkEquivalenceBetweenStatesGroups';
+import { generateEquivalenceStates } from '../../libs/DeterministicFiniteAutomaton/generateEquivalenceStates';
 
 it(`Should work`, () => {
 	expect(

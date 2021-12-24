@@ -1,4 +1,4 @@
-import { TransformedFiniteAutomaton } from '../../types';
+import { TransformedFiniteAutomaton } from '../types';
 
 /**
  * Returns an array of states that can be reached from a given state for epsilon symbol

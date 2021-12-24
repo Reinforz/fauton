@@ -1,4 +1,4 @@
-import { checkEquivalenceBetweenStatesGroups } from '../../libs/DeterministicFiniteAutomaton/utils/checkEquivalenceBetweenStatesGroups';
+import { checkEquivalenceBetweenStatesGroups } from '../../libs/DeterministicFiniteAutomaton/checkEquivalenceBetweenStatesGroups';
 
 it(`Should detect equivalency`, () => {
 	expect(

@@ -1,4 +1,4 @@
-import { convertToDeterministicFiniteAutomaton } from '../../libs/NonDeterministicFiniteAutomaton/utils/convertToDeterministicFiniteAutomaton';
+import { convertToDeterministicFiniteAutomaton } from '../../libs/NonDeterministicFiniteAutomaton/convertToDeterministicFiniteAutomaton';
 
 it(`Should work for regular nfa`, () => {
 	expect(

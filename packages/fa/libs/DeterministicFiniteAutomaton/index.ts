@@ -10,7 +10,19 @@ import {
 	TMergeOperation,
 	TransformedFiniteAutomaton,
 } from '../types';
-import * as DeterministicFiniteAutomatonUtils from './utils';
+import { checkEquivalenceBetweenStatesGroups } from './checkEquivalenceBetweenStatesGroups';
+import { generateEquivalenceStates } from './generateEquivalenceStates';
+import { generateStateGroupsRecord } from './generateStateGroupsRecord';
+import { merge } from './merge';
+import { minimize } from './minimize';
+
+export const DeterministicFiniteAutomatonUtils = {
+	generateEquivalenceStates,
+	generateStateGroupsRecord,
+	merge,
+	minimize,
+	checkEquivalenceBetweenStatesGroups,
+};
 
 export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 	constructor(
@@ -95,5 +107,3 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 		);
 	}
 }
-
-export { DeterministicFiniteAutomatonUtils };

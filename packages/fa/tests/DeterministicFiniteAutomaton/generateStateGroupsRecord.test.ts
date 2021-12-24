@@ -1,4 +1,4 @@
-import { generateStateGroupsRecord } from '../../libs/DeterministicFiniteAutomaton/utils/generateStateGroupsRecord';
+import { generateStateGroupsRecord } from '../../libs/DeterministicFiniteAutomaton/generateStateGroupsRecord';
 
 it(`Should work`, () => {
 	expect(

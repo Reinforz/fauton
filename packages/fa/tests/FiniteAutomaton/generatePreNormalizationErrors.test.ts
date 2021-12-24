@@ -1,4 +1,4 @@
-import { generatePreNormalizationErrors } from '../../libs/FiniteAutomaton/utils/generatePreNormalizationErrors';
+import { generatePreNormalizationErrors } from '../../libs/FiniteAutomaton/generatePreNormalizationErrors';
 
 it(`Should not generate any errors`, () => {
 	const generatedErrors = generatePreNormalizationErrors(() => true, 'deterministic', {

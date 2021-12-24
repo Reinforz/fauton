@@ -1,4 +1,4 @@
-import { TransformedFiniteAutomaton } from '../../types';
+import { TransformedFiniteAutomaton } from '../types';
 
 export function generatePostNormalizationErrors(automaton: TransformedFiniteAutomaton) {
 	const automatonValidationErrors: string[] = [];

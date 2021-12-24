@@ -6,7 +6,17 @@ import {
 	InputFiniteAutomaton,
 	SkipOptions,
 } from '../types';
-import * as NonDeterministicFiniteAutomatonUtils from './utils';
+import { convertToDeterministicFiniteAutomaton } from './convertToDeterministicFiniteAutomaton';
+import { convertToRegularNfa } from './convertToRegularNfa';
+import { epsilonClosureOfState } from './epsilonClosureOfState';
+import { moveAndEpsilonClosureStateSet } from './moveAndEpsilonClosureStateSet';
+
+export const NonDeterministicFiniteAutomatonUtils = {
+	convertToDeterministicFiniteAutomaton,
+	convertToRegularNfa,
+	epsilonClosureOfState,
+	moveAndEpsilonClosureStateSet,
+};
 
 export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 	constructor(
@@ -67,5 +77,3 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 		);
 	}
 }
-
-export { NonDeterministicFiniteAutomatonUtils };

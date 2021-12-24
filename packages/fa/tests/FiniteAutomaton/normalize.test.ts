@@ -1,4 +1,4 @@
-import { normalize } from '../../libs/FiniteAutomaton/utils/normalize';
+import { normalize } from '../../libs/FiniteAutomaton/normalize';
 
 it(`Should normalize input finite automaton e-nfa without append`, () => {
 	const normalizedFiniteAutomaton = normalize({

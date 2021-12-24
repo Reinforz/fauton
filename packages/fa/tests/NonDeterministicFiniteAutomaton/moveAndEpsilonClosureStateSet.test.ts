@@ -1,4 +1,4 @@
-import { moveAndEpsilonClosureStateSet } from '../../libs/NonDeterministicFiniteAutomaton/utils/moveAndEpsilonClosureStateSet';
+import { moveAndEpsilonClosureStateSet } from '../../libs/NonDeterministicFiniteAutomaton/moveAndEpsilonClosureStateSet';
 
 it(`Should work without epsilon transitions record`, () => {
 	expect(

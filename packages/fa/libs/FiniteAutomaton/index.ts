@@ -7,8 +7,19 @@ import {
 	TFiniteAutomatonType,
 	TransformedFiniteAutomaton,
 } from '../types';
-import * as FiniteAutomatonUtils from './utils';
+import { generateGraphFromString } from './generateGraphFromString';
+import { generatePostNormalizationErrors } from './generatePostNormalizationErrors';
+import { generatePreNormalizationErrors } from './generatePreNormalizationErrors';
+import { normalize } from './normalize';
+import { validate } from './validate';
 
+export const FiniteAutomatonUtils = {
+	generateGraphFromString,
+	generatePostNormalizationErrors,
+	generatePreNormalizationErrors,
+	normalize,
+	validate,
+};
 export class FiniteAutomaton {
 	testLogic: IAutomatonTestLogicFn;
 
@@ -71,5 +82,3 @@ export class FiniteAutomaton {
 		return this.generateGraphFromString(inputString).automatonTestResult;
 	}
 }
-
-export { FiniteAutomatonUtils };

@@ -3,7 +3,7 @@ import {
 	IFiniteAutomaton,
 	TMergeOperation,
 	TransformedFiniteAutomaton,
-} from '../../types';
+} from '../types';
 
 export function merge(
 	sourceAutomaton: IFiniteAutomaton,

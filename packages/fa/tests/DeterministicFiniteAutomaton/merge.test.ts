@@ -1,4 +1,4 @@
-import { merge } from '../../libs/DeterministicFiniteAutomaton/utils/merge';
+import { merge } from '../../libs/DeterministicFiniteAutomaton/merge';
 import { IFiniteAutomaton } from '../../libs/types';
 
 const dfa1: IFiniteAutomaton = {

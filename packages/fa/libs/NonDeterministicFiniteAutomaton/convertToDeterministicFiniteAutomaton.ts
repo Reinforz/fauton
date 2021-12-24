@@ -1,8 +1,4 @@
-import {
-	GeneratedAutomatonOptions,
-	IFiniteAutomaton,
-	TransformedFiniteAutomaton,
-} from '../../types';
+import { GeneratedAutomatonOptions, IFiniteAutomaton, TransformedFiniteAutomaton } from '../types';
 import { epsilonClosureOfState } from './epsilonClosureOfState';
 import { moveAndEpsilonClosureStateSet } from './moveAndEpsilonClosureStateSet';
 

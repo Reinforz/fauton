@@ -1,4 +1,4 @@
-import { generateGraphFromString } from '../../libs/FiniteAutomaton/utils/generateGraphFromString';
+import { generateGraphFromString } from '../../libs/FiniteAutomaton/generateGraphFromString';
 
 it(`Should work`, () => {
 	expect(

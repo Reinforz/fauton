@@ -1,4 +1,4 @@
-import { GraphNode, TransformedFiniteAutomaton } from '../../types';
+import { GraphNode, TransformedFiniteAutomaton } from '../types';
 
 export function generateGraphFromString(
 	automaton: Pick<TransformedFiniteAutomaton, 'start_state' | 'final_states' | 'transitions'>,
