@@ -9,6 +9,7 @@ import { AddIcon, DeleteIcon } from "./Icons";
 interface CreateGrammarProps {
   addGrammar: (userInputGrammar: UserInputGrammar) => void
 }
+
 export function CreateGrammar(props: CreateGrammarProps) {
   const { addGrammar } = props;
   const [grammarLabel, setGrammarLabel] = useState("")
@@ -18,6 +19,7 @@ export function CreateGrammar(props: CreateGrammarProps) {
   if (userInputGrammar.rules.length === 0 || userInputGrammar.rules[0]?.substitutions.length === 0 || !grammarLabel) {
     isValidGrammar = false;
   }
+  isValidGrammar = isValidGrammar && userInputGrammar.rules.every(rule => rule.variable !== "")
 
   return <div className="flex flex-col gap-3 w-full overflow-auto px-5">
     <div className="text-4xl font-bold">Create</div>
