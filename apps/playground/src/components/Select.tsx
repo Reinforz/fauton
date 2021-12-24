@@ -5,25 +5,25 @@ interface SelectProps {
   value: SelectHTMLAttributes<HTMLSelectElement>["value"],
   onChange: MuiSelectProps<any>["onChange"],
   valueLabelRecord: Record<string, string>
-  defaultValue?: SelectHTMLAttributes<HTMLSelectElement>["defaultValue"]
   renderValue?: (value: string | number) => ReactNode
   className?: string
   menuItemRender?: (item: string | number) => ReactNode
 }
 
 export function Select(props: SelectProps) {
-  const { menuItemRender, renderValue, className = "", defaultValue, valueLabelRecord, value, onChange } = props;
+  const { menuItemRender, renderValue, className = "", valueLabelRecord, value, onChange } = props;
+  const items = Object.entries(valueLabelRecord);
   return <MuiSelect
     value={value}
-    defaultValue={defaultValue}
     className={`pl-2 bold rounded-sm bg-gray-900 ${className}`}
     renderValue={(valueToRender) =>
     (
-      <div className="SelectRenderedValue font-semibold text-gray-200 capitalize rounded-md">
+      <div className="SelectRenderedValue font-semibold capitalize rounded-md">
         {renderValue ? renderValue(valueToRender as string) : valueLabelRecord[valueToRender as string]}
       </div>
     )
     }
+    disabled={items.length === 0}
     sx={{
       "& .MuiSvgIcon-root": {
         fill: `white`
@@ -31,7 +31,7 @@ export function Select(props: SelectProps) {
     }}
     onChange={onChange}
   >
-    {Object.entries(valueLabelRecord).map(([itemValue, itemLabel]) => (
+    {items.length !== 0 ? items.map(([itemValue, itemLabel]) => (
       <MenuItem
         className="capitalize"
         key={itemValue}
@@ -39,6 +39,6 @@ export function Select(props: SelectProps) {
       >
         {menuItemRender ? menuItemRender(itemValue) : itemLabel}
       </MenuItem>
-    ))}
+    )) : null}
   </MuiSelect>
 }

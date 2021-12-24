@@ -1,6 +1,10 @@
 import { IContextFreeGrammar } from "@fauton/cfg";
+import DeleteIcon from '@mui/icons-material/Delete';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { blue, red } from "@mui/material/colors";
 import { useState } from "react";
 import { TGrammarOperations } from "../types";
+import { Button } from "./Button";
 import { AddIcon } from "./Icons";
 import { Select } from "./Select";
 
@@ -39,16 +43,35 @@ export function GrammarPipeline(props: GrammarLabProps) {
     <Select valueLabelRecord={grammarLabelRecord} onChange={(event) => {
       const selectedGrammar = grammars.find(({ label }) => label === event.target.value);
       setCurrentSelectedGrammar(selectedGrammar ?? null);
-    }} value={currentSelectedGrammar ? currentSelectedGrammar.label : undefined} />
-    {
-      grammarOperations.map((grammarOperation, grammarOperationIndex) => <Select key={`${grammarOperation}.${grammarOperationIndex}`} value={grammarOperation} onChange={(event) => {
-        setGrammarOperations([...grammarOperations, event.target.value])
-      }} valueLabelRecord={grammarOperationsSelectItems} />)
-    }
-    <div className="flex justify-center">
+    }} value={currentSelectedGrammar ? currentSelectedGrammar.label : "No grammar selected"} />
+    <div className="overflow-auto flex flex-col gap-3 px-3">
+      {
+        grammarOperations.map((grammarOperation, grammarOperationIndex) => <div className="flex justify-between gap-3 items-center" key={`${grammarOperation}.${grammarOperationIndex}`} >
+          <InfoOutlinedIcon className="cursor-pointer" sx={{
+            fill: blue[500],
+          }} />
+          <Select className="w-full" value={grammarOperation} onChange={(event) => {
+            grammarOperations[grammarOperationIndex] = event.target.value
+            setGrammarOperations([...grammarOperations])
+          }} valueLabelRecord={grammarOperationsSelectItems} />
+          <DeleteIcon className="cursor-pointer" sx={{
+            fill: red[500]
+          }} onClick={() => {
+            grammarOperations.splice(grammarOperationIndex, 1);
+            setGrammarOperations([...grammarOperations])
+          }} />
+        </div>)
+      }
+    </div>
+    {currentSelectedGrammar && <div className="flex justify-center">
       <AddIcon size={25} onClick={() => {
         setGrammarOperations([...grammarOperations, "remove_null"])
       }} />
-    </div>
+    </div>}
+    {grammarOperations.length !== 0 && <div className="flex justify-center">
+      <Button className="bg-gray-900" label="Process" onClick={() => {
+
+      }} />
+    </div>}
   </div>
 }

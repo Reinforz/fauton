@@ -64,6 +64,9 @@ export function generateTheme() {
 				styleOverrides: {
 					select: {
 						padding: 10,
+						'&.Mui-disabled': {
+							color: grey[600],
+						},
 					},
 				},
 			},
