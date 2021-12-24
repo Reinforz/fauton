@@ -14,6 +14,11 @@ A package to work with finite automata
   - [Conversion from nfa to dfa](#conversion-from-nfa-to-dfa)
   - [Dfa minimization](#dfa-minimization)
   - [Dfa equivalency by testing](#dfa-equivalency-by-testing)
+- [Conditions for DFA](#conditions-for-dfa)
+- [Transitions Record Transformation](#transitions-record-transformation)
+  - [dfa](#dfa)
+  - [nfa](#nfa)
+  - [ε-nfa](#ε-nfa)
 
 # Features
 
@@ -516,4 +521,113 @@ finiteAutomataTest.test([
 		},
 	},
 ]);
+```
+
+# Conditions for DFA
+
+Deterministic finite automaton must follow certain conditions for it to be considered as one. These are described below
+
+1. `transitions` record must contain all the elements of `states` array as its key
+2. Only the items of the `states` can be the key of the `transitions` record
+3. `transitions` record values must either be an array or the string literal `loop`
+4. If its an array its length should be the same `alphabets` array, where each index represents which state to transition to when encountering a symbol (index of the `alphabets` array)
+5. Also if its an array each item should be a string as for a single symbol a dfa can transition to only one state
+6. `transitions` record values can only have `symbols` that are present in the `alphabets` array
+
+# Transitions Record Transformation
+
+## dfa
+
+All the states of the dfa must have transitions for all the input symbols.
+
+```json
+{
+	"final_states": ["A", "B", "C"],
+	"alphabets": ["0", "1", "2"],
+	"transitions": {
+		"A": ["B", "C", "A"],
+		"B": ["C", "A", "C"],
+		"C": "loop"
+	}
+}
+```
+
+For the above automaton, the `transitions` record will be transformed like the following:-
+
+```js
+{
+	"A": {
+		"0": "B",
+		"1": "C",
+		"2": "A",
+	},
+	"B": {
+		"0": "C",
+		"1": "A",
+		"2": "C",
+	},
+	"C": {
+		"0": "C",
+		"1": "C",
+		"2": "C",
+	},
+};
+```
+
+## nfa
+
+```json
+{
+	"alphabets": ["a", "b", "c"],
+	"states": ["A", "B", "C"],
+	"transitions": {
+		"A": ["B", null, "B"],
+		"B": [null, "C"],
+		"C": [null, null, "C"]
+	}
+}
+```
+
+Since its a nfa the conditions of `transitions` record for dfa is not applicable here
+
+```js
+{
+  "A": {
+    "a": ["B"],
+    "c": ["B"]
+  },
+  "B": {
+    "b": ["C"]
+  },
+  "C": {
+    "c": ["C"]
+  }
+}
+```
+
+## ε-nfa
+
+```json
+{
+	"alphabets": ["a", "b", "c"],
+	"states": ["A", "B", "C"],
+	"transitions": {
+		"A": ["B", null, "B"],
+		"B": [null, "C"],
+		"C": [null, null, "C"]
+	},
+	"epsilon_transitions": {
+		"A": ["B"]
+	}
+}
+```
+
+Transformed transitions record
+
+```js
+{
+  A: { a: [ 'B', 'C' ], c: [ 'B', 'C' ], b: [ 'C' ] },
+  B: { b: [ 'C' ], a: [], c: [ 'C' ] },
+  C: { c: [ 'C' ] }
+}
 ```
