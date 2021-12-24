@@ -6,13 +6,11 @@ import { IContextFreeGrammar } from './types';
  * @returns A string corresponding to the cfg rules
  */
 export function convertGrammarToString(productionRules: IContextFreeGrammar['productionRules']) {
-	let grammarString = '';
+	const grammarStringLines: string[] = [];
 	const productionRulesEntries = Object.entries(productionRules);
-	productionRulesEntries.forEach(([variable, rules], productionRulesIndex) => {
+	productionRulesEntries.forEach(([variable, rules]) => {
 		// Don't add newline if we are at the last rule
-		grammarString += `${variable} -> ${rules.join(' | ')}${
-			productionRulesIndex !== productionRulesEntries.length - 1 ? '\n' : ''
-		}`;
+		grammarStringLines.push(`${variable} -> ${rules.join(' | ')}`);
 	});
-	return grammarString;
+	return grammarStringLines;
 }

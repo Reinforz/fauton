@@ -1,6 +1,7 @@
 import { useGrammarInput } from "../hooks";
 import { UserInputGrammar } from "../types";
 import { Button } from "./Button";
+import { GrammarString } from "./GrammarString";
 import { AddIcon, DeleteIcon } from "./Icons";
 
 interface CreateGrammarProps {
@@ -9,7 +10,7 @@ interface CreateGrammarProps {
 export function CreateGrammar(props: CreateGrammarProps) {
   const { addGrammar } = props;
 
-  const { userInputGrammarRules, updateRuleVariable, resetState, addRule, updateToken, addSubstitution, addToken, removeToken, removeSubstitution } = useGrammarInput();
+  const { userInputGrammarRules, productionRules, updateRuleVariable, resetState, removeRule, addRule, updateToken, addSubstitution, addToken, removeToken, removeSubstitution } = useGrammarInput();
 
   return <div className="flex flex-col gap-3 w-full overflow-auto px-5">
     <div className="text-4xl font-bold">Create</div>
@@ -47,12 +48,16 @@ export function CreateGrammar(props: CreateGrammarProps) {
             <AddIcon onClick={() => {
               addSubstitution(ruleIndex)
             }} />
+            {ruleIndex !== 0 && <DeleteIcon size={20} onClick={() => {
+              removeRule(ruleIndex)
+            }} />}
           </div>
         </div>)}
       <AddIcon onClick={() => {
         addRule()
       }} />
     </div>
+    <GrammarString productionRules={productionRules} />
     <Button className="my-4" onClick={() => {
       addGrammar(userInputGrammarRules);
       resetState()

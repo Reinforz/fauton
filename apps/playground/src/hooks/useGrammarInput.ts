@@ -1,3 +1,4 @@
+import { IContextFreeGrammar } from '@fauton/cfg';
 import { useState } from 'react';
 import { UserInputGrammar } from '../types';
 
@@ -9,7 +10,18 @@ export function useGrammarInput() {
 		},
 	]);
 
+	const productionRules: IContextFreeGrammar['productionRules'] = {};
+	userInputGrammarRules.forEach((userInputGrammarRule) => {
+		if (!productionRules[userInputGrammarRule.variable]) {
+			productionRules[userInputGrammarRule.variable] = [];
+		}
+		userInputGrammarRule.substitutions.forEach((substitution) => {
+			productionRules[userInputGrammarRule.variable]?.push(substitution.join(' '));
+		});
+	});
+
 	return {
+		productionRules,
 		userInputGrammarRules,
 		addRule: () => {
 			userInputGrammarRules.push({
@@ -30,7 +42,7 @@ export function useGrammarInput() {
 		},
 		updateToken(ruleIndex: number, substitutionIndex: number, tokenIndex: number, value: string) {
 			const substitution = userInputGrammarRules[ruleIndex]?.substitutions[substitutionIndex];
-			if (substitution?.[tokenIndex]) {
+			if (substitution && substitution.length > tokenIndex) {
 				substitution![tokenIndex] = value;
 				setUserInputGrammarRules([...userInputGrammarRules]);
 			}
@@ -61,6 +73,10 @@ export function useGrammarInput() {
 				substitutions.splice(substitutionIndex, 1);
 				setUserInputGrammarRules([...userInputGrammarRules]);
 			}
+		},
+		removeRule(ruleIndex: number) {
+			userInputGrammarRules.splice(ruleIndex, 1);
+			setUserInputGrammarRules([...userInputGrammarRules]);
 		},
 		resetState() {
 			setUserInputGrammarRules([
