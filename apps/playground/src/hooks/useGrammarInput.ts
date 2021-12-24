@@ -3,15 +3,18 @@ import { useState } from 'react';
 import { UserInputGrammar } from '../types';
 
 export function useGrammarInput() {
-	const [userInputGrammarRules, setUserInputGrammarRules] = useState<UserInputGrammar>([
-		{
-			variable: 'S',
-			substitutions: [],
-		},
-	]);
+	const [userInputGrammar, setUserInputGrammar] = useState<UserInputGrammar>({
+		label: '',
+		rules: [
+			{
+				variable: 'S',
+				substitutions: [],
+			},
+		],
+	});
 
 	const productionRules: IContextFreeGrammar['productionRules'] = {};
-	userInputGrammarRules.forEach((userInputGrammarRule) => {
+	userInputGrammar.rules.forEach((userInputGrammarRule) => {
 		if (!productionRules[userInputGrammarRule.variable]) {
 			productionRules[userInputGrammarRule.variable] = [];
 		}
@@ -22,40 +25,40 @@ export function useGrammarInput() {
 
 	return {
 		productionRules,
-		userInputGrammarRules,
+		userInputGrammar,
 		addRule: () => {
-			userInputGrammarRules.push({
+			userInputGrammar.rules.push({
 				variable: '',
 				substitutions: [],
 			});
-			setUserInputGrammarRules([...userInputGrammarRules]);
+			setUserInputGrammar({ ...userInputGrammar });
 		},
 		addSubstitution(ruleIndex: number) {
-			if (userInputGrammarRules[ruleIndex]) {
-				userInputGrammarRules[ruleIndex]!.substitutions.push(['']);
-				setUserInputGrammarRules([...userInputGrammarRules]);
+			if (userInputGrammar.rules[ruleIndex]) {
+				userInputGrammar.rules[ruleIndex]!.substitutions.push(['']);
+				setUserInputGrammar({ ...userInputGrammar });
 			}
 		},
 		addToken(tokens: string[]) {
 			tokens.push('');
-			setUserInputGrammarRules([...userInputGrammarRules]);
+			setUserInputGrammar({ ...userInputGrammar });
 		},
 		updateToken(ruleIndex: number, substitutionIndex: number, tokenIndex: number, value: string) {
-			const substitution = userInputGrammarRules[ruleIndex]?.substitutions[substitutionIndex];
+			const substitution = userInputGrammar.rules[ruleIndex]?.substitutions[substitutionIndex];
 			if (substitution && substitution.length > tokenIndex) {
 				substitution![tokenIndex] = value;
-				setUserInputGrammarRules([...userInputGrammarRules]);
+				setUserInputGrammar({ ...userInputGrammar });
 			}
 		},
 		updateRuleVariable(ruleIndex: number, value: string) {
-			const rule = userInputGrammarRules[ruleIndex];
+			const rule = userInputGrammar.rules[ruleIndex];
 			if (rule && value) {
 				rule.variable = value;
-				setUserInputGrammarRules([...userInputGrammarRules]);
+				setUserInputGrammar({ ...userInputGrammar });
 			}
 		},
 		removeToken(ruleIndex: number, substitutionIndex: number, tokenIndex: number) {
-			const substitutions = userInputGrammarRules[ruleIndex]?.substitutions;
+			const substitutions = userInputGrammar.rules[ruleIndex]?.substitutions;
 			if (substitutions) {
 				const tokens = substitutions[substitutionIndex];
 				if (tokens) {
@@ -63,28 +66,31 @@ export function useGrammarInput() {
 					if (tokens.length === 0) {
 						substitutions.splice(substitutionIndex, 1);
 					}
-					setUserInputGrammarRules([...userInputGrammarRules]);
+					setUserInputGrammar({ ...userInputGrammar });
 				}
 			}
 		},
 		removeSubstitution(ruleIndex: number, substitutionIndex: number) {
-			const substitutions = userInputGrammarRules[ruleIndex]?.substitutions;
+			const substitutions = userInputGrammar.rules[ruleIndex]?.substitutions;
 			if (substitutions) {
 				substitutions.splice(substitutionIndex, 1);
-				setUserInputGrammarRules([...userInputGrammarRules]);
+				setUserInputGrammar({ ...userInputGrammar });
 			}
 		},
 		removeRule(ruleIndex: number) {
-			userInputGrammarRules.splice(ruleIndex, 1);
-			setUserInputGrammarRules([...userInputGrammarRules]);
+			userInputGrammar.rules.splice(ruleIndex, 1);
+			setUserInputGrammar({ ...userInputGrammar });
 		},
 		resetState() {
-			setUserInputGrammarRules([
-				{
-					variable: 'S',
-					substitutions: [],
-				},
-			]);
+			setUserInputGrammar({
+				label: '',
+				rules: [
+					{
+						variable: 'S',
+						substitutions: [],
+					},
+				],
+			});
 		},
 	};
 }

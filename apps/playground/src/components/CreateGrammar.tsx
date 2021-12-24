@@ -1,3 +1,4 @@
+import { TextField } from "@mui/material";
 import { useGrammarInput } from "../hooks";
 import { UserInputGrammar } from "../types";
 import { Button } from "./Button";
@@ -10,12 +11,13 @@ interface CreateGrammarProps {
 export function CreateGrammar(props: CreateGrammarProps) {
   const { addGrammar } = props;
 
-  const { userInputGrammarRules, productionRules, updateRuleVariable, resetState, removeRule, addRule, updateToken, addSubstitution, addToken, removeToken, removeSubstitution } = useGrammarInput();
+  const { userInputGrammar, productionRules, updateRuleVariable, resetState, removeRule, addRule, updateToken, addSubstitution, addToken, removeToken, removeSubstitution } = useGrammarInput();
 
   return <div className="flex flex-col gap-3 w-full overflow-auto px-5">
     <div className="text-4xl font-bold">Create</div>
+    <TextField />
     <div className="flex gap-3 flex-col justify-center text-2xl">
-      {userInputGrammarRules.map((rule, ruleIndex) =>
+      {userInputGrammar.rules.map((rule, ruleIndex) =>
         <div className="flex gap-3 items-center" key={`rule-${ruleIndex}`}>
           <input placeholder="ε" onChange={(event) => {
             updateRuleVariable(ruleIndex, event.target.value);
@@ -59,7 +61,7 @@ export function CreateGrammar(props: CreateGrammarProps) {
     </div>
     <GrammarString productionRules={productionRules} />
     <Button className="my-4" onClick={() => {
-      addGrammar(userInputGrammarRules);
+      addGrammar(userInputGrammar);
       resetState()
     }} label="Add Grammar" />
   </div>

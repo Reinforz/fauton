@@ -15,7 +15,10 @@ export interface GrammarPipelineStep {
 	output: IContextFreeGrammar;
 }
 
-export type UserInputGrammar = Array<{
-	variable: string;
-	substitutions: string[][];
-}>;
+export type UserInputGrammar = {
+	label: string;
+	rules: Array<{
+		variable: string;
+		substitutions: string[][];
+	}>;
+};
