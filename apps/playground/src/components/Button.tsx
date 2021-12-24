@@ -1,8 +1,9 @@
+import MuiButton from "@mui/material/Button";
 import { MouseEventHandler } from "react";
 
-export function Button(props: { className?: string, label: string, onClick?: MouseEventHandler<HTMLDivElement> }) {
-  const { onClick, label, className = "" } = props;
-  return <div className={`${className} hover:scale-105 transition-transform duration-150 capitalize text-lg text-center shadow-md cursor-pointer p-2 px-4 bg-gray-800 w-[fit-content] rounded-md`} onClick={onClick}>
+export function Button(props: { disabled?: boolean, className?: string, label: string, onClick?: MouseEventHandler<HTMLButtonElement> }) {
+  const { onClick, label, className = "", disabled = false } = props;
+  return <MuiButton variant="contained" disabled={disabled} className={`${className} capitalize text-lg text-white text-center shadow-md cursor-pointer p-2 px-4 w-[fit-content] rounded-md`} onClick={onClick}>
     {label}
-  </div>
+  </MuiButton>
 }

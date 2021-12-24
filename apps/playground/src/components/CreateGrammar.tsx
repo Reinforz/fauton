@@ -1,4 +1,5 @@
 import { TextField } from "@mui/material";
+import { useState } from "react";
 import { useGrammarInput } from "../hooks";
 import { UserInputGrammar } from "../types";
 import { Button } from "./Button";
@@ -10,18 +11,23 @@ interface CreateGrammarProps {
 }
 export function CreateGrammar(props: CreateGrammarProps) {
   const { addGrammar } = props;
-
+  const [grammarLabel, setGrammarLabel] = useState("Grammar label")
   const { userInputGrammar, productionRules, updateRuleVariable, resetState, removeRule, addRule, updateToken, addSubstitution, addToken, removeToken, removeSubstitution } = useGrammarInput();
+
+  let isValidGrammar = true;
+  if (userInputGrammar.rules.length === 0 || userInputGrammar.rules[0]?.substitutions.length === 0 || !grammarLabel) {
+    isValidGrammar = false;
+  }
 
   return <div className="flex flex-col gap-3 w-full overflow-auto px-5">
     <div className="text-4xl font-bold">Create</div>
-    <TextField />
+    <TextField variant="outlined" placeholder="Grammar label" value={grammarLabel} onChange={(e) => setGrammarLabel(e.target.value)} />
     <div className="flex gap-3 flex-col justify-center text-2xl">
       {userInputGrammar.rules.map((rule, ruleIndex) =>
         <div className="flex gap-3 items-center" key={`rule-${ruleIndex}`}>
           <input placeholder="ε" onChange={(event) => {
             updateRuleVariable(ruleIndex, event.target.value);
-          }} size={Math.max(rule.variable.length, 1)} value={rule.variable} className="font-bold text-2xl rounded-sm bg-gray-800 outline-none px-3 py-1" />
+          }} size={Math.max(rule.variable.length, 1)} value={rule.variable} className="font-light text-2xl rounded-sm bg-gray-800 outline-none px-3 py-1" />
           {(rule.substitutions.length !== 0) && <div className="flex gap-3">
             {rule.substitutions.map((tokens, substitutionIndex) => {
               return tokens.length !== 0 && <div className="flex p-2 text-sm gap-3 font-bold bg-gray-800 items-center rounded-sm" key={`rule-${ruleIndex}-substitution-${substitutionIndex}`}>
@@ -60,7 +66,8 @@ export function CreateGrammar(props: CreateGrammarProps) {
       }} />
     </div>
     <GrammarString productionRules={productionRules} />
-    <Button className="my-4" onClick={() => {
+
+    <Button disabled={!isValidGrammar} className="my-4" onClick={() => {
       addGrammar(userInputGrammar);
       resetState()
     }} label="Add Grammar" />

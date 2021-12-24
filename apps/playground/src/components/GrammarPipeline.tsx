@@ -1,31 +1,54 @@
 import { IContextFreeGrammar } from "@fauton/cfg";
 import { useState } from "react";
-import { GrammarPipelineStep } from "../types";
+import { TGrammarOperations } from "../types";
+import { AddIcon } from "./Icons";
 import { Select } from "./Select";
 
 interface GrammarLabProps {
-  grammars: IContextFreeGrammar[]
+  grammars: {
+    label: string,
+    grammar: IContextFreeGrammar
+  }[]
 }
+
+const grammarOperationsSelectItems = {
+  remove_null: "Remove Null",
+  remove_unit: "Remove Unit",
+  remove_empty: "Remove Empty",
+  remove_useless: "Remove Useless",
+  remove_unreachable: "Remove Unreachable",
+  remove_non_terminable: "Remove Non terminable"
+};
 
 export function GrammarPipeline(props: GrammarLabProps) {
   const { grammars } = props;
-  const [currentSelectedGrammar, setCurrentSelectedGrammar] = useState<IContextFreeGrammar | null>(null);
-  const [grammarPipelines, setGrammarPipelines] = useState<GrammarPipelineStep[]>([])
-  return <div className="bg-gray-800 h-full w-1/2 p-5 rounded-sm">
+  const [currentSelectedGrammar, setCurrentSelectedGrammar] = useState<{
+    label: string,
+    grammar: IContextFreeGrammar
+  } | null>(null);
+
+  const [grammarOperations, setGrammarOperations] = useState<TGrammarOperations[]>([]);
+
+  const grammarLabelRecord: Record<string, string> = {};
+  grammars.forEach(({ label }) => {
+    grammarLabelRecord[label] = label
+  });
+
+  return <div className="bg-gray-800 h-full flex flex-col gap-5 w-1/2 p-5 rounded-sm">
     <div className="text-4xl font-bold">Pipelines</div>
-    <Select items={grammars.map((_, index) => `Grammar ${index + 1}`)} selectedItem={""} />
-    {/* <div className="px-5 flex flex-col gap-3 items-center h-full bg-gray-900 w-1/4 min-w-[350px]">
-      <div className="text-center text-4xl font-bold">Operations</div>
-      <div className="flex flex-col gap-3 overflow-auto px-5 items-center" style={{ height: "calc(100% - 100px)" }}>
-        <Button label='Convert to CNF' />
-        <Button label='CYK Table' />
-        <Button label='Remove Null' />
-        <Button label='Remove Unit' />
-        <Button label='Remove Empty' />
-        <Button label='Remove Useless' />
-        <Button label='Remove Unreachable' />
-        <Button label='Remove Non terminable' />
-      </div>
-    </div> */}
+    <Select valueLabelRecord={grammarLabelRecord} onChange={(event) => {
+      const selectedGrammar = grammars.find(({ label }) => label === event.target.value);
+      setCurrentSelectedGrammar(selectedGrammar ?? null);
+    }} value={currentSelectedGrammar ? currentSelectedGrammar.label : undefined} />
+    {
+      grammarOperations.map((grammarOperation, grammarOperationIndex) => <Select key={`${grammarOperation}.${grammarOperationIndex}`} value={grammarOperation} onChange={(event) => {
+        setGrammarOperations([...grammarOperations, event.target.value])
+      }} valueLabelRecord={grammarOperationsSelectItems} />)
+    }
+    <div className="flex justify-center">
+      <AddIcon size={25} onClick={() => {
+        setGrammarOperations([...grammarOperations, "remove_null"])
+      }} />
+    </div>
   </div>
 }

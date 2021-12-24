@@ -2,12 +2,12 @@ import { IContextFreeGrammar } from '@fauton/cfg';
 
 export type TGrammarOperations =
 	| 'cnf'
-	| 'null_remove'
-	| 'unit_remove'
-	| 'empty_remove'
-	| 'useless_remove'
-	| 'unreachable_remove'
-	| 'non_terminable_remove';
+	| 'remove_null'
+	| 'remove_unit'
+	| 'remove_empty'
+	| 'remove_useless'
+	| 'remove_unreachable'
+	| 'remove_non_terminable';
 
 export interface GrammarPipelineStep {
 	operation: TGrammarOperations;
