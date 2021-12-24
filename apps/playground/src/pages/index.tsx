@@ -1,9 +1,9 @@
 import { extractTerminalsFromCfg, IContextFreeGrammar } from "@fauton/cfg";
 import Head from "next/head";
 import { useState } from "react";
-import { CreateGrammar } from "../../components/CreateGrammar";
-import { GrammarLab } from "../../components/GrammarLab";
-import { UserInputGrammar } from "../../types";
+import { CreateGrammar } from "../components/CreateGrammar";
+import { GrammarLab } from "../components/GrammarLab";
+import { UserInputGrammar } from "../types";
 
 const Index = () => {
   const [contextFreeGrammars, setContextFreeGrammars] = useState<IContextFreeGrammar[]>([]);
