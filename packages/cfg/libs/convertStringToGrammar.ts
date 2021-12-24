@@ -17,10 +17,6 @@ export function convertStringToGrammar(grammarString: string): IContextFreeGramm
 	};
 
 	productionRules.forEach((productionRule, productionRuleIndex) => {
-		// Guarding against empty string
-		// Remove the unnecessary tabs from the start of the rule
-		// eslint-disable-next-line
-		productionRule = productionRule.replace(/\t/, '');
 		const [variable, rules] = productionRule.split(' -> ');
 
 		if (!variable || !rules) {

@@ -15,6 +15,7 @@ export function extractTerminalsFromCfg(cfg: IContextFreeGrammar) {
 			const tokens = rule.split(' ');
 			// Loop through each of the tokens to see which of them are terminals
 			tokens.forEach((token) => {
+				// If the token is not a variable, its a terminal
 				if (!variablesSet.has(token)) {
 					terminals.push(token);
 				}
