@@ -47,3 +47,18 @@ export type InputStringOption =
 			inputs: string[];
 			outputFiles?: Partial<IOutputFiles>;
 	  };
+
+// eslint-disable-next-line
+export type IAutomatonTestLogicFn = (inputString: string, automatonTestResult: boolean) => boolean;
+// eslint-disable-next-line
+export type IAutomatonTestFn = (inputString: string) => boolean;
+
+export interface IAutomatonInfo {
+	test: IAutomatonTestFn;
+	testLogic: IAutomatonTestLogicFn;
+	automaton: {
+		label: string;
+		alphabets: string[];
+		description?: string;
+	};
+}
