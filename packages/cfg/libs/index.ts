@@ -1,3 +1,4 @@
+import { convertGrammarToString } from './convertGrammarToString';
 import { convertStringToGrammar } from './convertStringToGrammar';
 import { convertToCnf } from './convertToCnf';
 import { cykParse } from './cykParse';
@@ -13,6 +14,7 @@ import { validateCfg } from './validateCfg';
 
 export * from './types';
 export {
+	convertGrammarToString,
 	convertStringToGrammar,
 	convertToCnf,
 	cykParse,
