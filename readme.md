@@ -18,21 +18,21 @@
 - [Credits](#credits)
 - [Contributors](#contributors)
 
-# Features
+## Features
 
 1. Full typescript support
 2. Easy to use api
 3. High test coverage
 4. Supports both node and browser environment (except a few)
 
-# Packages
+## Packages
 
 - **`@fauton/cfg`** [Github](https://github.com/Devorein/fauton/tree/main/packages/cfg) [NPM](https://www.npmjs.com/package/@fauton/cfg): A package to work with cfg
 - **`@fauton/fa`** [Github](https://github.com/Devorein/fauton/tree/main/packages/fa) [NPM](https://www.npmjs.com/package/@fauton/fa): A package to work with finite automata
 - **`@fauton/regex`** [Github](https://github.com/Devorein/fauton/tree/main/packages/regex) : A package to work with regex validation and parsing
 - **`@fauton/testing`** [Github](https://github.com/Devorein/fauton/tree/main/packages/testing) : A package to test your automaton (regex/dfa/nfa/e-nfa/cfg)
 
-# Algorithm Sources
+## Algorithm Sources
 
 Wikipedia sources for all the algorithms used in the package
 
@@ -44,7 +44,7 @@ Wikipedia sources for all the algorithms used in the package
 6. [Cocke–Younger–Kasami](https://en.wikipedia.org/wiki/CYK_algorithm) Parsing algorithm using a CFG
 7. [Earley Parser](https://en.wikipedia.org/wiki/Earley_parser) algorithm for parsing strings that belong to a given context-free language
 
-# Credits
+## Credits
 
 Big thanks to all these wonderful repos.
 
@@ -55,7 +55,7 @@ Big thanks to all these wonderful repos.
 5. [earley-parser-js](https://github.com/lagodiuk/earley-parser-js) Tiny JavaScript implementation of context-free languages parser - Earley parser (including generation of the parsing-forest).
 6. [probabilistic-earley-parser-javascript](https://github.com/digitalheir/probabilistic-earley-parser-javascript) An efficient implementation of a probabilistic Context Free Grammar parser in Javascript
 
-# Contributors
+## Contributors
 
 1.  Safwan Shaheer [github](https://github.com/Devorein) Author, Maintainer
 

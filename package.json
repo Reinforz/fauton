@@ -1,5 +1,5 @@
 {
-  "name": "@fauton",
+  "name": "fauton",
   "homepage": "https://github.com/Devorein/fauton/blob/master/README.md",
   "bugs": {
     "url": "https://github.com/Devorein/fauton/issues"
@@ -10,7 +10,6 @@
   },
   "author": "Safwan Shaheer <devorein00@gmail.com>",
   "license": "MIT",
-  "dependencies": {},
   "devDependencies": {
     "@types/cli-progress": "^3.9.2",
     "@types/jest": "^27.0.2",
