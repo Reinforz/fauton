@@ -9,13 +9,13 @@ export interface IContextFreeGrammar {
 export type LanguageChecker = (inputString: string) => boolean;
 
 export interface ICfgLanguageGenerationOption {
-	minChunkLength: number;
-	maxChunkLength: number;
+	minTokenLength: number;
+	maxTokenLength: number;
 	skipSimplification?: boolean;
 	skipValidation?: boolean;
 	generateTerminals?: boolean;
 	generateVariables?: boolean;
-	autoCapitalizeFirstChunk?: boolean;
-	useSpaceWhenJoiningChunks?: boolean;
+	autoCapitalizeFirstToken?: boolean;
+	useSpaceWhenJoiningTokens?: boolean;
 	parseDirection?: 'left' | 'right';
 }

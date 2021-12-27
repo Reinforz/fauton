@@ -21,12 +21,9 @@ export function findFirstUnitProductionRule(
 			productionRuleSubstitutionIndex += 1
 		) {
 			const productionRuleSubstitution = productionRules[variable][productionRuleSubstitutionIndex];
-			const productionRuleSubstitutionChunks = productionRuleSubstitution.split(' ');
+			const tokens = productionRuleSubstitution.split(' ');
 			// If the production rule substitution is of length one and its a variable
-			if (
-				productionRuleSubstitutionChunks.length === 1 &&
-				variablesSet.has(productionRuleSubstitution)
-			) {
+			if (tokens.length === 1 && variablesSet.has(productionRuleSubstitution)) {
 				return [variable, productionRuleSubstitutionIndex] as const;
 			}
 		}

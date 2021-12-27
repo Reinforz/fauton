@@ -18,12 +18,12 @@ export function removeProductionRules(
 		productionRules[productionVariable] = productionRulesSubstitutions.filter(
 			(productionRulesSubstitution) => {
 				// productionRulesSubstitution = Verb Adj Noun
-				const productionRulesSubstitutionChunksSet = new Set(
+				const productionRulesSubstitutionTokensSet = new Set(
 					productionRulesSubstitution.split(' ')
 				);
-				const difference = setDifference(productionRulesSubstitutionChunksSet, removedVariablesSet);
+				const difference = setDifference(productionRulesSubstitutionTokensSet, removedVariablesSet);
 				// If we dont need to remove any variables then the size before and after the set difference would be similar
-				return difference.size === productionRulesSubstitutionChunksSet.size;
+				return difference.size === productionRulesSubstitutionTokensSet.size;
 			}
 		);
 	});
