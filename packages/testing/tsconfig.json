@@ -1,8 +1,7 @@
 {
   "extends": "../../tsconfig.shared.json",
   "include": [
-    "./libs/**/*.ts",
-    "./examples"
+    "./libs/**/*.ts"
   ],
   "compilerOptions": {
     "outDir": "./dist",
