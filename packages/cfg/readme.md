@@ -1,114 +1,16 @@
-# `@fauton/cfg`
+<p align="center">
+  <pre align>@fauton/cfg</pre>
+  <img src="https://img.shields.io/bundlephobia/minzip/@fauton/cfg?label=minzipped&style=flat&color=%23bb0a1e"/>
+  <img src="https://img.shields.io/npm/dw/@fauton/cfg?style=flat&color=orange"/>
+  <img src="https://img.shields.io/github/issues/devorein/fauton/cfg?color=yellow&label=issues"/>
+  <img src="https://img.shields.io/npm/v/@fauton/cfg?color=%2303C04A"/>
+  <img src="https://img.shields.io/codecov/c/github/devorein/fauton?flag=cfg&color=blue"/>
+  <img src="https://img.shields.io/librariesio/release/npm/@fauton/cfg?color=%234B0082">
+</p>
 
-A package to work with cfg.
+<p align="center"><a href="https://github.com/Devorein/fauton/tree/main/packages/cfg">Github</a> |
+  <a href="https://docs.fauton.xyz/docs/cfg/">Docs</a> |
+  <a href="https://www.npmjs.com/package/@fauton/cfg">NPM</a> |
+</p>
 
-- [`@fauton/cfg`](#fautoncfg)
-- [Features](#features)
-- [Examples](#examples)
-  - [Generate language of a CFG](#generate-language-of-a-cfg)
-  - [Remove null production from CFG](#remove-null-production-from-cfg)
-  - [Removing all unreachable production rules from CFG](#removing-all-unreachable-production-rules-from-cfg)
-
-# Features
-
-1. Validate a CFG
-2. Removing null production rules for a CFG
-3. Removing unit production rules for a CFG
-4. Removing unreachable production rules for a CFG
-5. Removing non terminable production rules for a CFG
-6. Removing empty production rules for a CFG
-7. Converting a cfg to cnf
-8. Checking if a string is present in cfg (CYK)
-9. Generate language of CFG (up-to specific length)
-
-# Examples
-
-## Generate language of a CFG
-
-Lets try to generate all the possible strings of the language of a CFG up to a certain length
-
-```js
-import { GenerateString } from 'fauton';
-
-const cfgLanguage = GenerateString.generateCfgLanguage(
-	{
-		startVariable: 'S',
-		terminals: ['0', '1', '+', '-', '/', '*', '(', ')'],
-		productionRules: {
-			S: ['S', 'S E N', '( S )', 'N'],
-			N: ['0', '1'],
-			E: ['+', '-', '/', '*'],
-		},
-		variables: ['S', 'N', 'E'],
-	},
-	3
-);
-console.log(Object.keys(cfgLanguage));
-```
-
-```sh
-[
-  '0',   '1',   '(1)', '(0)',
-  '1*1', '1+0', '0+0', '1/0',
-  '0/0', '1/1', '0/1', '1-1',
-  '0-1', '1*0', '0*0', '1-0',
-  '0-0', '1+1', '0+1', '0*1'
-]
-```
-
-## Remove null production from CFG
-
-```js
-import { ContextFreeGrammarUtils } from 'fauton';
-const nullProductionRemovedTransition = ContextFreeGrammarUtils.removeNullProduction({
-	productionRules: {
-		S: ['A B AC'],
-		A: ['a A', ''],
-		B: ['b B', ''],
-		C: ['c'],
-	},
-	variables: ['S', 'A', 'B', 'C'],
-	startVariable: 'S',
-});
-console.log(nullProductionRemovedTransition);
-```
-
-```sh
-# Notice that there are no production rules that produces epsilon values
-{
-  S: ['A A C', 'A B A C', 'A B C', 'A C', 'B A C', 'B C', 'C'],
-  A: ['a A', 'a'],
-  B: ['b B', 'b'],
-  C: ['c']
-}
-```
-
-## Removing all unreachable production rules from CFG
-
-```js
-import { ContextFreeGrammarUtils } from 'fauton';
-
-console.log(
-	ContextFreeGrammarUtils.removeUnreachableProduction({
-		productionRules: {
-			S: ['A B'],
-			A: ['a A', 'a'],
-			B: ['b B', 'b'],
-			C: ['c C', 'c'],
-		},
-		startVariable: 'S',
-		variables: ['S', 'A', 'B', 'C'],
-	})
-);
-```
-
-```sh
-{
-  productionRules: {
-    S: ['A B'],
-    A: ['a A', 'a'],
-    B: ['b B', 'b'],
-  },
-  variables: ['S', 'A', 'B'],
-}
-```
+<p align="center"><b>A package to work with context free grammars</b></p>
