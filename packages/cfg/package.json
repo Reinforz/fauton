@@ -8,9 +8,9 @@
     "dist/libs"
   ],
   "scripts": {
-    "prebuild": "del-cli ./dist",
+    "prebuild": "npx del-cli ./dist",
     "prepublishOnly": "npm run lint && npm run build && npm run test",
-    "build": "tsc --sourceMap false",
+    "build": "npx tsc --sourceMap false",
     "build:watch": "tsc -w",
     "lint": "npx eslint \"./libs\" --ext tsx,ts",
     "lint:fix": "npx eslint \"./libs\" --ext tsx,ts --fix",
