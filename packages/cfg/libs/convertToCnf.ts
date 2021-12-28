@@ -8,12 +8,12 @@ import { setDifference } from './utils/setOperations';
  * @param productionRuleEntries An array of tuples (production rule variable, production rule substitutions)
  * **Example**: `["A", ["a b A", "b a b"]]`
  * @param callBackFn A callback function that will be called for each production rule substitution
- * @returns A tuple ([production rule variable, production rule substitution chunks, production rule substitution index ]) if a rule was found else null
+ * @returns A tuple ([production rule variable, production rule substitution tokens, production rule substitution index ]) if a rule was found else null
  */
 export function findSubstitution(
 	productionRuleEntries: [string, string[]][],
 	// eslint-disable-next-line
-	callBackFn: (productionRuleSubstitutionChunks: string[]) => boolean
+	callBackFn: (tokens: string[]) => boolean
 ) {
 	// Loop through all the production rule entries
 	for (
@@ -31,18 +31,18 @@ export function findSubstitution(
 			productionRuleSubstitutionsIndex < productionRuleSubstitutions.length;
 			productionRuleSubstitutionsIndex += 1
 		) {
-			// Split the substitutions to get its chunks
+			// Split the substitutions to get its tokens
 			const productionRuleSubstitution =
 				productionRuleSubstitutions[productionRuleSubstitutionsIndex];
-			const productionRuleSubstitutionChunks = productionRuleSubstitution.split(' ');
+			const tokens = productionRuleSubstitution.split(' ');
 			// If the callback returns a truthy boolean value then this is the rule that must be returned
-			if (callBackFn(productionRuleSubstitutionChunks)) {
-				// Return the tuple of production rule variable, the substitution chunks and the substitution number
-				return [
-					productionRuleVariable,
-					productionRuleSubstitutionChunks,
-					productionRuleSubstitutionsIndex,
-				] as [string, string[], number];
+			if (callBackFn(tokens)) {
+				// Return the tuple of production rule variable, the substitution tokens and the substitution number
+				return [productionRuleVariable, tokens, productionRuleSubstitutionsIndex] as [
+					string,
+					string[],
+					number
+				];
 			}
 		}
 	}
@@ -50,20 +50,17 @@ export function findSubstitution(
 }
 
 /**
- *  Returns the first production rule whose `chunks.length > 2`
+ *  Returns the first production rule whose `tokens.length > 2`
  * @param productionRuleEntries An array of tuples (production rule variable, production rule substitutions)
  * **Example**: `["A", ["a b A", "b a b"]]`
- * @returns A tuple ([production rule variable, production rule substitution chunks, production rule substitution index ]) if a long rule was found else null
+ * @returns A tuple ([production rule variable, production rule substitution tokens, production rule substitution index ]) if a long rule was found else null
  */
 export function findLongSubstitution(productionRuleEntries: [string, string[]][]) {
-	return findSubstitution(
-		productionRuleEntries,
-		(productionRuleSubstitutionChunks) => productionRuleSubstitutionChunks.length > 2
-	);
+	return findSubstitution(productionRuleEntries, (tokens) => tokens.length > 2);
 }
 
 /**
- * Removes all the rules that have more than 2 chunks and add them as new production rules
+ * Removes all the rules that have more than 2 tokens and add them as new production rules
  * Which will result in all substitutions to have chunk length of at-most 2
  * @param cfg production rules record and variables array of cfg
  */
@@ -71,7 +68,7 @@ export function processLongSubstitutions(
 	cfg: Pick<IContextFreeGrammar, 'productionRules' | 'variables'>
 ) {
 	const { productionRules } = cfg;
-	// Only the current entries will have substitution chunks greater than 2, so no need to recompute it every time
+	// Only the current entries will have substitution tokens greater than 2, so no need to recompute it every time
 	const productionRuleEntries = Object.entries(productionRules);
 	// A record to keep track of which substitution got mapped to which variable,
 	// As we dont want to generate new variables for an existing substitution
@@ -85,15 +82,11 @@ export function processLongSubstitutions(
 			return false;
 		}
 
-		const [
-			productionRuleVariable,
-			productionRuleSubstitutionChunks,
-			productionRuleSubstitutionsIndex,
-		] = longRule;
+		const [productionRuleVariable, tokens, productionRuleSubstitutionsIndex] = longRule;
 		// Only keep the first substitution chunk and create a separate variable to store the rest
-		// Example chunks = ["a", "A", "c"] => ["a", "<new_variable>"] new_variable = ["A", "c"]
-		const restOfSubstitutionChunks = productionRuleSubstitutionChunks.slice(1);
-		const restOfSubstitution = restOfSubstitutionChunks.join(' ');
+		// Example tokens = ["a", "A", "c"] => ["a", "<new_variable>"] new_variable = ["A", "c"]
+		const restOfSubstitutionTokens = tokens.slice(1);
+		const restOfSubstitution = restOfSubstitutionTokens.join(' ');
 		// Check if we have already generated a variable for this substitution
 		const generatedVariableSubstitution = generatedVariablesSubstitutionRecord[restOfSubstitution];
 		// If not generate a new variable
@@ -101,9 +94,7 @@ export function processLongSubstitutions(
 		// Remove the production rule substitution index as we will be adding a separate substitution with length 2
 		productionRules[productionRuleVariable].splice(productionRuleSubstitutionsIndex, 1);
 		// Create a new substitution with the first chunk and the new variable
-		productionRules[productionRuleVariable].push(
-			`${productionRuleSubstitutionChunks[0]} ${newVariable}`
-		);
+		productionRules[productionRuleVariable].push(`${tokens[0]} ${newVariable}`);
 		// If we haven't added the substitution to the record, add the substitution as the key and the generated variable as the value
 		if (!generatedVariableSubstitution) {
 			generatedVariablesSubstitutionRecord[restOfSubstitution] = newVariable;
@@ -119,10 +110,10 @@ export function processLongSubstitutions(
 }
 
 /**
- *  Returns the first production rule whose `chunks.length === 2`
+ *  Returns the first production rule whose `tokens.length === 2`
  * @param productionRuleEntries An array of tuples (production rule variable, production rule substitutions)
  * **Example**: `["A", ["a b A", "b a b"]]`
- * @returns A tuple ([production rule variable, production rule substitution chunks, production rule substitution index ]) if a substitution was found else null
+ * @returns A tuple ([production rule variable, production rule substitution tokens, production rule substitution index ]) if a substitution was found else null
  */
 export function findSubstitutionOfLengthTwo(
 	productionRuleEntries: Array<[string, string[]]>,
@@ -131,10 +122,8 @@ export function findSubstitutionOfLengthTwo(
 	const variablesSet = new Set(variables);
 	return findSubstitution(
 		productionRuleEntries,
-		// If there are two chunks and both of them are not variables
-		(productionRuleSubstitutionChunks) =>
-			productionRuleSubstitutionChunks.length === 2 &&
-			setDifference(new Set(productionRuleSubstitutionChunks), variablesSet).size !== 0
+		// If there are two tokens and both of them are not variables
+		(tokens) => tokens.length === 2 && setDifference(new Set(tokens), variablesSet).size !== 0
 	);
 }
 
@@ -159,70 +148,66 @@ export function processSubstitutionsOfLengthTwo(
 			return false;
 		}
 
-		const [
-			productionRuleVariable,
-			productionRuleSubstitutionChunks,
-			productionRuleSubstitutionsIndex,
-		] = lengthTwoRule;
+		const [productionRuleVariable, tokens, productionRuleSubstitutionsIndex] = lengthTwoRule;
 
-		// Get the left and right chunk from the chunks, as its guaranteed to be of length two
-		const [leftChunk, rightChunk] = productionRuleSubstitutionChunks;
+		// Get the left and right chunk from the tokens, as its guaranteed to be of length two
+		const [leftToken, rightToken] = tokens;
 		// Check if the left chunk is terminal
-		const isLeftChunkTerminal = terminalsSet.has(leftChunk);
+		const isLeftTokenTerminal = terminalsSet.has(leftToken);
 		// Check if the right chunk is terminal
-		const isRightChunkTerminal = terminalsSet.has(rightChunk);
+		const isRightTokenTerminal = terminalsSet.has(rightToken);
 		// Steps:-
-		// 1. Check which chunks (left, right) are terminals
+		// 1. Check which tokens (left, right) are terminals
 		// 2. Check if we've already generated a variable for the chunk, if not generate new variable
 		// 3. Update the record so that the key is the chunk and value is the terminal
 		// 4. Update the production rules to point to the terminals
 		// 5. Remove the previous substitution by its index
 		// 6. Push the new substitution to the producing variable
 
-		// If both left and right chunks are terminals
+		// If both left and right tokens are terminals
 		// Example: ["a", "b"] => ["A", "B"] => A = ["a"], B = ["b"]
-		if (isLeftChunkTerminal && isRightChunkTerminal) {
+		if (isLeftTokenTerminal && isRightTokenTerminal) {
 			const newVariable1 =
-				generatedVariablesTerminalRecord[leftChunk] ?? generateNewVariable(variables);
-			if (!generatedVariablesTerminalRecord[leftChunk]) {
-				generatedVariablesTerminalRecord[leftChunk] = newVariable1;
+				generatedVariablesTerminalRecord[leftToken] ?? generateNewVariable(variables);
+			if (!generatedVariablesTerminalRecord[leftToken]) {
+				generatedVariablesTerminalRecord[leftToken] = newVariable1;
 			}
 			const newVariable2 =
-				generatedVariablesTerminalRecord[rightChunk] ?? generateNewVariable(variables);
+				generatedVariablesTerminalRecord[rightToken] ?? generateNewVariable(variables);
 
-			if (!generatedVariablesTerminalRecord[rightChunk]) {
-				generatedVariablesTerminalRecord[rightChunk] = newVariable2;
+			if (!generatedVariablesTerminalRecord[rightToken]) {
+				generatedVariablesTerminalRecord[rightToken] = newVariable2;
 			}
 
-			productionRules[newVariable1] = [leftChunk];
-			productionRules[newVariable2] = [rightChunk];
+			productionRules[newVariable1] = [leftToken];
+			productionRules[newVariable2] = [rightToken];
 			productionRules[productionRuleVariable].splice(productionRuleSubstitutionsIndex, 1);
 			productionRules[productionRuleVariable].push(`${newVariable1} ${newVariable2}`);
 		}
 		// If only the left chunk is terminal
 		// Example: ["a", "C"] => ["A", "C"] => A = ["a"]
-		else if (isLeftChunkTerminal) {
+		else if (isLeftTokenTerminal) {
 			const newVariable =
-				generatedVariablesTerminalRecord[leftChunk] ?? generateNewVariable(variables);
-			productionRules[newVariable] = [leftChunk];
+				generatedVariablesTerminalRecord[leftToken] ?? generateNewVariable(variables);
+			productionRules[newVariable] = [leftToken];
 			productionRules[productionRuleVariable].splice(productionRuleSubstitutionsIndex, 1);
 			// The right chunk is not a terminal so keep it as it is
-			productionRules[productionRuleVariable].push(`${newVariable} ${rightChunk}`);
-			if (!generatedVariablesTerminalRecord[leftChunk]) {
-				generatedVariablesTerminalRecord[leftChunk] = newVariable;
+			productionRules[productionRuleVariable].push(`${newVariable} ${rightToken}`);
+			if (!generatedVariablesTerminalRecord[leftToken]) {
+				generatedVariablesTerminalRecord[leftToken] = newVariable;
 			}
 		}
 		// If only the right chunk is terminal
 		// Example: ["A", "b"] => ["A", "B"] => B = ["b"]
-		else if (isRightChunkTerminal) {
+		else if (isRightTokenTerminal) {
 			const newVariable =
-				generatedVariablesTerminalRecord[rightChunk] ?? generateNewVariable(variables);
-			productionRules[newVariable] = [rightChunk];
+				generatedVariablesTerminalRecord[rightToken] ?? generateNewVariable(variables);
+			productionRules[newVariable] = [rightToken];
 			productionRules[productionRuleVariable].splice(productionRuleSubstitutionsIndex, 1);
-			productionRules[productionRuleVariable].push(`${leftChunk} ${newVariable}`);
+			productionRules[productionRuleVariable].push(`${leftToken} ${newVariable}`);
 
-			if (!generatedVariablesTerminalRecord[rightChunk]) {
-				generatedVariablesTerminalRecord[rightChunk] = newVariable;
+			if (!generatedVariablesTerminalRecord[rightToken]) {
+				generatedVariablesTerminalRecord[rightToken] = newVariable;
 			}
 		}
 		return true;
@@ -251,9 +236,9 @@ export function convertToCnf(cfg: IContextFreeGrammar) {
 		duplicateCfg.productionRules[duplicateCfg.startVariable];
 	// Update the startVariable to point to the newly created one
 	duplicateCfg.startVariable = newStartStateVariable;
-	// Process substitutions of chunks.length > 2 first
+	// Process substitutions of tokens.length > 2 first
 	processLongSubstitutions(duplicateCfg);
-	// Process substitutions of chunks.length === 2 next
+	// Process substitutions of tokens.length === 2 next
 	processSubstitutionsOfLengthTwo(duplicateCfg);
 	return duplicateCfg;
 }

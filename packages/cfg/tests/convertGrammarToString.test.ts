@@ -8,7 +8,10 @@ it(`Should convert grammar to string`, () => {
 			Adj: ['quickly'],
 			Verb: ['talked'],
 		})
-	).toStrictEqual(
-		`S -> Adj Noun Verb | Adj Verb\nNoun -> Sam | Alice\nAdj -> quickly\nVerb -> talked`
-	);
+	).toStrictEqual([
+		`S -> Adj Noun Verb | Adj Verb`,
+		'Noun -> Sam | Alice',
+		'Adj -> quickly',
+		'Verb -> talked',
+	]);
 });

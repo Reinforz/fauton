@@ -23,21 +23,20 @@ export function removeUnreachableProduction(
 		const unvisitedVariable = unvisitedVariables.removeFirst();
 		// For each of the unvisited variable, check which variables we can reach
 		productionRules[unvisitedVariable.getValue()].forEach((productionRuleSubstitution) => {
-			const productionRuleSubstitutionChunks = productionRuleSubstitution.split(' ');
+			const tokens = productionRuleSubstitution.split(' ');
 			for (
-				let productionRuleSubstitutionChunksIndex = 0;
-				productionRuleSubstitutionChunksIndex < productionRuleSubstitutionChunks.length;
-				productionRuleSubstitutionChunksIndex += 1
+				let productionRuleSubstitutionTokensIndex = 0;
+				productionRuleSubstitutionTokensIndex < tokens.length;
+				productionRuleSubstitutionTokensIndex += 1
 			) {
-				const productionRuleSubstitutionChunk =
-					productionRuleSubstitutionChunks[productionRuleSubstitutionChunksIndex];
+				const productionRuleSubstitutionToken = tokens[productionRuleSubstitutionTokensIndex];
 				// If the letter is a variable, and we haven't visited the variable yet
 				if (
-					variablesSet.has(productionRuleSubstitutionChunk) &&
-					!visitedVariables.has(productionRuleSubstitutionChunk)
+					variablesSet.has(productionRuleSubstitutionToken) &&
+					!visitedVariables.has(productionRuleSubstitutionToken)
 				) {
-					visitedVariables.add(productionRuleSubstitutionChunk);
-					unvisitedVariables.insertLast(productionRuleSubstitutionChunk);
+					visitedVariables.add(productionRuleSubstitutionToken);
+					unvisitedVariables.insertLast(productionRuleSubstitutionToken);
 				}
 			}
 		});

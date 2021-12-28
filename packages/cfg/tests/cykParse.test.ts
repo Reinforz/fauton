@@ -229,6 +229,6 @@ it(`Should parse the sentence and generate cyk parse information`, () => {
 			'C C': ['B'],
 			b: ['B'],
 		},
-		sentenceChunks: ['b', 'a', 'a', 'b', 'a'],
+		sentenceTokens: ['b', 'a', 'a', 'b', 'a'],
 	});
 });

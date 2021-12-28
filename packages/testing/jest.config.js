@@ -14,13 +14,5 @@ module.exports = async () => {
 		collectCoverageFrom: ['libs/**/*.ts'],
 		collectCoverage: true,
 		coverageDirectory: './coverage',
-		coverageThreshold: {
-			global: {
-				branches: 95,
-				functions: 95,
-				lines: 95,
-				statements: -10,
-			},
-		},
 	};
 };

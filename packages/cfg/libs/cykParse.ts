@@ -16,20 +16,20 @@ type CykTable<Type extends Set<string> | Array<string>> = Array<
 /**
  * Parses a sentence given a cfg
  * @param cfg Input cfg production rules and start variable
- * @param sentenceChunks An array of sentence chunks
+ * @param sentenceTokens An array of sentence tokens
  * @returns Boolean value on whether the sentence is part of the grammar and steps that the CYK algo took to resolve it
  */
 export function cykParse(
 	cfg: Pick<IContextFreeGrammar, 'productionRules' | 'startVariable'>,
-	sentenceChunks: string[]
+	sentenceTokens: string[]
 ) {
-	const stringChunksLength = sentenceChunks.length;
+	const stringTokensLength = sentenceTokens.length;
 	const { productionRules, startVariable } = cfg;
 	const productionRulesEntries = Object.entries(productionRules);
 
 	const cykTable: CykTable<Array<string>> = [];
-	// Initialize the cykTable first, a left sided right angled triangle with height and base equal to the length of sentence chunks
-	for (let i = 0; i < stringChunksLength; i += 1) {
+	// Initialize the cykTable first, a left sided right angled triangle with height and base equal to the length of sentence tokens
+	for (let i = 0; i < stringTokensLength; i += 1) {
 		const cytTableRows: typeof cykTable[0] = [];
 		for (let j = 0; j <= i; j += 1) {
 			// Each cell will contain a set
@@ -64,23 +64,23 @@ export function cykParse(
 	});
 
 	// filling the bottom row, with values from the record, since the bottom row will contain only direct terminals
-	sentenceChunks.forEach((sentenceChunk, sentenceChunkIndex) => {
-		cykTable[stringChunksLength - 1][sentenceChunkIndex] = {
+	sentenceTokens.forEach((sentenceToken, sentenceTokenIndex) => {
+		cykTable[stringTokensLength - 1][sentenceTokenIndex] = {
 			combinations: [
 				{
-					merged: nodeVariablesRecord[sentenceChunk],
-					parts: [nodeVariablesRecord[sentenceChunk]],
+					merged: nodeVariablesRecord[sentenceToken],
+					parts: [nodeVariablesRecord[sentenceToken]],
 				},
 			],
-			value: nodeVariablesRecord[sentenceChunk],
+			value: nodeVariablesRecord[sentenceToken],
 		};
 	});
 
 	// Start from the row top of the bottom row, all the way to the first row
-	for (let cykTableRow = stringChunksLength - 2; cykTableRow >= 0; cykTableRow -= 1) {
+	for (let cykTableRow = stringTokensLength - 2; cykTableRow >= 0; cykTableRow -= 1) {
 		// The total number of combinations that is possible from the current row
 		// if input is aabab and we are in row index 2, total combinations are aa+bab, aab+ab
-		const totalCombinations = stringChunksLength - (cykTableRow + 1); // Adding 1 as row is 0 index based;
+		const totalCombinations = stringTokensLength - (cykTableRow + 1); // Adding 1 as row is 0 index based;
 		// Loop from left most column to the right most column, since its a left right angled triangle, the number of column will be the same as the number of rows
 		for (let cykTableCol = 0; cykTableCol <= cykTableRow; cykTableCol += 1) {
 			const combinations: typeof cykTable[0][0]['combinations'] = [];
@@ -95,8 +95,8 @@ export function cykParse(
 				const bottomRowCell = cykTable[cykTableRow + combinationNumber][cykTableCol],
 					// The combinationNumber'th right diagonal cell from the current cell
 					rightDiagonalCell =
-						cykTable[stringChunksLength - combinationNumber][
-							stringChunksLength - cykTableRow + cykTableCol - combinationNumber
+						cykTable[stringTokensLength - combinationNumber][
+							stringTokensLength - cykTableRow + cykTableCol - combinationNumber
 						];
 				// Get the cross product of all the variables in those two cells
 				const crossProduct = setCrossProduct(
@@ -133,6 +133,6 @@ export function cykParse(
 			string,
 			Array<string>
 		>,
-		sentenceChunks,
+		sentenceTokens,
 	};
 }
