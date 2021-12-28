@@ -5,8 +5,6 @@ codecov_file="${GITHUB_WORKSPACE}/scripts/codecov.sh"
 curl -s https://codecov.io/bash > $codecov_file
 chmod +x $codecov_file
 
-file="${GITHUB_WORKSPACE}/coverage/lcov.info"
-
 packages=( cfg fa testing )
 
 RED='\033[0;31m'
