@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 packages=( cfg fa testing )
 
 RED='\033[0;31m'

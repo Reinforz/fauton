@@ -4,7 +4,7 @@ on:
   push:
     branches: ["main", "dev"]
   pull_request:
-    branches: [main]
+    branches: [main, "dev"]
 
 jobs:
   build:
@@ -26,5 +26,6 @@ jobs:
           bash $build_script
       - name: Upload test coverage
         run: |
-          chmod +x "${GITHUB_WORKSPACE}/scripts/uploadCoverage.sh"
-          "${GITHUB_WORKSPACE}/scripts/uploadCoverage.sh"
+          upload_coverage_script="${GITHUB_WORKSPACE}/scripts/uploadCoverage.sh"
+          chmod +x $upload_coverage_script
+          bash $upload_coverage_script
