@@ -19,19 +19,12 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install
-      - run: npm run lint
-      - name: Install fauton globally
-        run: npm install -g
-      - name: Building library
-        run: npm run build
-      - name: Building examples
+      - name: Build packages
         run: |
-          cd examples
-          npm link fauton
-          npm run build
-      - run: npm run test
-      - name: Uploading test coverage reports
+          build_script="${GITHUB_WORKSPACE}/scripts/build.sh"
+          chmod +x $build_script
+          bash $build_script
+      - name: Upload test coverage
         run: |
           chmod +x "${GITHUB_WORKSPACE}/scripts/uploadCoverage.sh"
           "${GITHUB_WORKSPACE}/scripts/uploadCoverage.sh"
