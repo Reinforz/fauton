@@ -21,6 +21,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Build packages
         run: |
+          # Install shared dependencies
+          npm install
           build_script="${GITHUB_WORKSPACE}/scripts/build.sh"
           chmod +x $build_script
           bash $build_script
