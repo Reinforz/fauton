@@ -4,7 +4,7 @@ import { testAutomaton } from '../libs/utils/testAutomaton';
 
 type IWriteStreams = Record<`${keyof IOutputFiles}WriteStream`, null | fs.WriteStream>;
 
-it(`Should work`, () => {
+it.skip(`Should work`, () => {
 	const finiteAutomatonTestInfo: AutomatonTestInfo = {
 		falseNegatives: 0,
 		falsePositives: 0,
