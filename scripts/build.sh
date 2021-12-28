@@ -4,12 +4,13 @@ packages=( cfg fa testing )
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+BLUE='\033[0;34m'
 NC='\033[0m'
 
 for package in "${packages[@]}" ; do
   package_name="@fauton/$package"
-  cd "../packages/$package"
-  echo -e "${GREEN}Building package $package_name${NC}"
+  cd "${GITHUB_WORKSPACE}/packages/$package"
+  echo -e "${BLUE}Building package $package_name${NC}"
 
   if ! (npm install -g) then
     echo -e "${RED}Error installing $package_name globally${NC}"
@@ -48,8 +49,5 @@ for package in "${packages[@]}" ; do
     else
       echo -e "${GREEN}Successfully build $package_name examples${NC}"
     fi
-    cd ../../
-  else
-    cd ../
   fi
 done
