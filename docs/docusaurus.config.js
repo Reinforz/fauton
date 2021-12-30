@@ -31,7 +31,24 @@ const config = {
 			}),
 		],
 	],
+	plugins: [
+		[
+			'docusaurus-plugin-typedoc',
+			{
+				// TypeDoc options
+				entryPoints: ['../packages/cfg/libs/index.ts'],
+				tsconfig: '../packages/cfg/tsconfig.json',
 
+				// Plugin options
+				out: 'fauton-cfg',
+				sidebar: {
+					categoryLabel: '@fauton/cfg',
+					position: 0,
+					fullNames: true,
+				},
+			},
+		],
+	],
 	themeConfig:
 		/** @type {import('@docusaurus/preset-classic').ThemeConfig} */
 		({

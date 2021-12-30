@@ -1,3 +1,12 @@
+---
+id: "index"
+title: "@fauton/cfg"
+slug: "/fauton-cfg/"
+sidebar_label: "Readme"
+sidebar_position: 0
+custom_edit_url: null
+---
+
 <p align="center">
   <pre align>@fauton/cfg</pre>
   <img src="https://img.shields.io/bundlephobia/minzip/@fauton/cfg?label=minzipped&style=flat&color=%23bb0a1e"/>
