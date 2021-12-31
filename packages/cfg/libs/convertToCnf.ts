@@ -152,7 +152,7 @@ export function processSubstitutionsOfLengthTwo(
 	// Loop through all variables to see which variables produces a single terminal
 	variables.forEach((variable) => {
 		const terminal = productionRules[variable][0];
-		if (productionRules[variable].length === 0 && terminalsSet.has(terminal)) {
+		if (productionRules[variable].length === 1 && terminalsSet.has(terminal)) {
 			generatedVariablesTerminalRecord[terminal] = variable;
 		}
 	});
