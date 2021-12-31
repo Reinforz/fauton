@@ -229,6 +229,18 @@ export function processSubstitutionsOfLengthTwo(
 }
 
 /**
+ * Check if a variable references itself in its production rule
+ * @param rules Production rules for the variable
+ * @param variable Producing variable
+ */
+export function checkForSelfReference(rules: string[], variable: string) {
+	return rules.some((rule) => {
+		const tokens = new Set(rule.split(' '));
+		return tokens.has(variable);
+	});
+}
+
+/**
  * Converts a cfg to cnf
  * @param cfg Input cfg to convert to cnf
  * @returns Resultant cfg converted to cnf
@@ -239,13 +251,21 @@ export function convertToCnf(inputCfg: IContextFreeGrammarInput) {
 	const duplicateCfg = JSON.parse(JSON.stringify(cfg)) as IContextFreeGrammar;
 	// Simplify the cfg first
 	simplifyCfg(duplicateCfg);
-	// Generate a new start variable
-	const newStartStateVariable = generateNewVariable(duplicateCfg.variables);
-	// The new start variable should contain all the substitutions of the previous start variable
-	duplicateCfg.productionRules[newStartStateVariable] =
-		duplicateCfg.productionRules[duplicateCfg.startVariable];
-	// Update the startVariable to point to the newly created one
-	duplicateCfg.startVariable = newStartStateVariable;
+	// Check if the start variable references itself
+	const doesStartVariableReferencesItself = checkForSelfReference(
+		duplicateCfg.productionRules[duplicateCfg.startVariable],
+		duplicateCfg.startVariable
+	);
+	// Only create a new start variable if the current start variable produces itself
+	if (doesStartVariableReferencesItself) {
+		// Generate a new start variable
+		const newStartStateVariable = generateNewVariable(duplicateCfg.variables);
+		// The new start variable should contain all the substitutions of the previous start variable
+		duplicateCfg.productionRules[newStartStateVariable] =
+			duplicateCfg.productionRules[duplicateCfg.startVariable];
+		// Update the startVariable to point to the newly created one
+		duplicateCfg.startVariable = newStartStateVariable;
+	}
 	// Some variables might have been removed after simplification
 	duplicateCfg.variables = Object.keys(duplicateCfg.productionRules);
 
