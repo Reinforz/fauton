@@ -8,16 +8,16 @@ export function generateCaseMessage(
 ) {
 	return {
 		withColors: `${[
-			`Result: ${isWrong ? colors.red.bold(`WRONG`) : colors.green.bold(`CORRECT`)}`,
-			`String: ${colors.yellow.bold(randomInputString)}`,
-			`Logic: ${colors.blue.bold(logicTestResult.toString())}`,
-			`FA: ${colors.blue.bold(dfaTestResult.toString())}`,
+			`V: ${isWrong ? colors.red.bold(`WRONG`) : colors.green.bold(`CORRECT`)}`,
+			`I: ${colors.yellow.bold(randomInputString)}`,
+			`L: ${colors.blue.bold(logicTestResult.toString())}`,
+			`A: ${colors.blue.bold(dfaTestResult.toString())}`,
 		].join('\n')}\n`,
 		withoutColors: `${[
-			`Result: ${isWrong ? `WRONG` : `CORRECT`}`,
-			`String: ${randomInputString}`,
-			`Logic: ${logicTestResult}`,
-			`FA: ${dfaTestResult}`,
+			`V: ${isWrong ? `WRONG` : `CORRECT`}`,
+			`I: ${randomInputString}`,
+			`L: ${logicTestResult}`,
+			`A: ${dfaTestResult}`,
 		].join('\n')}\n`,
 	};
 }

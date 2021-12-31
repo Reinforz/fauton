@@ -1,4 +1,4 @@
-/* eslint-disable no-use-before-define */
+/* eslint-disable no-unused-vars */
 
 export interface AutomatonTestInfo {
 	falsePositives: number;
@@ -22,8 +22,8 @@ export type InputStringOption =
 			type: 'generate';
 			random?: {
 				total: number;
-				minLength: number;
-				maxLength: number;
+				minTokenLength: number;
+				maxTokenLength: number;
 			};
 			combo?: undefined | null;
 			outputFiles?: Partial<IOutputFiles>;
@@ -31,7 +31,7 @@ export type InputStringOption =
 	| {
 			type: 'generate';
 			combo: {
-				maxLength: number;
+				maxTokenLength: number;
 				startLength?: number;
 			};
 			random?: undefined | null;
@@ -44,14 +44,15 @@ export type InputStringOption =
 	  }
 	| {
 			type: 'custom';
-			inputs: string[];
+			inputs: string[][];
 			outputFiles?: Partial<IOutputFiles>;
 	  };
 
-// eslint-disable-next-line
-export type IAutomatonTestLogicFn = (inputString: string, automatonTestResult: boolean) => boolean;
-// eslint-disable-next-line
-export type IAutomatonTestFn = (inputString: string) => boolean;
+export type IAutomatonTestLogicFn = (
+	inputTokens: string[],
+	automatonTestResult: boolean
+) => boolean;
+export type IAutomatonTestFn = (inputTokens: string[]) => boolean;
 
 export interface IAutomatonInfo {
 	test: IAutomatonTestFn;

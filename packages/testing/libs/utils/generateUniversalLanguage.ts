@@ -13,14 +13,14 @@ export function generateUniversalLanguage(
 	// eslint-disable-next-line
 	cb?: (inputTokens: string[]) => void
 ) {
-	const language: Array<Array<string>> = [];
+	const generatedStrings: Array<Array<string>> = [];
 
 	function generateAllKLength(generatedTokens: string[], tokensLength: number) {
 		if (tokensLength === 0) {
 			if (cb) {
 				cb(generatedTokens);
 			}
-			language.push(generatedTokens);
+			generatedStrings.push(generatedTokens);
 			return;
 		}
 		for (let i = 0; i < tokens.length; i += 1) {
@@ -32,5 +32,5 @@ export function generateUniversalLanguage(
 		generateAllKLength([], length);
 	}
 
-	return language;
+	return generatedStrings;
 }
