@@ -1,4 +1,5 @@
-import { IContextFreeGrammar } from './types';
+import { IContextFreeGrammarInput } from './types';
+import { populateCfg } from './utils/populateCfg';
 import { removeProductionRules } from './utils/removeProductionRules';
 
 /**
@@ -7,8 +8,9 @@ import { removeProductionRules } from './utils/removeProductionRules';
  * @returns New production rules and variables without empty rule variables
  */
 export function removeEmptyProduction(
-	cfg: Pick<IContextFreeGrammar, 'variables' | 'productionRules'>
+	inputCfg: Pick<IContextFreeGrammarInput, 'variables' | 'productionRules'>
 ) {
+	const cfg = populateCfg(inputCfg);
 	const { productionRules, variables } = cfg;
 	// Filtering all the variables which dont have any production rules
 	const emptyProductionVariables = variables.filter(

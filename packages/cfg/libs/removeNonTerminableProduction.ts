@@ -1,5 +1,6 @@
-import { IContextFreeGrammar } from './types';
+import { IContextFreeGrammarInput } from './types';
 import { isAllTerminal } from './utils/isAllTerminal';
+import { populateCfg } from './utils/populateCfg';
 import { removeProductionRules } from './utils/removeProductionRules';
 import { setDifference } from './utils/setOperations';
 
@@ -10,22 +11,26 @@ import { setDifference } from './utils/setOperations';
  * @param cfg terminals, variables and production rules of cfg
  * @returns An array of variables that are all terminable
  */
-export function removeNonTerminableProduction(cfg: Omit<IContextFreeGrammar, 'startVariable'>) {
+export function removeNonTerminableProduction(
+	inputCfg: Omit<IContextFreeGrammarInput, 'startVariable'>
+) {
+	const cfg = populateCfg(inputCfg);
 	const { terminals, variables, productionRules } = cfg;
 
 	// A set to keep track of variables which are terminable, ie we can reach a terminal from these variables
 	// Initialize it with variables that derives only terminals in any of its production rules
 	let terminableVariables: Set<string> = new Set(
 		variables.filter((variable) =>
-			productionRules[variable].some((productionRule) => isAllTerminal(terminals, productionRule))
+			productionRules[variable]?.some((productionRule) => isAllTerminal(terminals, productionRule))
 		)
 	);
+
 	const variablesSet = new Set(variables);
 	let done = false;
 
 	// Check if any of the rule is contains only terminable variables
 	function checkAnyRuleIsTerminable(nonTerminableVariable: string) {
-		return productionRules[nonTerminableVariable].some((productionRuleSubstitution) => {
+		return productionRules[nonTerminableVariable]?.some((productionRuleSubstitution) => {
 			// Extracting variables from substitutions
 			const variablesFromWord = productionRuleSubstitution
 				.split(' ')

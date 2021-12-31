@@ -1,6 +1,7 @@
 import { simplifyCfg } from './simplifyCfg';
-import { IContextFreeGrammar } from './types';
+import { IContextFreeGrammar, IContextFreeGrammarInput } from './types';
 import { generateNewVariable } from './utils/generateNewVariable';
+import { populateCfg } from './utils/populateCfg';
 import { setDifference } from './utils/setOperations';
 
 /**
@@ -140,6 +141,14 @@ export function processSubstitutionsOfLengthTwo(
 	// A record to keep track of which terminals map to which variables
 	const generatedVariablesTerminalRecord: Record<string, string> = {};
 
+	// Loop through all variables to see which variables produces a single terminal
+	variables.forEach((variable) => {
+		const terminal = productionRules[variable][0];
+		if (terminalsSet.has(terminal)) {
+			generatedVariablesTerminalRecord[terminal] = variable;
+		}
+	});
+
 	function processSubstitutionOfLengthTwo() {
 		// Find the first substitution of length two
 		const lengthTwoRule = findSubstitutionOfLengthTwo(productionRuleEntries, variables);
@@ -224,7 +233,8 @@ export function processSubstitutionsOfLengthTwo(
  * @param cfg Input cfg to convert to cnf
  * @returns Resultant cfg converted to cnf
  */
-export function convertToCnf(cfg: IContextFreeGrammar) {
+export function convertToCnf(inputCfg: IContextFreeGrammarInput) {
+	const cfg = populateCfg(inputCfg);
 	// Make a deep clone of the CFG so as not to modify the input cfg
 	const duplicateCfg = JSON.parse(JSON.stringify(cfg)) as IContextFreeGrammar;
 	// Simplify the cfg first
@@ -236,8 +246,12 @@ export function convertToCnf(cfg: IContextFreeGrammar) {
 		duplicateCfg.productionRules[duplicateCfg.startVariable];
 	// Update the startVariable to point to the newly created one
 	duplicateCfg.startVariable = newStartStateVariable;
+	// Some variables might have been removed after simplification
+	duplicateCfg.variables = Object.keys(duplicateCfg.productionRules);
+
 	// Process substitutions of tokens.length > 2 first
 	processLongSubstitutions(duplicateCfg);
+
 	// Process substitutions of tokens.length === 2 next
 	processSubstitutionsOfLengthTwo(duplicateCfg);
 	return duplicateCfg;

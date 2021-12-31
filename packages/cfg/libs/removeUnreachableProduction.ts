@@ -1,5 +1,6 @@
 import { LinkedList } from '@datastructures-js/linked-list';
-import { IContextFreeGrammar } from './types';
+import { IContextFreeGrammarInput } from './types';
+import { populateCfg } from './utils/populateCfg';
 import { setDifference } from './utils/setOperations';
 
 /**
@@ -8,8 +9,9 @@ import { setDifference } from './utils/setOperations';
  * @returns A new production rule record and variables with unreachable variable and rules removed
  */
 export function removeUnreachableProduction(
-	cfg: Pick<IContextFreeGrammar, 'productionRules' | 'startVariable' | 'variables'>
+	inputCfg: Pick<IContextFreeGrammarInput, 'productionRules' | 'startVariable' | 'variables'>
 ) {
+	const cfg = populateCfg(inputCfg);
 	const { productionRules, startVariable, variables } = cfg;
 
 	const variablesSet = new Set(variables);
