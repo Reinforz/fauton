@@ -1,6 +1,7 @@
 import { LinkedList } from '@datastructures-js/linked-list';
 import { simplifyCfg } from './simplifyCfg';
-import { ICfgLanguageGenerationOption, IContextFreeGrammar } from './types';
+import { ICfgLanguageGenerationOption, IContextFreeGrammarInput } from './types';
+import { populateCfg } from './utils/populateCfg';
 import { validateCfg } from './validateCfg';
 
 interface IQueueItem {
@@ -13,16 +14,18 @@ interface IQueueItem {
 
 /**
  * Generates all the strings of a given cfg within certain length along with the path taken to generate them
- * @param cfgOptions Variables and transition Record for the cfg
+ * @param cfg Variables and transition Record for the cfg
  * @param maxTokenLength Maximum length of the generated string
  * @param skipSimplification Should the cfg simplification process be skipped, useful if you already have a simplified cfg, and dont want to spend additional computational power behind it, also sometimes you dont want to simplify cfg as it updates the production rules
  * @returns A record of generated string and the path taken to generate them
  */
 export function generateCfgLanguage(
-	cfgOptions: IContextFreeGrammar,
+	inputCfg: IContextFreeGrammarInput,
 	options: ICfgLanguageGenerationOption
 ) {
-	const { productionRules, startVariable } = cfgOptions;
+	const cfg = populateCfg(inputCfg);
+
+	const { productionRules, startVariable } = cfg;
 	const {
 		/* generateTerminals = false,  */ minTokenLength,
 		maxTokenLength,
@@ -36,14 +39,14 @@ export function generateCfgLanguage(
 	// Generate the variables first and attach to cfg
 	// else if we are dynamically generating variables, most likely the input variables would be [],
 	// Which will trigger a validation error
-	const variables = generateVariables ? Object.keys(productionRules) : cfgOptions.variables;
+	const variables = generateVariables ? Object.keys(productionRules) : cfg.variables;
 	// eslint-disable-next-line
-	cfgOptions.variables = variables;
+	cfg.variables = variables;
 
 	if (!skipValidation) {
-		validateCfg(cfgOptions);
+		validateCfg(cfg);
 	}
-	const simplifiedVariables = skipSimplification ? variables : simplifyCfg(cfgOptions);
+	const simplifiedVariables = skipSimplification ? variables : simplifyCfg(cfg);
 
 	const linkedList = new LinkedList<IQueueItem>();
 	// A set to keep track of all the words that have been traversed

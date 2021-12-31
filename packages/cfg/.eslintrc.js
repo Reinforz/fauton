@@ -31,5 +31,6 @@ module.exports = {
 		'one-var': 'off',
 		'no-console': 'off',
 		'no-bitwise': 'off',
+		'no-param-reassign': 'off',
 	},
 };

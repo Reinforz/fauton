@@ -1,7 +1,7 @@
 import { simplifyCfg } from './simplifyCfg';
-import { IContextFreeGrammar } from './types';
+import { IContextFreeGrammar, IContextFreeGrammarInput } from './types';
 import { generateNewVariable } from './utils/generateNewVariable';
-import { setDifference } from './utils/setOperations';
+import { populateCfg } from './utils/populateCfg';
 
 /**
  *
@@ -85,7 +85,7 @@ export function processLongSubstitutions(
 		const [productionRuleVariable, tokens, productionRuleSubstitutionsIndex] = longRule;
 		// Only keep the first substitution chunk and create a separate variable to store the rest
 		// Example tokens = ["a", "A", "c"] => ["a", "<new_variable>"] new_variable = ["A", "c"]
-		const restOfSubstitutionTokens = tokens.slice(1);
+		const restOfSubstitutionTokens = tokens.slice(0, tokens.length - 1);
 		const restOfSubstitution = restOfSubstitutionTokens.join(' ');
 		// Check if we have already generated a variable for this substitution
 		const generatedVariableSubstitution = generatedVariablesSubstitutionRecord[restOfSubstitution];
@@ -94,7 +94,7 @@ export function processLongSubstitutions(
 		// Remove the production rule substitution index as we will be adding a separate substitution with length 2
 		productionRules[productionRuleVariable].splice(productionRuleSubstitutionsIndex, 1);
 		// Create a new substitution with the first chunk and the new variable
-		productionRules[productionRuleVariable].push(`${tokens[0]} ${newVariable}`);
+		productionRules[productionRuleVariable].push(`${newVariable} ${tokens[tokens.length - 1]}`);
 		// If we haven't added the substitution to the record, add the substitution as the key and the generated variable as the value
 		if (!generatedVariableSubstitution) {
 			generatedVariablesSubstitutionRecord[restOfSubstitution] = newVariable;
@@ -123,7 +123,17 @@ export function findSubstitutionOfLengthTwo(
 	return findSubstitution(
 		productionRuleEntries,
 		// If there are two tokens and both of them are not variables
-		(tokens) => tokens.length === 2 && setDifference(new Set(tokens), variablesSet).size !== 0
+		(tokens) => {
+			if (tokens.length === 2) {
+				const [leftToken, rightToken] = tokens;
+				const isLeftTokenVariable = variablesSet.has(leftToken);
+				// Check if the right chunk is terminal
+				const isRightTokenVariable = variablesSet.has(rightToken);
+				return !isRightTokenVariable || !isLeftTokenVariable;
+			} else {
+				return false;
+			}
+		}
 	);
 }
 
@@ -136,12 +146,20 @@ export function processSubstitutionsOfLengthTwo(
 ) {
 	const { productionRules, terminals, variables } = cfg;
 	const terminalsSet: Set<string> = new Set(terminals);
-	const productionRuleEntries = Object.entries(productionRules);
 	// A record to keep track of which terminals map to which variables
 	const generatedVariablesTerminalRecord: Record<string, string> = {};
 
+	// Loop through all variables to see which variables produces a single terminal
+	variables.forEach((variable) => {
+		const terminal = productionRules[variable][0];
+		if (productionRules[variable].length === 1 && terminalsSet.has(terminal)) {
+			generatedVariablesTerminalRecord[terminal] = variable;
+		}
+	});
+
 	function processSubstitutionOfLengthTwo() {
 		// Find the first substitution of length two
+		const productionRuleEntries = Object.entries(productionRules);
 		const lengthTwoRule = findSubstitutionOfLengthTwo(productionRuleEntries, variables);
 		// If it doesn't exist return false, this will break the loop beneath
 		if (!lengthTwoRule) {
@@ -220,24 +238,50 @@ export function processSubstitutionsOfLengthTwo(
 }
 
 /**
+ * Check if a variable references itself in its production rule
+ * @param rules Production rules for the variable
+ * @param variable Producing variable
+ */
+export function checkForSelfReference(rules: string[], variable: string) {
+	return rules.some((rule) => {
+		const tokens = new Set(rule.split(' '));
+		return tokens.has(variable);
+	});
+}
+
+/**
  * Converts a cfg to cnf
  * @param cfg Input cfg to convert to cnf
  * @returns Resultant cfg converted to cnf
  */
-export function convertToCnf(cfg: IContextFreeGrammar) {
+export function convertToCnf(inputCfg: IContextFreeGrammarInput) {
+	const cfg = populateCfg(inputCfg);
 	// Make a deep clone of the CFG so as not to modify the input cfg
 	const duplicateCfg = JSON.parse(JSON.stringify(cfg)) as IContextFreeGrammar;
 	// Simplify the cfg first
 	simplifyCfg(duplicateCfg);
-	// Generate a new start variable
-	const newStartStateVariable = generateNewVariable(duplicateCfg.variables);
-	// The new start variable should contain all the substitutions of the previous start variable
-	duplicateCfg.productionRules[newStartStateVariable] =
-		duplicateCfg.productionRules[duplicateCfg.startVariable];
-	// Update the startVariable to point to the newly created one
-	duplicateCfg.startVariable = newStartStateVariable;
+
+	// Check if the start variable references itself
+	const doesStartVariableReferencesItself = checkForSelfReference(
+		duplicateCfg.productionRules[duplicateCfg.startVariable],
+		duplicateCfg.startVariable
+	);
+	// Only create a new start variable if the current start variable produces itself
+	if (doesStartVariableReferencesItself) {
+		// Generate a new start variable
+		const newStartStateVariable = generateNewVariable(duplicateCfg.variables);
+		// The new start variable should contain all the substitutions of the previous start variable
+		duplicateCfg.productionRules[newStartStateVariable] =
+			duplicateCfg.productionRules[duplicateCfg.startVariable];
+		// Update the startVariable to point to the newly created one
+		duplicateCfg.startVariable = newStartStateVariable;
+	}
+	// Some variables might have been removed after simplification
+	duplicateCfg.variables = Object.keys(duplicateCfg.productionRules);
+
 	// Process substitutions of tokens.length > 2 first
 	processLongSubstitutions(duplicateCfg);
+
 	// Process substitutions of tokens.length === 2 next
 	processSubstitutionsOfLengthTwo(duplicateCfg);
 	return duplicateCfg;

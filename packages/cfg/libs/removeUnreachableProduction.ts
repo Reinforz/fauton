@@ -1,5 +1,6 @@
 import { LinkedList } from '@datastructures-js/linked-list';
-import { IContextFreeGrammar } from './types';
+import { IContextFreeGrammarInput } from './types';
+import { populateCfg } from './utils/populateCfg';
 import { setDifference } from './utils/setOperations';
 
 /**
@@ -8,8 +9,9 @@ import { setDifference } from './utils/setOperations';
  * @returns A new production rule record and variables with unreachable variable and rules removed
  */
 export function removeUnreachableProduction(
-	cfg: Pick<IContextFreeGrammar, 'productionRules' | 'startVariable' | 'variables'>
+	inputCfg: Pick<IContextFreeGrammarInput, 'productionRules' | 'startVariable' | 'variables'>
 ) {
+	const cfg = populateCfg(inputCfg);
 	const { productionRules, startVariable, variables } = cfg;
 
 	const variablesSet = new Set(variables);
@@ -22,27 +24,21 @@ export function removeUnreachableProduction(
 	while (unvisitedVariables.count()) {
 		const unvisitedVariable = unvisitedVariables.removeFirst();
 		// For each of the unvisited variable, check which variables we can reach
-		productionRules[unvisitedVariable.getValue()].forEach((productionRuleSubstitution) => {
+		productionRules[unvisitedVariable.getValue()]?.forEach((productionRuleSubstitution) => {
 			const tokens = productionRuleSubstitution.split(' ');
-			for (
-				let productionRuleSubstitutionTokensIndex = 0;
-				productionRuleSubstitutionTokensIndex < tokens.length;
-				productionRuleSubstitutionTokensIndex += 1
-			) {
-				const productionRuleSubstitutionToken = tokens[productionRuleSubstitutionTokensIndex];
+			for (let tokenIndex = 0; tokenIndex < tokens.length; tokenIndex += 1) {
+				const token = tokens[tokenIndex];
 				// If the letter is a variable, and we haven't visited the variable yet
-				if (
-					variablesSet.has(productionRuleSubstitutionToken) &&
-					!visitedVariables.has(productionRuleSubstitutionToken)
-				) {
-					visitedVariables.add(productionRuleSubstitutionToken);
-					unvisitedVariables.insertLast(productionRuleSubstitutionToken);
+				if (variablesSet.has(token) && !visitedVariables.has(token)) {
+					visitedVariables.add(token);
+					unvisitedVariables.insertLast(token);
 				}
 			}
 		});
 	}
 	// The difference between the variables set and visited variables set will return the variables which couldn't be reached
 	const nonReachableVariables = Array.from(setDifference(variablesSet, visitedVariables));
+
 	// Delete the production rules for each of the unreachable variables
 	nonReachableVariables.forEach((nonReachableVariable) => {
 		delete productionRules[nonReachableVariable];

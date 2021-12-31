@@ -6,7 +6,7 @@ interface CykTableCellCombination<Type extends Set<string> | Array<string>> {
 	merged: Type;
 }
 
-type CykTable<Type extends Set<string> | Array<string>> = Array<
+type CykTableDetailed<Type extends Set<string> | Array<string>> = Array<
 	Array<{
 		combinations: CykTableCellCombination<Type>[];
 		value: Type;
@@ -27,13 +27,15 @@ export function cykParse(
 	const { productionRules, startVariable } = cfg;
 	const productionRulesEntries = Object.entries(productionRules);
 
-	const cykTable: CykTable<Array<string>> = [];
-	// Initialize the cykTable first, a left sided right angled triangle with height and base equal to the length of sentence tokens
+	const cykTableDetailed: CykTableDetailed<Array<string>> = [];
+	const cykTable: Array<Array<string>> = [];
+	// Initialize the cykTableDetailed first, a left sided right angled triangle with height and base equal to the length of sentence tokens
 	for (let i = 0; i < stringTokensLength; i += 1) {
-		const cytTableRows: typeof cykTable[0] = [];
+		const cykTableDetailedRows: typeof cykTableDetailed[0] = [];
+		const cykTableRows: typeof cykTable[0] = [];
 		for (let j = 0; j <= i; j += 1) {
 			// Each cell will contain a set
-			cytTableRows.push({
+			cykTableDetailedRows.push({
 				combinations: [
 					{
 						merged: [],
@@ -42,8 +44,10 @@ export function cykParse(
 				],
 				value: [],
 			});
+			cykTableRows.push('');
 		}
-		cykTable.push(cytTableRows);
+		cykTable.push(cykTableRows);
+		cykTableDetailed.push(cykTableDetailedRows);
 	}
 
 	// A record that maps which nodes (T, VV) is reachable by which variables
@@ -65,7 +69,7 @@ export function cykParse(
 
 	// filling the bottom row, with values from the record, since the bottom row will contain only direct terminals
 	sentenceTokens.forEach((sentenceToken, sentenceTokenIndex) => {
-		cykTable[stringTokensLength - 1][sentenceTokenIndex] = {
+		cykTableDetailed[stringTokensLength - 1][sentenceTokenIndex] = {
 			combinations: [
 				{
 					merged: nodeVariablesRecord[sentenceToken],
@@ -74,6 +78,8 @@ export function cykParse(
 			],
 			value: nodeVariablesRecord[sentenceToken],
 		};
+		cykTable[stringTokensLength - 1][sentenceTokenIndex] =
+			nodeVariablesRecord[sentenceToken].join(' ');
 	});
 
 	// Start from the row top of the bottom row, all the way to the first row
@@ -83,7 +89,7 @@ export function cykParse(
 		const totalCombinations = stringTokensLength - (cykTableRow + 1); // Adding 1 as row is 0 index based;
 		// Loop from left most column to the right most column, since its a left right angled triangle, the number of column will be the same as the number of rows
 		for (let cykTableCol = 0; cykTableCol <= cykTableRow; cykTableCol += 1) {
-			const combinations: typeof cykTable[0][0]['combinations'] = [];
+			const combinations: typeof cykTableDetailed[0][0]['combinations'] = [];
 			// Each cell will contain a set of variables that can be derived from all the cross products
 			const variablesContainingCrossProduct: Set<string> = new Set();
 			for (
@@ -92,10 +98,10 @@ export function cykParse(
 				combinationNumber += 1
 			) {
 				// The combinationNumber'th bottom cell from the current cell
-				const bottomRowCell = cykTable[cykTableRow + combinationNumber][cykTableCol],
+				const bottomRowCell = cykTableDetailed[cykTableRow + combinationNumber][cykTableCol],
 					// The combinationNumber'th right diagonal cell from the current cell
 					rightDiagonalCell =
-						cykTable[stringTokensLength - combinationNumber][
+						cykTableDetailed[stringTokensLength - combinationNumber][
 							stringTokensLength - cykTableRow + cykTableCol - combinationNumber
 						];
 				// Get the cross product of all the variables in those two cells
@@ -118,17 +124,21 @@ export function cykParse(
 				});
 			}
 			// Update the set for the corresponding cell
-			cykTable[cykTableRow][cykTableCol] = {
+			cykTableDetailed[cykTableRow][cykTableCol] = {
 				combinations,
 				value: Array.from(variablesContainingCrossProduct),
 			};
+			cykTable[cykTableRow][cykTableCol] = Array.from(variablesContainingCrossProduct).join(' ');
 		}
 	}
 
 	// If the first cell has the startVariable, the sentence is valid for the grammar
 	return {
-		verdict: cykTable[0][0].value.includes(startVariable),
-		cykTable: JSON.parse(JSON.stringify(cykTable)) as CykTable<Array<string>>,
+		verdict: cykTableDetailed[0][0].value.includes(startVariable),
+		cykTableDetailed: JSON.parse(JSON.stringify(cykTableDetailed)) as CykTableDetailed<
+			Array<string>
+		>,
+		cykTable,
 		nodeVariablesRecord: JSON.parse(JSON.stringify(nodeVariablesRecord)) as Record<
 			string,
 			Array<string>

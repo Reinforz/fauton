@@ -1,5 +1,6 @@
 import { LinkedList } from '@datastructures-js/linked-list';
-import { IContextFreeGrammar } from './types';
+import { IContextFreeGrammar, IContextFreeGrammarInput } from './types';
+import { populateCfg } from './utils/populateCfg';
 
 export function createProductionCombinations(
 	substitution: string,
@@ -63,7 +64,7 @@ export function findNullableVariables(
 
 	variables
 		.filter((variable) =>
-			productionRules[variable].some((productionRule) => productionRule.length === 0)
+			productionRules[variable]?.some((productionRule) => productionRule.length === 0)
 		)
 		.forEach((directNullableVariable) => {
 			linkedList.insertFirst(directNullableVariable);
@@ -75,7 +76,7 @@ export function findNullableVariables(
 		// Find all the variables that indirectly references nullable variables
 		variables.forEach((variable) => {
 			// No need to check variables that are already nullable for nullability
-			if (!nullableVariablesSet.has(variable)) {
+			if (!nullableVariablesSet.has(variable) && productionRules[variable]) {
 				// Loop through each production rules of the variable and check if any of the rules are nullable
 				for (let index = 0; index < productionRules[variable].length; index += 1) {
 					const productionRuleSubstitutions = productionRules[variable][index];
@@ -105,8 +106,9 @@ export function findNullableVariables(
  * @returns New transition record with null production removed
  */
 export function removeNullProduction(
-	cfg: Pick<IContextFreeGrammar, 'variables' | 'productionRules' | 'startVariable'>
+	inputCfg: Pick<IContextFreeGrammarInput, 'variables' | 'productionRules' | 'startVariable'>
 ) {
+	const cfg = populateCfg(inputCfg);
 	const { productionRules } = cfg;
 	const nullableVariables = findNullableVariables(cfg);
 

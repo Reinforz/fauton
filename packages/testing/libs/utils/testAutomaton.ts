@@ -12,7 +12,7 @@ export function testAutomaton(
 	},
 	automatonTestInfo: AutomatonTestInfo,
 	writeStreams: IWriteStreams,
-	inputStrings: string[],
+	language: string[][],
 	postAutomatonTestCb?: () => void
 ) {
 	// The log files are generated based on the label of the automaton
@@ -25,16 +25,17 @@ export function testAutomaton(
 		inputWriteStream,
 	} = writeStreams;
 
-	for (let i = 0; i < inputStrings.length; i += 1) {
-		const inputString = inputStrings[i].replace('\r', '').replace('\n', '');
-		if (inputString.length !== 0) {
-			const automatonTestResult = automatonTest.test(inputString);
-			const logicTestResult = automatonTest.testLogic(inputString, automatonTestResult);
+	for (let i = 0; i < language.length; i += 1) {
+		const inputTokens = language[i];
+		if (inputTokens.length !== 0) {
+			const automatonTestResult = automatonTest.test(inputTokens);
+			const logicTestResult = automatonTest.testLogic(inputTokens, automatonTestResult);
 			const isWrong = automatonTestResult !== logicTestResult;
+			const inputString = inputTokens.join(' ');
 
 			const testResultString = `${automatonTestResult.toString().toUpperCase()[0]} ${
 				logicTestResult.toString().toUpperCase()[0]
-			} ${inputString} \n`;
+			} ${inputString}\n`;
 			if (!automatonTestResult && rejectedWriteStream) {
 				rejectedWriteStream.write(`${inputString}\n`);
 			} else if (acceptedWriteStream) {

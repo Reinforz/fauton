@@ -5,6 +5,13 @@ export interface IContextFreeGrammar {
 	startVariable: string;
 }
 
+export interface IContextFreeGrammarInput {
+	variables?: string[] | null;
+	terminals?: string[] | null;
+	productionRules: Record<string, string[]>;
+	startVariable?: string;
+}
+
 // eslint-disable-next-line
 export type LanguageChecker = (inputString: string) => boolean;
 

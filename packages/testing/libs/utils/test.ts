@@ -40,6 +40,7 @@ export async function test(
 			accepted: options.outputFiles?.accepted ?? true,
 			rejected: options.outputFiles?.rejected ?? true,
 		});
+
 		if (options.type === 'file') {
 			const readStream = fs.createReadStream(options.filePath, { encoding: 'utf-8' });
 			const fileLines = await countFileLines(options.filePath);
@@ -47,30 +48,30 @@ export async function test(
 				preAutomatonTestCb(fileLines);
 			}
 			// eslint-disable-next-line
-			for await (const chunks of readStream) {
-				const inputStrings = chunks.split('\n') as string[];
+			for await (const chunk of readStream) {
+				const lines = chunk.split('\n') as string[];
 				testAutomaton(
 					automatonTest,
 					automatonTestInfo,
 					writeStreams.record,
-					inputStrings,
+					lines.map((line) => line.split(' ')),
 					postAutomatonTestCb
 				);
 			}
 		} else {
-			let generatedStrings: string[] = [];
+			let generatedStrings: string[][] = [];
 			if (options.type === 'generate') {
 				if (options.random) {
 					generatedStrings = generateRandomLanguage(
 						options.random.total,
 						automaton.alphabets,
-						options.random.minLength,
-						options.random.maxLength
+						options.random.minTokenLength,
+						options.random.maxTokenLength
 					);
 				} else {
 					generatedStrings = generateUniversalLanguage(
 						automaton.alphabets,
-						options.combo!.maxLength,
+						options.combo!.maxTokenLength,
 						options.combo!.startLength ?? 1
 					);
 				}
