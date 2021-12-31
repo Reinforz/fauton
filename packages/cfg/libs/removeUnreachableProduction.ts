@@ -24,7 +24,7 @@ export function removeUnreachableProduction(
 	while (unvisitedVariables.count()) {
 		const unvisitedVariable = unvisitedVariables.removeFirst();
 		// For each of the unvisited variable, check which variables we can reach
-		productionRules[unvisitedVariable.getValue()].forEach((productionRuleSubstitution) => {
+		productionRules[unvisitedVariable.getValue()]?.forEach((productionRuleSubstitution) => {
 			const tokens = productionRuleSubstitution.split(' ');
 			for (let tokenIndex = 0; tokenIndex < tokens.length; tokenIndex += 1) {
 				const token = tokens[tokenIndex];
