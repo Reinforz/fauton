@@ -56,46 +56,22 @@ describe('.processLongSubstitutions', () => {
 			.mockReturnValueOnce(0)
 			.mockReturnValueOnce(0)
 			.mockReturnValueOnce(0.05)
+			.mockReturnValueOnce(0)
+			.mockReturnValueOnce(0.1)
 			.mockReturnValueOnce(0);
 		processLongSubstitutions({
 			productionRules,
 			variables,
 		});
-		expect(productionRules).toStrictEqual({
-			A: ['a a', 'A', 'a', 'A A0'],
-			B: ['B B0', 'A B0'],
-			A0: ['a b'],
-			B0: ['b a'],
-		});
-		expect(variables).toStrictEqual(['A', 'B', 'A0', 'B0']);
-	});
-});
 
-describe('.processLongSubstitutions', () => {
-	it(`Should process long substitutions`, () => {
-		const productionRules: IContextFreeGrammar['productionRules'] = {
-				A: ['A a b', 'a a', 'A', 'a'],
-				B: ['B b a', 'A b a'],
-			},
-			variables: string[] = ['A', 'B'];
-		jest
-			.spyOn(Math, 'random')
-			.mockReturnValueOnce(0)
-			.mockReturnValueOnce(0)
-			.mockReturnValueOnce(0.05)
-			.mockReturnValueOnce(0);
-		processLongSubstitutions({
-			productionRules,
-			variables,
-		});
 		expect(productionRules).toStrictEqual({
-			A: ['a a', 'A', 'a', 'A A0'],
-			B: ['B B0', 'A B0'],
-			A0: ['a b'],
-			B0: ['b a'],
+			A: ['a a', 'A', 'a', 'A0 b'],
+			B: ['B0 a', 'C0 a'],
+			A0: ['A a'],
+			B0: ['B b'],
+			C0: ['A b'],
 		});
-		expect(variables).toStrictEqual(['A', 'B', 'A0', 'B0']);
-		jest.restoreAllMocks();
+		expect(variables).toStrictEqual(['A', 'B', 'A0', 'B0', 'C0']);
 	});
 });
 
@@ -171,11 +147,11 @@ describe('.convertToCnf', () => {
 			})
 		).toStrictEqual({
 			productionRules: {
-				A0: ['A S', 'S A', 'a', 'A B0', 'C0 B'],
-				S: ['A S', 'S A', 'a', 'A B0', 'C0 B'],
-				A: ['b', 'A S', 'S A', 'a', 'A B0', 'C0 B'],
+				S: ['A S', 'S A', 'a', 'B0 A', 'C0 B'],
+				A: ['b', 'A S', 'S A', 'a', 'B0 A', 'C0 B'],
 				B: ['b'],
-				B0: ['S A'],
+				A0: ['A S', 'S A', 'a', 'B0 A', 'C0 B'],
+				B0: ['A S'],
 				C0: ['a'],
 			},
 			startVariable: 'A0',

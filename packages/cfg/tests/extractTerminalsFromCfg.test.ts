@@ -9,8 +9,6 @@ it(`should extract terminals from cfg`, () => {
 				Noun: ['Sam', 'Alice'],
 				Adj: ['quickly'],
 			},
-			startVariable: 'S',
-			terminals: [],
 			variables: ['S', 'Verb', 'Noun', 'Adj'],
 		})
 	).toStrictEqual(['walk', 'talk', 'Sam', 'Alice', 'quickly']);

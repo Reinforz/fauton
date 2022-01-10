@@ -17,6 +17,13 @@ it(`Should parse the sentence and generate cyk parse information`, () => {
 	).toStrictEqual({
 		verdict: true,
 		cykTable: [
+			['S C A'],
+			['', 'A S C'],
+			['', 'B', 'B'],
+			['A S', 'B', 'S C', 'A S'],
+			['B', 'A C', 'A C', 'B', 'A C'],
+		],
+		cykTableDetailed: [
 			[
 				{
 					combinations: [

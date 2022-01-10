@@ -258,8 +258,6 @@ export function convertToCnf(inputCfg: IContextFreeGrammarInput) {
 	const cfg = populateCfg(inputCfg);
 	// Make a deep clone of the CFG so as not to modify the input cfg
 	const duplicateCfg = JSON.parse(JSON.stringify(cfg)) as IContextFreeGrammar;
-	// Simplify the cfg first
-	simplifyCfg(duplicateCfg);
 
 	// Check if the start variable references itself
 	const doesStartVariableReferencesItself = checkForSelfReference(
@@ -271,11 +269,15 @@ export function convertToCnf(inputCfg: IContextFreeGrammarInput) {
 		// Generate a new start variable
 		const newStartStateVariable = generateNewVariable(duplicateCfg.variables);
 		// The new start variable should contain all the substitutions of the previous start variable
-		duplicateCfg.productionRules[newStartStateVariable] =
-			duplicateCfg.productionRules[duplicateCfg.startVariable];
+		duplicateCfg.productionRules[newStartStateVariable] = [duplicateCfg.startVariable];
 		// Update the startVariable to point to the newly created one
 		duplicateCfg.startVariable = newStartStateVariable;
+		duplicateCfg.variables.push(newStartStateVariable);
 	}
+
+	// Simplify the cfg first
+	simplifyCfg(duplicateCfg);
+
 	// Some variables might have been removed after simplification
 	duplicateCfg.variables = Object.keys(duplicateCfg.productionRules);
 
