@@ -31,8 +31,8 @@ it(`Should work`, () => {
 	testAutomaton(
 		{
 			test: () => true,
-			testLogic: (inputString) => {
-				switch (inputString) {
+			testLogic: ([inputToken]) => {
+				switch (inputToken) {
 					// False positive
 					case '101': {
 						return true;
@@ -57,14 +57,14 @@ it(`Should work`, () => {
 		},
 		finiteAutomatonTestInfo,
 		writeStreams,
-		['101', '11', '111', '01', '']
+		[['101'], ['11'], ['111'], ['01'], ['']]
 	);
 
 	expect(finiteAutomatonTestInfo).toStrictEqual({
 		falseNegatives: 0,
 		falsePositives: 2,
 		trueNegatives: 0,
-		truePositives: 2,
+		truePositives: 3,
 	});
 
 	// expect(JSON.stringify(inputWriteStreamMock.mock.calls)).toStrictEqual(
