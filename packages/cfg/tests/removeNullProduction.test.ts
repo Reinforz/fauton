@@ -96,7 +96,7 @@ it(`Should find all nullable variables`, () => {
 		arrayEquivalency(
 			findNullableVariables({
 				productionRules,
-				variables: ['Sub', 'Adj', 'Verb', 'Conj', 'Det'],
+				variables: ['Sub', 'Adj', 'Verb', 'Conj', 'Det', 'Noun'],
 			}),
 			['Adj', 'Verb', 'Det', 'Sub']
 		)

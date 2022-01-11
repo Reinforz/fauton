@@ -16,12 +16,8 @@ export function convertStringToGrammar(grammarString: string): IContextFreeGramm
 		variables: [],
 	};
 
-	productionRules.forEach((productionRule, productionRuleIndex) => {
+	productionRules.forEach((productionRule) => {
 		const [variable, rules] = productionRule.split(' -> ');
-
-		if (!variable || !rules) {
-			throw new Error(`Invalid formatting for rule ${productionRuleIndex + 1}`);
-		}
 		// Only create the production rule if it doesn't exist, otherwise we might replace the existing one
 		if (!cfg.productionRules[variable]) {
 			cfg.productionRules[variable] = [];

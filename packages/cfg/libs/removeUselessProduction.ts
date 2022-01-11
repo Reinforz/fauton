@@ -10,12 +10,9 @@ import { populateCfg } from './utils/populateCfg';
  */
 export function removeUselessProduction(inputCfg: IContextFreeGrammarInput) {
 	const cfg = populateCfg(inputCfg);
-	const updatedVariables = removeNonTerminableProduction(cfg);
-	if (!updatedVariables.includes(inputCfg.startVariable!)) {
-		throw new Error(`This grammar can't be convert to cnf`);
-	}
+	const terminableVariables = removeNonTerminableProduction(cfg);
 	return removeUnreachableProduction({
 		...cfg,
-		variables: updatedVariables,
+		variables: terminableVariables,
 	});
 }

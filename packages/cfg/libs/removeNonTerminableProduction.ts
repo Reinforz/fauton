@@ -11,9 +11,7 @@ import { setDifference } from './utils/setOperations';
  * @param cfg terminals, variables and production rules of cfg
  * @returns An array of variables that are all terminable
  */
-export function removeNonTerminableProduction(
-	inputCfg: Omit<IContextFreeGrammarInput, 'startVariable'>
-) {
+export function removeNonTerminableProduction(inputCfg: IContextFreeGrammarInput) {
 	const cfg = populateCfg(inputCfg);
 	const { terminals, variables, productionRules } = cfg;
 
@@ -21,6 +19,7 @@ export function removeNonTerminableProduction(
 	// Initialize it with variables that derives only terminals in any of its production rules
 	let terminableVariables: Set<string> = new Set(
 		variables.filter((variable) =>
+			// Guarding against variables that have no production rules
 			productionRules[variable]?.some((productionRule) => isAllTerminal(terminals, productionRule))
 		)
 	);
@@ -30,6 +29,7 @@ export function removeNonTerminableProduction(
 
 	// Check if any of the rule is contains only terminable variables
 	function checkAnyRuleIsTerminable(nonTerminableVariable: string) {
+		// Guarding against variables that have no production rules
 		return productionRules[nonTerminableVariable]?.some((productionRuleSubstitution) => {
 			// Extracting variables from substitutions
 			const variablesFromWord = productionRuleSubstitution
@@ -59,9 +59,15 @@ export function removeNonTerminableProduction(
 		terminableVariables = tempTerminableVariables;
 	}
 
-	return removeProductionRules({
-		productionRules,
-		variables,
-		removedVariables: Array.from(setDifference(variablesSet, terminableVariables)),
-	});
+	terminableVariables = new Set(
+		removeProductionRules({
+			productionRules,
+			variables,
+			removedVariables: Array.from(setDifference(variablesSet, terminableVariables)),
+		})
+	);
+	if (!terminableVariables.has(inputCfg.startVariable!)) {
+		throw new Error(`This grammar can't be convert to cnf`);
+	}
+	return Array.from(terminableVariables);
 }

@@ -9,7 +9,7 @@ export function extractTerminalsFromCfg(
 	inputCfg: Omit<IContextFreeGrammarInput, 'terminals' | 'startVariable'>
 ) {
 	if (!inputCfg.variables) {
-		inputCfg.variables = Object.keys(inputCfg);
+		inputCfg.variables = Object.keys(inputCfg.productionRules);
 	}
 	const terminals: string[] = [];
 	// Creating a set of variables initially to improve search performance
