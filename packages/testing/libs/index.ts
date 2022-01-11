@@ -46,7 +46,7 @@ export class AutomataTest {
 		},
 		automatonTestInfo: AutomatonTestInfo,
 		writeStreams: IWriteStreams,
-		inputStrings: string[]
+		inputStrings: string[][]
 	) {
 		AutomataTestUtils.testAutomaton(
 			automaton,
