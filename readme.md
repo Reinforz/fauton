@@ -29,6 +29,7 @@
 - **`@fauton/fa`** [Github](https://github.com/Devorein/fauton/tree/main/packages/fa) [NPM](https://www.npmjs.com/package/@fauton/fa): A package to work with finite automata
 - **`@fauton/regex`** [Github](https://github.com/Devorein/fauton/tree/main/packages/regex) : A package to work with regex validation and parsing
 - **`@fauton/testing`** [Github](https://github.com/Devorein/fauton/tree/main/packages/testing) : A package to test your automaton (regex/dfa/nfa/e-nfa/cfg)
+- **`@fauton/language`** [Github](https://github.com/Devorein/fauton/tree/main/packages/language) : A package to generate language from a given set of tokens
 
 ## Algorithm Sources
 
