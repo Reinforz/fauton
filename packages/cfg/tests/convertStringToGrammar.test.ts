@@ -2,11 +2,10 @@ import { convertStringToGrammar } from '../libs/convertStringToGrammar';
 
 describe('convertStringToGrammar', () => {
 	it(`convertStringToGrammar`, () => {
-		expect(
-			convertStringToGrammar(
-				`S -> Noun Article Verb | Noun Adj Verb\nNoun -> Sam | Bob | Alice\nArticle -> A | The | An\nAdj -> quickly | swiftly\nVerb -> ran | ate\nVerb -> walked`
-			)
-		).toStrictEqual({
+		const generatedGrammar = convertStringToGrammar(
+			`S -> Noun Article Verb | Noun Adj Verb\nNoun -> Sam | Bob | Alice\nArticle -> A | The | An\nAdj -> quickly | swiftly\nVerb -> ran | ate\nVerb -> walked`
+		);
+		expect(generatedGrammar).toStrictEqual({
 			productionRules: {
 				S: ['Noun Article Verb', 'Noun Adj Verb'],
 				Noun: ['Sam', 'Bob', 'Alice'],

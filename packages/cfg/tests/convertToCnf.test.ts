@@ -120,8 +120,8 @@ describe('.processSubstitutionsOfLengthTwo', () => {
 	});
 });
 
-describe('.convertToCnf', () => {
-	it(`Should convert cfg to cnf`, () => {
+describe('convertToCnf', () => {
+	beforeEach(() => {
 		jest
 			.spyOn(Math, 'random')
 			// A
@@ -133,19 +133,20 @@ describe('.convertToCnf', () => {
 			// C
 			.mockReturnValueOnce(0.1)
 			.mockReturnValueOnce(0);
+	});
 
-		expect(
-			convertToCnf({
-				productionRules: {
-					S: ['A S A', 'a B'],
-					A: ['B', 'S'],
-					B: ['b', ''],
-				},
-				startVariable: 'S',
-				terminals: ['a', 'b'],
-				variables: ['S', 'A', 'B'],
-			})
-		).toStrictEqual({
+	it(`convertToCnf`, () => {
+		const convertedCnfGrammar = convertToCnf({
+			productionRules: {
+				S: ['A S A', 'a B'],
+				A: ['B', 'S'],
+				B: ['b', ''],
+			},
+			startVariable: 'S',
+			terminals: ['a', 'b'],
+			variables: ['S', 'A', 'B'],
+		});
+		expect(convertedCnfGrammar).toStrictEqual({
 			productionRules: {
 				S: ['A S', 'S A', 'a', 'B0 A', 'C0 B'],
 				A: ['b', 'A S', 'S A', 'a', 'B0 A', 'C0 B'],
@@ -158,6 +159,9 @@ describe('.convertToCnf', () => {
 			terminals: ['a', 'b'],
 			variables: ['S', 'A', 'B', 'A0', 'B0', 'C0'],
 		});
+	});
+
+	afterEach(() => {
 		jest.restoreAllMocks();
 	});
 });

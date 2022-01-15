@@ -141,10 +141,10 @@ export function generateCfgLanguage(
 		}
 	}
 
-	// Returning the production rule as it might be different if we have removed null production rules
 	return {
 		tree: cfgLanguageRecord,
 		language: Array.from(cfgLanguage),
+		// Returning the production rule as it might be different if we have removed null production rules
 		productionRules,
 	};
 }

@@ -5,8 +5,8 @@ import {
 } from '../libs/removeNullProduction';
 import { arrayEquivalency } from './setEquivalency';
 
-describe('Should remove null production from transition record', () => {
-	it(`Sample 1`, () => {
+describe('removeNullProduction', () => {
+	it(`removeNullProduction`, () => {
 		const productionRules = {
 			Sub: ['Adj Verb Adj Conj'],
 			Adj: ['a Adj', ''],
@@ -19,8 +19,8 @@ describe('Should remove null production from transition record', () => {
 			startVariable: 'Sub',
 		});
 
-		expect(
-			arrayEquivalency(productionRules.Sub, [
+		expect(productionRules).toStrictEqual({
+			Sub: [
 				'Adj Adj Conj',
 				'Adj Verb Adj Conj',
 				'Adj Verb Conj',
@@ -28,11 +28,11 @@ describe('Should remove null production from transition record', () => {
 				'Verb Adj Conj',
 				'Verb Conj',
 				'Conj',
-			])
-		).toBe(true);
-		expect(arrayEquivalency(productionRules.Adj, ['a Adj', 'a'])).toBe(true);
-		expect(arrayEquivalency(productionRules.Verb, ['b Verb', 'b'])).toBe(true);
-		expect(arrayEquivalency(productionRules.Conj, ['c'])).toBe(true);
+			],
+			Adj: ['a Adj', 'a'],
+			Verb: ['b Verb', 'b'],
+			Conj: ['c'],
+		});
 	});
 
 	it(`Sample 2`, () => {

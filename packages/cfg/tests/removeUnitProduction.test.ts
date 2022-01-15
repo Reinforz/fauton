@@ -23,8 +23,8 @@ describe('.findFirstUnitProductionRule', () => {
 	});
 });
 
-describe('.removeUnitProduction', () => {
-	it(`Should remove unit production rule`, () => {
+describe('removeUnitProduction', () => {
+	it(`removeUnitProduction`, () => {
 		const productionRules = {
 			Sub: ['0 Adj', '1 Verb', 'Conj'],
 			Adj: ['0 Sub', '0 0'],
@@ -33,6 +33,7 @@ describe('.removeUnitProduction', () => {
 		};
 
 		removeUnitProduction({ productionRules, variables: ['Sub', 'Adj', 'Verb', 'Conj'] });
+
 		expect(productionRules).toStrictEqual({
 			Sub: ['0 Adj', '1 Verb', '0 1'],
 			Adj: ['0 Sub', '0 0'],
