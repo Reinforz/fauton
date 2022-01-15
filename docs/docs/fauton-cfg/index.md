@@ -1,8 +1,8 @@
 ---
-id: "index"
-title: "@fauton/cfg"
-slug: "/fauton-cfg/"
-sidebar_label: "Readme"
+id: 'index'
+title: '@fauton/cfg'
+slug: '/fauton-cfg/'
+sidebar_label: 'Readme'
 sidebar_position: 0
 custom_edit_url: null
 ---
@@ -17,8 +17,8 @@ custom_edit_url: null
   <img src="https://img.shields.io/librariesio/release/npm/@fauton/cfg?color=%234B0082"/>
 </p>
 
-<p align="center"><a href="https://github.com/Devorein/fauton/tree/main/packages/cfg">Github</a> |
-  <a href="https://docs.fauton.xyz/cfg/">Docs</a> |
+<p align="center"><a href="https://github.com/Devorein/fauton/tree/main/packages/cfg">Github</a>&nbsp;|&nbsp;
+  <a href="https://docs.fauton.xyz/cfg/">Docs</a>&nbsp;|&nbsp;
   <a href="https://www.npmjs.com/package/@fauton/cfg">NPM</a>
 </p>
 

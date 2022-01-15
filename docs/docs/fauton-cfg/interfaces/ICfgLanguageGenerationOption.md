@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[types.ts:18](https://github.com/Devorein/fauton/blob/44de3b6/packages/cfg/libs/types.ts#L18)
+[types.ts:25](https://github.com/Devorein/fauton/blob/33b8a4e/packages/cfg/libs/types.ts#L25)
 
 ___
 
@@ -24,7 +24,7 @@ ___
 
 #### Defined in
 
-[types.ts:16](https://github.com/Devorein/fauton/blob/44de3b6/packages/cfg/libs/types.ts#L16)
+[types.ts:23](https://github.com/Devorein/fauton/blob/33b8a4e/packages/cfg/libs/types.ts#L23)
 
 ___
 
@@ -34,7 +34,7 @@ ___
 
 #### Defined in
 
-[types.ts:17](https://github.com/Devorein/fauton/blob/44de3b6/packages/cfg/libs/types.ts#L17)
+[types.ts:24](https://github.com/Devorein/fauton/blob/33b8a4e/packages/cfg/libs/types.ts#L24)
 
 ___
 
@@ -44,7 +44,7 @@ ___
 
 #### Defined in
 
-[types.ts:13](https://github.com/Devorein/fauton/blob/44de3b6/packages/cfg/libs/types.ts#L13)
+[types.ts:20](https://github.com/Devorein/fauton/blob/33b8a4e/packages/cfg/libs/types.ts#L20)
 
 ___
 
@@ -54,7 +54,7 @@ ___
 
 #### Defined in
 
-[types.ts:12](https://github.com/Devorein/fauton/blob/44de3b6/packages/cfg/libs/types.ts#L12)
+[types.ts:19](https://github.com/Devorein/fauton/blob/33b8a4e/packages/cfg/libs/types.ts#L19)
 
 ___
 
@@ -64,7 +64,7 @@ ___
 
 #### Defined in
 
-[types.ts:20](https://github.com/Devorein/fauton/blob/44de3b6/packages/cfg/libs/types.ts#L20)
+[types.ts:27](https://github.com/Devorein/fauton/blob/33b8a4e/packages/cfg/libs/types.ts#L27)
 
 ___
 
@@ -74,7 +74,7 @@ ___
 
 #### Defined in
 
-[types.ts:14](https://github.com/Devorein/fauton/blob/44de3b6/packages/cfg/libs/types.ts#L14)
+[types.ts:21](https://github.com/Devorein/fauton/blob/33b8a4e/packages/cfg/libs/types.ts#L21)
 
 ___
 
@@ -84,7 +84,7 @@ ___
 
 #### Defined in
 
-[types.ts:15](https://github.com/Devorein/fauton/blob/44de3b6/packages/cfg/libs/types.ts#L15)
+[types.ts:22](https://github.com/Devorein/fauton/blob/33b8a4e/packages/cfg/libs/types.ts#L22)
 
 ___
 
@@ -94,4 +94,4 @@ ___
 
 #### Defined in
 
-[types.ts:19](https://github.com/Devorein/fauton/blob/44de3b6/packages/cfg/libs/types.ts#L19)
+[types.ts:26](https://github.com/Devorein/fauton/blob/33b8a4e/packages/cfg/libs/types.ts#L26)

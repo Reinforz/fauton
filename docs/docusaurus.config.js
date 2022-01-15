@@ -23,7 +23,7 @@ const config = {
 				docs: {
 					sidebarPath: require.resolve('./sidebars.js'),
 					// Please change this to your repo.
-					editUrl: 'https://github.com/devorein/docusaurus/tree/main/docs/',
+					editUrl: 'https://github.com/devorein/fauton/tree/main/docs/',
 				},
 				theme: {
 					customCss: require.resolve('./src/css/custom.css'),
@@ -63,11 +63,10 @@ const config = {
 						type: 'doc',
 						docId: 'intro',
 						position: 'left',
-						label: 'Tutorial',
+						label: 'Docs',
 					},
-					{ to: '/blog', label: 'Blog', position: 'left' },
 					{
-						href: 'https://github.com/devorein/docusaurus',
+						href: 'https://github.com/devorein/fauton',
 						label: 'GitHub',
 						position: 'right',
 					},
