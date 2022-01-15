@@ -1,7 +1,7 @@
 import { convertGrammarToString } from '../libs/convertGrammarToString';
 
-describe('.convertGrammarToString', () => {
-	it(`Should convert grammar to string`, () => {
+describe('convertGrammarToString', () => {
+	it(`convertGrammarToString`, () => {
 		expect(
 			convertGrammarToString({
 				S: ['Adj Noun Verb', 'Adj Verb'],

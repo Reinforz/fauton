@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[types.ts:4](https://github.com/Devorein/fauton/blob/33b8a4e/packages/cfg/libs/types.ts#L4)
+[types.ts:4](https://github.com/Devorein/fauton/blob/48fb586/packages/cfg/libs/types.ts#L4)
 
 ___
 
@@ -24,7 +24,7 @@ ___
 
 #### Defined in
 
-[types.ts:5](https://github.com/Devorein/fauton/blob/33b8a4e/packages/cfg/libs/types.ts#L5)
+[types.ts:5](https://github.com/Devorein/fauton/blob/48fb586/packages/cfg/libs/types.ts#L5)
 
 ___
 
@@ -34,7 +34,7 @@ ___
 
 #### Defined in
 
-[types.ts:3](https://github.com/Devorein/fauton/blob/33b8a4e/packages/cfg/libs/types.ts#L3)
+[types.ts:3](https://github.com/Devorein/fauton/blob/48fb586/packages/cfg/libs/types.ts#L3)
 
 ___
 
@@ -44,4 +44,4 @@ ___
 
 #### Defined in
 
-[types.ts:2](https://github.com/Devorein/fauton/blob/33b8a4e/packages/cfg/libs/types.ts#L2)
+[types.ts:2](https://github.com/Devorein/fauton/blob/48fb586/packages/cfg/libs/types.ts#L2)
