@@ -105,10 +105,16 @@ const ToggleComponent = memo(
 					className={styles.toggleScreenReader}
 					aria-label="Switch between dark and light mode"
 					onChange={(e) => {
-						document.querySelector('.main-wrapper').classList.toggle('dark');
 						onChange(e);
 					}}
-					onClick={() => setChecked(!checked)}
+					onClick={() => {
+						if (!checked) {
+							document.querySelector('.main-wrapper').classList.add('dark');
+						} else {
+							document.querySelector('.main-wrapper').classList.remove('dark');
+						}
+						setChecked(!checked);
+					}}
 					onFocus={() => setFocused(true)}
 					onBlur={() => setFocused(false)}
 					onKeyDown={(e) => {

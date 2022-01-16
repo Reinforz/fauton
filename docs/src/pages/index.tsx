@@ -45,9 +45,9 @@ function Home() {
               Get Started
             </Link>
           </div>
-          <a className="github-star flex justify-center mt-3" href="https://github.com/Devorein/fauton">
-            <img height="25" src="https://img.shields.io/github/stars/devorein/fauton?style=social" />
-          </a>
+          <img style={{
+            margin: '10px 0'
+          }} height="25" src="https://img.shields.io/github/stars/devorein/fauton?style=social" />
         </div>
       </header>
       <main>
