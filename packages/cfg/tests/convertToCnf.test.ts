@@ -135,7 +135,7 @@ describe('convertToCnf', () => {
 			.mockReturnValueOnce(0);
 	});
 
-	it(`convertToCnf`, () => {
+	it(`Convert to CNF`, () => {
 		const convertedCnfGrammar = convertToCnf({
 			productionRules: {
 				S: ['A S A', 'a B'],

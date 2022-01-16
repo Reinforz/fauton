@@ -24,7 +24,7 @@ describe('.findFirstUnitProductionRule', () => {
 });
 
 describe('removeUnitProduction', () => {
-	it(`removeUnitProduction`, () => {
+	it(`Remove unit production`, () => {
 		const productionRules = {
 			Sub: ['0 Adj', '1 Verb', 'Conj'],
 			Adj: ['0 Sub', '0 0'],

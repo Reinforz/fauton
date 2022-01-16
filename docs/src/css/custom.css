@@ -399,3 +399,10 @@ time{
 .sidebar-button {
   background-color: #f2f2f2;
 }
+
+.code-container {
+  gap: 10px;
+}
+
+.code-block {
+}

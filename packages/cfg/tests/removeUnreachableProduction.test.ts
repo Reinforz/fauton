@@ -1,7 +1,7 @@
 import { removeUnreachableProduction } from '../libs/removeUnreachableProduction';
 
 describe('removeUnreachableProduction', () => {
-	it(`removeUnreachableProduction`, () => {
+	it(`Remove unreachable production`, () => {
 		const cfg = {
 			productionRules: {
 				Sub: ['Noun', 'Adj Verb'],

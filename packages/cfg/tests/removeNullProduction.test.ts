@@ -6,7 +6,7 @@ import {
 import { arrayEquivalency } from './setEquivalency';
 
 describe('removeNullProduction', () => {
-	it(`removeNullProduction`, () => {
+	it(`Known variables present in production rules`, () => {
 		const productionRules = {
 			Sub: ['Adj Verb Adj Conj'],
 			Adj: ['a Adj', ''],
@@ -35,7 +35,7 @@ describe('removeNullProduction', () => {
 		});
 	});
 
-	it(`Sample 2`, () => {
+	it(`Unknown variable in production rules`, () => {
 		const productionRules = {
 			Sub: ['Adj', 'Verb', 'Conj'],
 			Adj: ['an Adj for', '', 'Verb'],
@@ -45,7 +45,8 @@ describe('removeNullProduction', () => {
 		removeNullProduction({
 			startVariable: 'Sub',
 			productionRules,
-			variables: ['Sub', 'Adj', 'Verb', 'Conj'],
+			// Note that Unknown is not present in productionRules
+			variables: ['Sub', 'Adj', 'Verb', 'Conj', 'Unknown'],
 		});
 
 		expect(productionRules).toStrictEqual({
@@ -53,25 +54,6 @@ describe('removeNullProduction', () => {
 			Adj: ['an for', 'an Adj for', 'Verb'],
 			Verb: ['be early', 'be Verb early', 'Conj'],
 			Conj: ['can do', 'can Conj do'],
-		});
-	});
-
-	it(`Sample 3`, () => {
-		const productionRules = {
-			Sub: ['Adj Sub Verb', 'another'],
-			Adj: ['another Adj Sub', 'another', ''],
-			Verb: ['Sub before Sub', 'Adj', 'before before'],
-		};
-		removeNullProduction({
-			startVariable: 'Sub',
-			productionRules,
-			variables: ['Sub', 'Adj', 'Verb'],
-		});
-
-		expect(productionRules).toStrictEqual({
-			Sub: ['Sub Verb', 'Adj Sub', 'Adj Sub Verb', 'another'],
-			Adj: ['another Sub', 'another Adj Sub', 'another'],
-			Verb: ['Sub before Sub', 'Adj', 'before before'],
 		});
 	});
 });

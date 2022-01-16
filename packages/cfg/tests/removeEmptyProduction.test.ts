@@ -1,7 +1,7 @@
 import { removeEmptyProduction } from '../libs/removeEmptyProduction';
 
 describe('removeEmptyProduction', () => {
-	it(`removeEmptyProduction`, () => {
+	it(`Remove empty production`, () => {
 		const productionRules = {
 			S: ['Verb', '', 'B', 'B Verb', 'A', 'A Verb', 'A B', 'A B Verb'],
 			A: ['a', 'a A'],

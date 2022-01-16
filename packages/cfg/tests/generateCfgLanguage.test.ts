@@ -1,7 +1,7 @@
 import { generateCfgLanguage } from '../libs/generateCfgLanguage';
 
 describe('generateCfgLanguage', () => {
-	it(`generateCfgLanguage`, () => {
+	it(`Generate CFG language and parse tree`, () => {
 		const { tree, language } = generateCfgLanguage(
 			{
 				startVariable: 'S',

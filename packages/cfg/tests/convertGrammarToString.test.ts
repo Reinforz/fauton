@@ -1,7 +1,7 @@
 import { convertGrammarToString } from '../libs/convertGrammarToString';
 
 describe('convertGrammarToString', () => {
-	it(`convertGrammarToString`, () => {
+	it(`Convert grammar to string`, () => {
 		const stringifiedGrammar = convertGrammarToString({
 			S: ['Adj Noun Verb', 'Adj Verb'],
 			Noun: ['Sam', 'Alice', ''],

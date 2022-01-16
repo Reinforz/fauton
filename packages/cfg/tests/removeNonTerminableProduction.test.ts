@@ -1,7 +1,7 @@
 import { removeNonTerminableProduction } from '../libs/removeNonTerminableProduction';
 
 describe('removeNonTerminableProduction', () => {
-	it(`removeNonTerminableProduction`, () => {
+	it(`Remove non terminable production`, () => {
 		const cfg = {
 			productionRules: {
 				S: ['Adj Con', 'Verb'],

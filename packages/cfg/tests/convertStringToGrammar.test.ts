@@ -1,7 +1,7 @@
 import { convertStringToGrammar } from '../libs/convertStringToGrammar';
 
 describe('convertStringToGrammar', () => {
-	it(`convertStringToGrammar`, () => {
+	it(`Convert string to grammar`, () => {
 		const generatedGrammar = convertStringToGrammar(
 			`S -> Noun Article Verb | Noun Adj Verb\nNoun -> Sam | Bob | Alice\nArticle -> A | The | An\nAdj -> quickly | swiftly\nVerb -> ran | ate\nVerb -> walked`
 		);

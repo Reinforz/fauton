@@ -1,7 +1,7 @@
 import { cykParse } from '../libs/cykParse';
 
 describe('cykParse', () => {
-	it(`cykParse`, () => {
+	it(`Basic CYK parsing`, () => {
 		const cykParseResult = cykParse(
 			{
 				startVariable: 'S',
