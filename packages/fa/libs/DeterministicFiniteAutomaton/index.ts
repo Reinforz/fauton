@@ -16,7 +16,7 @@ import { generateStateGroupsRecord } from './generateStateGroupsRecord';
 import { merge } from './merge';
 import { minimize } from './minimize';
 
-export const DeterministicFiniteAutomatonUtils = {
+export {
 	generateEquivalenceStates,
 	generateStateGroupsRecord,
 	merge,
@@ -39,7 +39,7 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 		mergeOperation: TMergeOperation,
 		generatedAutomatonOptions?: GeneratedAutomatonOptions
 	) {
-		const { automaton, testLogic, automatonId } = DeterministicFiniteAutomatonUtils.merge(
+		const { automaton, testLogic, automatonId } = merge(
 			{
 				automaton: this.automaton,
 				automatonId: this.getAutomatonId(),
@@ -81,14 +81,11 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 
 	// Used to figure out which state belongs to which group in groups
 	generateStateGroupsRecord(stateGroups: string[][]) {
-		return DeterministicFiniteAutomatonUtils.generateStateGroupsRecord(
-			this.automaton.states,
-			stateGroups
-		);
+		return generateStateGroupsRecord(this.automaton.states, stateGroups);
 	}
 
 	generateEquivalenceStates(stateGroups: string[][]) {
-		return DeterministicFiniteAutomatonUtils.generateEquivalenceStates(this.automaton, stateGroups);
+		return generateEquivalenceStates(this.automaton, stateGroups);
 	}
 
 	minimize(
@@ -99,7 +96,7 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 	) {
 		return new DeterministicFiniteAutomaton(
 			this.testLogic,
-			DeterministicFiniteAutomatonUtils.minimize(this.automaton, minimizedDfaOptions),
+			minimize(this.automaton, minimizedDfaOptions),
 			undefined,
 			{
 				skipCharacterRangesExpansion: true,

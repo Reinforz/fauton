@@ -11,7 +11,7 @@ import { convertToRegularNfa } from './convertToRegularNfa';
 import { epsilonClosureOfState } from './epsilonClosureOfState';
 import { moveAndEpsilonClosureStateSet } from './moveAndEpsilonClosureStateSet';
 
-export const NonDeterministicFiniteAutomatonUtils = {
+export {
 	convertToDeterministicFiniteAutomaton,
 	convertToRegularNfa,
 	epsilonClosureOfState,
@@ -38,7 +38,7 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 	}
 
 	convertToRegularNfa() {
-		NonDeterministicFiniteAutomatonUtils.convertToRegularNfa(this.automaton);
+		convertToRegularNfa(this.automaton);
 	}
 
 	/**
@@ -47,15 +47,12 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 	 * @returns A set of states reachable from the input state on all epsilon transitions
 	 */
 	epsilonClosureOfState(state: string) {
-		return NonDeterministicFiniteAutomatonUtils.epsilonClosureOfState(
-			this.automaton.epsilon_transitions,
-			state
-		);
+		return epsilonClosureOfState(this.automaton.epsilon_transitions, state);
 	}
 
 	// ε-closure(Move_NFA(states, letter))
 	moveAndEpsilonClosureStateSet(states: string[], symbol: string) {
-		return NonDeterministicFiniteAutomatonUtils.moveAndEpsilonClosureStateSet(
+		return moveAndEpsilonClosureStateSet(
 			this.automaton.transitions,
 			this.automaton.epsilon_transitions,
 			states,
@@ -66,10 +63,7 @@ export class NonDeterministicFiniteAutomaton extends FiniteAutomaton {
 	convertToDeterministicFiniteAutomaton(dfaOptions?: GeneratedAutomatonOptions) {
 		return new DeterministicFiniteAutomaton(
 			this.testLogic,
-			NonDeterministicFiniteAutomatonUtils.convertToDeterministicFiniteAutomaton(
-				this.automaton,
-				dfaOptions
-			),
+			convertToDeterministicFiniteAutomaton(this.automaton, dfaOptions),
 			undefined,
 			{
 				skipCharacterRangesExpansion: true,

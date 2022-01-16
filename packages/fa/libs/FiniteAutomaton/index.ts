@@ -13,7 +13,7 @@ import { generatePreNormalizationErrors } from './generatePreNormalizationErrors
 import { normalize } from './normalize';
 import { validate } from './validate';
 
-export const FiniteAutomatonUtils = {
+export {
 	generateGraphFromString,
 	generatePostNormalizationErrors,
 	generatePreNormalizationErrors,
@@ -41,17 +41,13 @@ export class FiniteAutomaton {
 		this.testLogic = testLogic;
 		// Validate the automaton passed before normalizing it
 		if (!skipOptions?.skipValidation) {
-			FiniteAutomatonUtils.validate(
+			validate(
 				finiteAutomaton.label,
-				FiniteAutomatonUtils.generatePreNormalizationErrors(
-					testLogic,
-					this.#automatonType,
-					finiteAutomaton
-				)
+				generatePreNormalizationErrors(testLogic, this.#automatonType, finiteAutomaton)
 			);
 		}
 		if (!skipOptions?.skipNormalization) {
-			this.automaton = FiniteAutomatonUtils.normalize(
+			this.automaton = normalize(
 				finiteAutomaton,
 				skipOptions?.skipCharacterRangesExpansion ?? false
 			);
@@ -61,11 +57,9 @@ export class FiniteAutomaton {
 
 		if (!skipOptions?.skipValidation) {
 			// Validate the automaton passed after normalizing it
-			FiniteAutomatonUtils.validate(
+			validate(
 				finiteAutomaton.label,
-				FiniteAutomatonUtils.generatePostNormalizationErrors(
-					this.automaton as TransformedFiniteAutomaton
-				)
+				generatePostNormalizationErrors(this.automaton as TransformedFiniteAutomaton)
 			);
 		}
 	}
@@ -75,7 +69,7 @@ export class FiniteAutomaton {
 	}
 
 	generateGraphFromString(inputString: string) {
-		return FiniteAutomatonUtils.generateGraphFromString(this.automaton, inputString);
+		return generateGraphFromString(this.automaton, inputString);
 	}
 
 	test(inputString: string) {
