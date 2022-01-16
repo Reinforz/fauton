@@ -6,7 +6,7 @@
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
     "build": "docusaurus build",
-    "swizzle": "docusaurus swizzle",
+    "swizzle": "docusaurus swizzle --danger",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
@@ -21,7 +21,8 @@
     "clsx": "^1.1.1",
     "prism-react-renderer": "^1.2.1",
     "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react-dom": "^17.0.1",
+    "react-toggle": "^4.1.2"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "2.0.0-beta.14",

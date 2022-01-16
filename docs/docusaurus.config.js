@@ -10,7 +10,7 @@ const config = {
 	tagline: 'An ecosystem of packages to work with cfg/dfa/nfa/pda',
 	url: 'https://docs.fauton.xyz',
 	baseUrl: '/',
-	onBrokenLinks: 'throw',
+	onBrokenLinks: 'log',
 	onBrokenMarkdownLinks: 'warn',
 	favicon: 'img/favicon.ico',
 	organizationName: 'devorein',
@@ -52,13 +52,13 @@ const config = {
 	themeConfig:
 		/** @type {import('@docusaurus/preset-classic').ThemeConfig} */
 		({
+			hideableSidebar: true,
 			navbar: {
 				title: 'Fauton',
 				logo: {
 					alt: 'Fauton Logo',
 					src: 'img/logo.svg',
 				},
-				hideOnScroll: true,
 				items: [
 					{
 						type: 'doc',

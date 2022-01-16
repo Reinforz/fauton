@@ -4,33 +4,74 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import React from 'react';
-import Toggle from 'react-toggle';
-import { useThemeConfig } from '@docusaurus/theme-common';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import React, {useState, useRef, memo} from 'react';
+import {useThemeConfig} from '@docusaurus/theme-common';
+import useIsBrowser from '@docusaurus/useIsBrowser';
 import clsx from 'clsx';
-import styles from './styles.module.css';
+import styles from './styles.module.css'; // Based on react-toggle (https://github.com/aaronshaf/react-toggle/).
 
-const Dark = () => <img className={clsx("react-toggle_icon", styles.toggle, styles.dark)} src="/img/root/moon.svg"/>;
+const ToggleComponent = memo(
+  ({className, switchConfig, checked: defaultChecked, disabled, onChange}) => {
+    const {darkIcon, darkIconStyle, lightIcon, lightIconStyle} = switchConfig;
+    const [checked, setChecked] = useState(defaultChecked);
+    const [focused, setFocused] = useState(false);
+    const inputRef = useRef(null);
+    return (
+      <div
+        className={clsx(styles.toggle, className, {
+          [styles.toggleChecked]: checked,
+          [styles.toggleFocused]: focused,
+          [styles.toggleDisabled]: disabled,
+        })}>
+        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
+        <div
+          className={styles.toggleTrack}
+          role="button"
+          tabIndex={-1}
+          onClick={() => inputRef.current?.click()}>
+          <div className={styles.toggleTrackCheck}>
+            <span className={styles.toggleIcon} style={darkIconStyle}>
+              {darkIcon}
+            </span>
+          </div>
+          <div className={styles.toggleTrackX}>
+            <span className={styles.toggleIcon} style={lightIconStyle}>
+              {lightIcon}
+            </span>
+          </div>
+          <div className={styles.toggleTrackThumb} />
+        </div>
 
-const Light = () => <img className={clsx("react-toggle_icon", styles.toggle, styles.light)} src="/img/root/sun.svg"/>;
-
-export default function (props) {
+        <input
+          ref={inputRef}
+          checked={checked}
+          type="checkbox"
+          className={styles.toggleScreenReader}
+          aria-label="Switch between dark and light mode"
+          onChange={onChange}
+          onClick={() => setChecked(!checked)}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              inputRef.current?.click();
+            }
+          }}
+        />
+      </div>
+    );
+  },
+);
+export default function Toggle(props) {
   const {
-    colorMode: {
-      switchConfig: {
-        darkIcon,
-        darkIconStyle,
-        lightIcon,
-        lightIconStyle
-      }
-    }
+    colorMode: {switchConfig},
   } = useThemeConfig();
-  const {
-    isClient
-  } = useDocusaurusContext();
-  return <Toggle disabled={!isClient} icons={{
-    checked: <Dark icon={darkIcon} style={darkIconStyle} />,
-    unchecked: <Light icon={lightIcon} style={lightIconStyle} />
-  }} {...props} />;
+  const isBrowser = useIsBrowser();
+  return (
+    <ToggleComponent
+      switchConfig={switchConfig}
+      disabled={!isBrowser}
+      {...props}
+    />
+  );
 }
