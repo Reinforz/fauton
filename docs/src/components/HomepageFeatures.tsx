@@ -24,7 +24,7 @@ const FeatureList: FeatureItem[] = [
     image: '/img/multi_purpose.svg',
     description: (
       <>
-        Nishan's ecosystem provides various packages to do almost anything with notion
+        Fauton's ecosystem provides various packages to do almost anything with automaton
       </>
     ),
   },

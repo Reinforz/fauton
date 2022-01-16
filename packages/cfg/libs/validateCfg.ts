@@ -1,5 +1,9 @@
 import { IContextFreeGrammar } from './types';
 
+/**
+ * Validates a cfg
+ * @param cfg Input cfg to validate
+ */
 export function validateCfg(cfg: IContextFreeGrammar) {
 	const { startVariable, terminals, productionRules, variables } = cfg;
 	// Check if all the variables is present in transition record

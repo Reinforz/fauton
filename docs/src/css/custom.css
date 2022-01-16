@@ -28,6 +28,8 @@
   --ifm-code-border-radius: 3px;
 
   --ifm-font-family-base: 'Nunito Sans', sans-serif;
+
+  --ifm-h1-font-size: 2.5rem;
 }
 
 @media (max-width: 500px){
@@ -76,13 +78,13 @@ button.DocSearch.DocSearch-Button{
 .footer__copyright{
   color: var(--ifm-color-secondary-dark);
   font-size: 1rem;
-  font-weight: bolder;
+  font-weight: bold;
   text-transform: uppercase;
 }
 
 .features__title,.footer__title{
   color: var(--ifm-color-secondary-dark);
-  font-weight: bolder;
+  font-weight: bold;
   font-size: 1.25rem;
   width: 100%;
   margin-bottom: 10px;
@@ -106,7 +108,7 @@ button.DocSearch.DocSearch-Button{
   margin: 0 auto;
   border-radius: 5px;
   color: #fff;
-  font-weight: bolder;
+  font-weight: bold;
   font-size: 1rem;
   background: var(--ifm-color-primary-darkest);
   max-width: 500px;
@@ -167,7 +169,7 @@ html[data-theme="dark"] .DocSidebar__button.button.button--secondary.button--out
 
 .table-of-contents__link:hover, .table-of-contents__link:hover code, .table-of-contents__link--active, .table-of-contents__link--active code{
   color: var(--ifm-link-color);
-  font-weight: bolder;
+  font-weight: bold;
 }
 
 .container{
@@ -361,7 +363,7 @@ time{
 
 .table-of-contents__link--active{
   color: var(--ifm-link-color);
-  font-weight: bolder;
+  font-weight: bold;
   background: var(--ifm-menu-color-background-active);
   border-left: 3px solid var(--ifm-color-primary-dark);
   transition: 150ms all ease-in-out;

@@ -31,27 +31,23 @@ export function generateCfgLanguage(
 		maxTokenLength,
 		skipSimplification = false,
 		skipValidation = false,
-		generateVariables = false,
 		autoCapitalizeFirstToken = true,
 		useSpaceWhenJoiningTokens = true,
 		parseDirection = 'left',
 	} = options;
-	// Generate the variables first and attach to cfg
-	// else if we are dynamically generating variables, most likely the input variables would be [],
-	// Which will trigger a validation error
-	const variables = generateVariables ? Object.keys(productionRules) : cfg.variables;
-	// eslint-disable-next-line
-	cfg.variables = variables;
 
 	if (!skipValidation) {
 		validateCfg(cfg);
 	}
-	const simplifiedVariables = skipSimplification ? variables : simplifyCfg(cfg);
+
+	if (!skipSimplification) {
+		simplifyCfg(cfg);
+	}
 
 	const linkedList = new LinkedList<IQueueItem>();
 	// A set to keep track of all the words that have been traversed
 	const traversedSet = new Set(startVariable);
-	const variablesSet = new Set(simplifiedVariables);
+	const variablesSet = new Set(cfg.variables);
 
 	linkedList.insertFirst({
 		path: [startVariable],

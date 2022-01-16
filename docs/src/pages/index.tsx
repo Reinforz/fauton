@@ -28,7 +28,7 @@ function Home() {
       description="A whole ecosystem of npm packages to automate notion using typescript or javascript">
       <Head>
         <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
         <link href="/css/tailwind.css" rel="stylesheet" />
       </Head>
       <header className={clsx('hero hero--primary', styles.heroBanner)}>
