@@ -30,6 +30,9 @@
   --ifm-font-family-base: 'Nunito Sans', sans-serif;
 
   --ifm-h1-font-size: 2.5rem;
+
+  --ifm-toc-padding-horizontal: 5px;
+  --ifm-toc-padding-vertical: 5px;
 }
 
 @media (max-width: 500px){
@@ -367,6 +370,7 @@ time{
   background: var(--ifm-menu-color-background-active);
   border-left: 3px solid var(--ifm-color-primary-dark);
   transition: 150ms all ease-in-out;
+  padding-left: 10px;
 }
 
 .pagination-nav__link {
