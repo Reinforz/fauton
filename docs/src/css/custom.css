@@ -33,6 +33,8 @@
 
   --ifm-toc-padding-horizontal: 5px;
   --ifm-toc-padding-vertical: 5px;
+
+  --ifm-spacing-horizontal: 2rem;
 }
 
 @media (max-width: 500px){
@@ -170,9 +172,18 @@ html[data-theme="dark"] .DocSidebar__button.button.button--secondary.button--out
   }
 }
 
+.table-of-contents__link.depth-1 {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.table-of-contents__link.depth-2 {
+  font-weight: 500;
+  font-size: 14px;
+}
+
 .table-of-contents__link:hover, .table-of-contents__link:hover code, .table-of-contents__link--active, .table-of-contents__link--active code{
   color: var(--ifm-link-color);
-  font-weight: bold;
 }
 
 .container{
@@ -364,9 +375,9 @@ time{
   padding: 5px;
 }
 
-.table-of-contents__link--active{
+.table-of-contents__link.table-of-contents__link--active{
   color: var(--ifm-link-color);
-  font-weight: bold;
+  font-weight: 600;
   background: var(--ifm-menu-color-background-active);
   border-left: 3px solid var(--ifm-color-primary-dark);
   transition: 150ms all ease-in-out;
