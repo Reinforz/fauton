@@ -52,6 +52,12 @@ const config = {
 	themeConfig:
 		/** @type {import('@docusaurus/preset-classic').ThemeConfig} */
 		({
+			colorMode: {
+				switchConfig: {
+					darkIcon: '/img/moon.svg',
+					lightIcon: '/img/sun.svg',
+				},
+			},
 			hideableSidebar: true,
 			navbar: {
 				title: 'Fauton',
