@@ -376,3 +376,11 @@ time{
 .pagination-nav__link:hover {
   border-color: var(--ifm-color-secondary-dark);
 }
+
+.dark .sidebar-button {
+  background-color: var(--ifm-color-primary);
+}
+
+.sidebar-button {
+  background-color: #f2f2f2;
+}
