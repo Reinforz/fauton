@@ -35,6 +35,7 @@ const config = {
 		[
 			'docusaurus-plugin-typedoc',
 			{
+				id: 'docusaurus-plugin-typedoc-1',
 				// TypeDoc options
 				entryPoints: ['../packages/cfg/libs/index.ts'],
 				tsconfig: '../packages/cfg/tsconfig.json',
@@ -43,6 +44,23 @@ const config = {
 				out: 'fauton-cfg',
 				sidebar: {
 					categoryLabel: '@fauton/cfg',
+					position: 0,
+					fullNames: true,
+				},
+			},
+		],
+		[
+			'docusaurus-plugin-typedoc',
+			{
+				id: 'docusaurus-plugin-typedoc-2',
+				// TypeDoc options
+				entryPoints: ['../packages/fa/libs/index.ts'],
+				tsconfig: '../packages/fa/tsconfig.json',
+
+				// Plugin options
+				out: 'fauton-fa',
+				sidebar: {
+					categoryLabel: '@fauton/fa',
 					position: 0,
 					fullNames: true,
 				},
