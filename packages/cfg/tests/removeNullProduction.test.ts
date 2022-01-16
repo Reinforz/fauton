@@ -21,16 +21,16 @@ describe('removeNullProduction', () => {
 
 		expect(productionRules).toStrictEqual({
 			Sub: [
+				'Conj',
+				'Verb Conj',
+				'Adj Conj',
+				'Adj Verb Conj',
+				'Verb Adj Conj',
 				'Adj Adj Conj',
 				'Adj Verb Adj Conj',
-				'Adj Verb Conj',
-				'Adj Conj',
-				'Verb Adj Conj',
-				'Verb Conj',
-				'Conj',
 			],
-			Adj: ['a Adj', 'a'],
-			Verb: ['b Verb', 'b'],
+			Adj: ['a', 'a Adj'],
+			Verb: ['b', 'b Verb'],
 			Conj: ['c'],
 		});
 	});

@@ -275,7 +275,6 @@ it(`Should not skip validation and simplification`, () => {
 				S: ['Num'],
 				Num: ['0', '1'],
 			},
-			variables: [],
 		},
 		{
 			maxTokenLength: 3,

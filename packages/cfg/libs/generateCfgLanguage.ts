@@ -36,12 +36,12 @@ export function generateCfgLanguage(
 		parseDirection = 'left',
 	} = options;
 
-	if (!skipValidation) {
-		validateCfg(cfg);
-	}
-
 	if (!skipSimplification) {
 		simplifyCfg(cfg);
+	}
+
+	if (!skipValidation) {
+		validateCfg(cfg);
 	}
 
 	const linkedList = new LinkedList<IQueueItem>();
