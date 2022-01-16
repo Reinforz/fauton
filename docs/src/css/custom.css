@@ -368,3 +368,11 @@ time{
   border-left: 3px solid var(--ifm-color-primary-dark);
   transition: 150ms all ease-in-out;
 }
+
+.pagination-nav__link {
+  border-width: 2px;
+}
+
+.pagination-nav__link:hover {
+  border-color: var(--ifm-color-secondary-dark);
+}
