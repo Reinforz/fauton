@@ -1,6 +1,6 @@
 import { generateCfgLanguage } from '../libs/generateCfgLanguage';
 
-describe.only('generateCfgLanguage', () => {
+describe('generateCfgLanguage', () => {
 	it(`generateCfgLanguage`, () => {
 		const { tree, language } = generateCfgLanguage(
 			{

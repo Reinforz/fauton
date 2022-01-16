@@ -2,183 +2,53 @@ import { cykParse } from '../libs/cykParse';
 
 describe('cykParse', () => {
 	it(`cykParse`, () => {
-		expect(
-			cykParse(
-				{
-					startVariable: 'S',
-					productionRules: {
-						S: ['A B', 'B C'],
-						A: ['B A', 'a'],
-						B: ['C C', 'b'],
-						C: ['A B', 'a'],
-					},
+		const cykParseResult = cykParse(
+			{
+				startVariable: 'S',
+				productionRules: {
+					S: ['A B', 'B'],
+					A: ['B A', 'a'],
+					B: ['A', 'b'],
 				},
-				'b a a b a'.split(' ')
-			)
-		).toStrictEqual({
+			},
+			'b a b'.split(' ')
+		);
+		expect(cykParseResult).toStrictEqual({
 			verdict: true,
-			cykTable: [
-				['S C A'],
-				['', 'A S C'],
-				['', 'B', 'B'],
-				['A S', 'B', 'S C', 'A S'],
-				['B', 'A C', 'A C', 'B', 'A C'],
-			],
 			cykTableDetailed: [
 				[
 					{
 						combinations: [
 							{
-								merged: [],
-								parts: [[], ['A', 'C']],
+								merged: ['A B'],
+								parts: [['A'], ['B']],
 							},
 							{
-								merged: [],
-								parts: [[], ['A', 'S']],
-							},
-							{
-								merged: ['A B', 'S B'],
-								parts: [['A', 'S'], ['B']],
-							},
-							{
-								merged: ['B A', 'B S', 'B C'],
-								parts: [['B'], ['A', 'S', 'C']],
+								merged: ['B S'],
+								parts: [['B'], ['S']],
 							},
 						],
-						value: ['S', 'C', 'A'],
+						value: ['S'],
 					},
 				],
 				[
 					{
 						combinations: [
 							{
-								merged: [],
-								parts: [[], ['B']],
-							},
-							{
-								merged: ['A S', 'A C', 'S S', 'S C'],
-								parts: [
-									['A', 'S'],
-									['S', 'C'],
-								],
-							},
-							{
-								merged: ['B B'],
-								parts: [['B'], ['B']],
+								merged: ['B A'],
+								parts: [['B'], ['A']],
 							},
 						],
-						value: [],
+						value: ['A'],
 					},
 					{
 						combinations: [
 							{
-								merged: ['B A', 'B C'],
-								parts: [['B'], ['A', 'C']],
-							},
-							{
-								merged: ['B A', 'B S'],
-								parts: [['B'], ['A', 'S']],
-							},
-							{
-								merged: ['A B', 'C B'],
-								parts: [['A', 'C'], ['B']],
+								merged: ['A B'],
+								parts: [['A'], ['B']],
 							},
 						],
-						value: ['A', 'S', 'C'],
-					},
-				],
-				[
-					{
-						combinations: [
-							{
-								merged: ['A A', 'A C', 'S A', 'S C'],
-								parts: [
-									['A', 'S'],
-									['A', 'C'],
-								],
-							},
-							{
-								merged: ['B B'],
-								parts: [['B'], ['B']],
-							},
-						],
-						value: [],
-					},
-					{
-						combinations: [
-							{
-								merged: ['B B'],
-								parts: [['B'], ['B']],
-							},
-							{
-								merged: ['A S', 'A C', 'C S', 'C C'],
-								parts: [
-									['A', 'C'],
-									['S', 'C'],
-								],
-							},
-						],
-						value: ['B'],
-					},
-					{
-						combinations: [
-							{
-								merged: ['S A', 'S C', 'C A', 'C C'],
-								parts: [
-									['S', 'C'],
-									['A', 'C'],
-								],
-							},
-							{
-								merged: ['A A', 'A S', 'C A', 'C S'],
-								parts: [
-									['A', 'C'],
-									['A', 'S'],
-								],
-							},
-						],
-						value: ['B'],
-					},
-				],
-				[
-					{
-						combinations: [
-							{
-								merged: ['B A', 'B C'],
-								parts: [['B'], ['A', 'C']],
-							},
-						],
-						value: ['A', 'S'],
-					},
-					{
-						combinations: [
-							{
-								merged: ['A A', 'A C', 'C A', 'C C'],
-								parts: [
-									['A', 'C'],
-									['A', 'C'],
-								],
-							},
-						],
-						value: ['B'],
-					},
-					{
-						combinations: [
-							{
-								merged: ['A B', 'C B'],
-								parts: [['A', 'C'], ['B']],
-							},
-						],
-						value: ['S', 'C'],
-					},
-					{
-						combinations: [
-							{
-								merged: ['B A', 'B C'],
-								parts: [['B'], ['A', 'C']],
-							},
-						],
-						value: ['A', 'S'],
+						value: ['S'],
 					},
 				],
 				[
@@ -194,20 +64,11 @@ describe('cykParse', () => {
 					{
 						combinations: [
 							{
-								merged: ['A', 'C'],
-								parts: [['A', 'C']],
+								merged: ['A'],
+								parts: [['A']],
 							},
 						],
-						value: ['A', 'C'],
-					},
-					{
-						combinations: [
-							{
-								merged: ['A', 'C'],
-								parts: [['A', 'C']],
-							},
-						],
-						value: ['A', 'C'],
+						value: ['A'],
 					},
 					{
 						combinations: [
@@ -217,27 +78,19 @@ describe('cykParse', () => {
 							},
 						],
 						value: ['B'],
-					},
-					{
-						combinations: [
-							{
-								merged: ['A', 'C'],
-								parts: [['A', 'C']],
-							},
-						],
-						value: ['A', 'C'],
 					},
 				],
 			],
+			cykTable: [['S'], ['A', 'S'], ['B', 'A', 'B']],
 			nodeVariablesRecord: {
-				'A B': ['S', 'C'],
-				'B C': ['S'],
+				'A B': ['S'],
+				B: ['S'],
 				'B A': ['A'],
-				a: ['A', 'C'],
-				'C C': ['B'],
+				a: ['A'],
+				A: ['B'],
 				b: ['B'],
 			},
-			sentenceTokens: ['b', 'a', 'a', 'b', 'a'],
+			sentenceTokens: ['b', 'a', 'b'],
 		});
 	});
 });

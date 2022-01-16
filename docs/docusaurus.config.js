@@ -2,19 +2,19 @@
 // Note: type annotations allow type checking and IDEs autocompletion
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
 	title: 'Fauton',
-	tagline: 'An ecosystem of packages to work with automaton',
+	tagline: 'An ecosystem of packages to work with cfg/dfa/nfa/pda',
 	url: 'https://docs.fauton.xyz',
 	baseUrl: '/',
 	onBrokenLinks: 'throw',
 	onBrokenMarkdownLinks: 'warn',
 	favicon: 'img/favicon.ico',
-	organizationName: 'devorein', // Usually your GitHub org/user name.
-	projectName: 'fauton', // Usually your repo name.
+	organizationName: 'devorein',
+	projectName: 'fauton',
 	presets: [
 		[
 			'classic',
@@ -58,6 +58,7 @@ const config = {
 					alt: 'Fauton Logo',
 					src: 'img/logo.svg',
 				},
+				hideOnScroll: true,
 				items: [
 					{
 						type: 'doc',
@@ -85,7 +86,7 @@ const config = {
 						],
 					},
 				],
-				copyright: `Copyright © ${new Date().getFullYear()} Fauton. Built with Docusaurus.`,
+				copyright: `Copyright © ${new Date().getFullYear()}. Made by <a href="https://github.com/devorein" target="_blank">devorein</a>, hosted on vercel.`,
 			},
 			prism: {
 				theme: lightCodeTheme,

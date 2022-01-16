@@ -1,3 +1,4 @@
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import clsx from 'clsx';
 import React from 'react';
 import styles from './HomepageFeatures.module.css';
@@ -11,46 +12,40 @@ type FeatureItem = {
 const FeatureList: FeatureItem[] = [
   {
     title: 'Easy to Use',
-    image: '/img/undraw_docusaurus_mountain.svg',
+    image: '/img/easy.svg',
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        All the packages are well documented and crafted with ease of use in mind
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    image: '/img/undraw_docusaurus_tree.svg',
+    title: 'Multi Purpose',
+    image: '/img/multi_purpose.svg',
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Nishan's ecosystem provides various packages to do almost anything with notion
       </>
     ),
   },
   {
-    title: 'Powered by React',
-    image: '/img/undraw_docusaurus_react.svg',
+    title: 'Typescript Support',
+    image: '/img/ts_support.svg',
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Typescript support right out of the box for static typechecking.
       </>
     ),
   },
 ];
 
-function Feature({ title, image, description }: FeatureItem) {
+function Feature({ image, title, description }: FeatureItem) {
+  const imgUrl = useBaseUrl(image);
   return (
-    <div className={clsx('col col--4')}>
-      <div className="text--center">
-        <img className={styles.featureSvg} alt={title} src={image} />
-      </div>
-      <div className="text--center padding-horiz--md">
-        <h3>{title}</h3>
-        <p>{description}</p>
-      </div>
+    <div className={clsx('col col--4', styles.feature)}>
+      <img src={imgUrl} alt={title} />
+      <h3 className="features__title text--center">{title}</h3>
+      <p>{description}</p>
     </div>
   );
 }
