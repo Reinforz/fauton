@@ -1,8 +1,8 @@
 import { moveAndEpsilonClosureStateSet } from '../../libs/NonDeterministicFiniteAutomaton/moveAndEpsilonClosureStateSet';
 
-it(`Should work without epsilon transitions record`, () => {
-	expect(
-		moveAndEpsilonClosureStateSet(
+describe('moveAndEpsilonClosureStateSet', () => {
+	it(`Without epsilon transitions record`, () => {
+		const epsilonClosuredStates = moveAndEpsilonClosureStateSet(
 			{
 				A: {
 					0: ['B', 'C'],
@@ -14,13 +14,12 @@ it(`Should work without epsilon transitions record`, () => {
 			null,
 			['A', 'B'],
 			'0'
-		)
-	).toStrictEqual(['B', 'C']);
-});
+		);
+		expect(epsilonClosuredStates).toStrictEqual(['B', 'C']);
+	});
 
-it(`Should work with epsilon transitions record`, () => {
-	expect(
-		moveAndEpsilonClosureStateSet(
+	it(`With epsilon transitions record`, () => {
+		const epsilonClosuredStates = moveAndEpsilonClosureStateSet(
 			{
 				A: {
 					0: ['B', 'C'],
@@ -35,6 +34,7 @@ it(`Should work with epsilon transitions record`, () => {
 			},
 			['A', 'B'],
 			'0'
-		)
-	).toStrictEqual(['B', 'C', 'A', 'E', 'D']);
+		);
+		expect(epsilonClosuredStates).toStrictEqual(['B', 'C', 'A', 'E', 'D']);
+	});
 });

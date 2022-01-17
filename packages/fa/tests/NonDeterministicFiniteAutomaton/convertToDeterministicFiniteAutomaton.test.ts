@@ -1,8 +1,8 @@
 import { convertToDeterministicFiniteAutomaton } from '../../libs/NonDeterministicFiniteAutomaton/convertToDeterministicFiniteAutomaton';
 
-it(`Should work for regular nfa`, () => {
-	expect(
-		convertToDeterministicFiniteAutomaton(
+describe('convertToDeterministicFiniteAutomaton', () => {
+	it(`Converting regular nfa to dfa`, () => {
+		const convertedDfa = convertToDeterministicFiniteAutomaton(
 			{
 				start_state: 'q0',
 				alphabets: ['a', 'b'],
@@ -25,27 +25,26 @@ it(`Should work for regular nfa`, () => {
 				label: 'New label',
 				separator: '-',
 			}
-		)
-	).toStrictEqual({
-		epsilon_transitions: null,
-		alphabets: ['a', 'b'],
-		final_states: ['q1-q2'],
-		start_state: 'q0',
-		states: ['q0', 'q1-q2', 'Ø', 'q2'],
-		transitions: {
-			q0: [['q1-q2'], ['Ø']],
-			'q1-q2': [['q1-q2'], ['q2']],
-			q2: [['q1-q2'], ['q2']],
-			Ø: ['Ø', 'Ø'],
-		},
-		description: 'New Description',
-		label: 'New label',
+		);
+		expect(convertedDfa).toStrictEqual({
+			epsilon_transitions: null,
+			alphabets: ['a', 'b'],
+			final_states: ['q1-q2'],
+			start_state: 'q0',
+			states: ['q0', 'q1-q2', 'Ø', 'q2'],
+			transitions: {
+				q0: [['q1-q2'], ['Ø']],
+				'q1-q2': [['q1-q2'], ['q2']],
+				q2: [['q1-q2'], ['q2']],
+				Ø: ['Ø', 'Ø'],
+			},
+			description: 'New Description',
+			label: 'New label',
+		});
 	});
-});
 
-it(`Should work for regular e-nfa`, () => {
-	expect(
-		convertToDeterministicFiniteAutomaton({
+	it(`Converting regular e-nfa to dfa`, () => {
+		const convertedDfa = convertToDeterministicFiniteAutomaton({
 			start_state: 'q0',
 			alphabets: ['a', 'b'],
 			final_states: ['q1'],
@@ -63,20 +62,21 @@ it(`Should work for regular e-nfa`, () => {
 			epsilon_transitions: {
 				q0: ['q1'],
 			},
-		})
-	).toStrictEqual({
-		description: undefined,
-		epsilon_transitions: null,
-		alphabets: ['a', 'b'],
-		final_states: ['q0,q1', 'q1,q2'],
-		label: 'sample nfa',
-		start_state: 'q0,q1',
-		states: ['q0,q1', 'q1,q2', 'Ø', 'q2'],
-		transitions: {
-			'q0,q1': [['q1,q2'], ['Ø']],
-			'q1,q2': [['q1,q2'], ['q2']],
-			q2: [['q1,q2'], ['q2']],
-			Ø: ['Ø', 'Ø'],
-		},
+		});
+		expect(convertedDfa).toStrictEqual({
+			description: undefined,
+			epsilon_transitions: null,
+			alphabets: ['a', 'b'],
+			final_states: ['q0,q1', 'q1,q2'],
+			label: 'sample nfa',
+			start_state: 'q0,q1',
+			states: ['q0,q1', 'q1,q2', 'Ø', 'q2'],
+			transitions: {
+				'q0,q1': [['q1,q2'], ['Ø']],
+				'q1,q2': [['q1,q2'], ['q2']],
+				q2: [['q1,q2'], ['q2']],
+				Ø: ['Ø', 'Ø'],
+			},
+		});
 	});
 });

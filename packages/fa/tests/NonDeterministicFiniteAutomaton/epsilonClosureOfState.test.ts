@@ -1,13 +1,16 @@
 import { epsilonClosureOfState } from '../../libs/NonDeterministicFiniteAutomaton/epsilonClosureOfState';
 
-it(`Should generate epsilon closure of a state`, () => {
-	expect(
-		epsilonClosureOfState(
+describe('epsilonClosureOfState', () => {
+	it(`Epsilon closure of state`, () => {
+		const epsilonClosuredStates = epsilonClosureOfState(
 			{
 				A: ['B'],
 				B: ['C', 'D'],
 			},
 			'A'
-		)
-	).toStrictEqual(['A', 'B', 'C', 'D']);
+		);
+		expect(epsilonClosuredStates).toStrictEqual(['A', 'B', 'C', 'D']);
+	});
 });
+
+it(`Should generate epsilon closure of a state`, () => {});
