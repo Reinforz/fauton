@@ -3,6 +3,7 @@
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
+const path = require('path');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -64,6 +65,16 @@ const config = {
 					position: 0,
 					fullNames: true,
 				},
+			},
+		],
+		[
+			'docusaurus-plugin-example-generator',
+			{
+				packageDirectory: path.resolve(__dirname, '../packages'),
+				moduleMarkdownDirectory: path.resolve(__dirname, './docs'),
+				packages: ['cfg', 'fa'],
+				id: 'example-generator',
+				scope: 'fauton',
 			},
 		],
 	],

@@ -1,3 +1,5 @@
+<br/>
+
 <p align="center"><a href="https://https://nishan-docs.netlify.app/" target="_blank" rel="noopener noreferrer"><img width="250" src="https://raw.githubusercontent.com/Devorein/fauton/dev/docs/static/img/logo.svg" alt="Fauton logo"></a></p>
 
 <div align="center"> <h1>Fauton</h1> </div>
