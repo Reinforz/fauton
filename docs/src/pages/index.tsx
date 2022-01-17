@@ -29,11 +29,10 @@ function Home() {
       <Head>
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-        <link href="/css/tailwind.css" rel="stylesheet" />
       </Head>
       <header className={clsx('hero hero--primary', styles.heroBanner)}>
         <div className="container">
-          <img className="hero__image mx-auto" height="250" src={`${siteConfig.favicon}`} />
+          <img className="hero__image mx-auto" height={200} style={{ transform: "scale(1.5)" }} src={"/img/logo.svg"} />
           <p className="hero__subtitle my-2"><b>{siteConfig.tagline}</b></p>
           <div className={styles.buttons}>
             <Link

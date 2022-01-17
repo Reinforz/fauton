@@ -1,5 +1,5 @@
 <div align="center"> <h1>Fauton</h1> </div>
-<div align="center"><b>An ecosystem of packages to work with automaton (dfa/nfa/e-nfa/regex/cfg)</b></div>
+<div align="center"><b>An ecosystem of packages to work with automaton (dfa/nfa/e-nfa/regex/cfg/pda)</b></div>
 
 <p align="center">
   <a href="https://github.com/Devorein/fauton/actions?query=workflow%3A%22Lint%2C+Build+and+Test%22"><img src="https://github.com/devorein/fauton/workflows/Lint,%20Build%20and%20Test/badge.svg"/></a>

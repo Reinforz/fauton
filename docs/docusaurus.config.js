@@ -7,12 +7,12 @@ const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
 	title: 'Fauton',
-	tagline: 'An ecosystem of packages to work with cfg/dfa/nfa/pda',
+	tagline: 'An ecosystem of packages to work with automaton(cfg/dfa/nfa/pda/e-nfa)',
 	url: 'https://docs.fauton.xyz',
 	baseUrl: '/',
 	onBrokenLinks: 'log',
 	onBrokenMarkdownLinks: 'warn',
-	favicon: 'img/favicon.ico',
+	favicon: 'img/favicon.svg',
 	organizationName: 'devorein',
 	projectName: 'fauton',
 	presets: [
@@ -81,7 +81,7 @@ const config = {
 				title: 'Fauton',
 				logo: {
 					alt: 'Fauton Logo',
-					src: 'img/logo.svg',
+					src: 'img/favicon.svg',
 				},
 				items: [
 					{

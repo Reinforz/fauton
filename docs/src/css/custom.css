@@ -7,13 +7,13 @@
   --ifm-color-primary-lighter: #444444;
   --ifm-color-primary-lightest: #4d4d4d;
   
-  --ifm-color-secondary: #e53c49;
-  --ifm-color-secondary-dark: #e22231;
-  --ifm-color-secondary-darker: #d91d2b;
-  --ifm-color-secondary-darkest: #b31824;
-  --ifm-color-secondary-light: #e85561;
-  --ifm-color-secondary-lighter: #ea626d;
-  --ifm-color-secondary-lightest: #ef8890;
+  --ifm-color-secondary: #e53c5a;
+  --ifm-color-secondary-dark: #e22244;
+  --ifm-color-secondary-darker: #d91d3e;
+  --ifm-color-secondary-darkest: #b31833;
+  --ifm-color-secondary-light: #e85570;
+  --ifm-color-secondary-lighter: #ea627a;
+  --ifm-color-secondary-lightest: #ef889b;
 
   --ifm-link-color: var(--ifm-color-secondary);
   --ifm-menu-color-active: var(--ifm-color-secondary);
@@ -117,6 +117,10 @@ button.DocSearch.DocSearch-Button{
   font-size: 1rem;
   background: var(--ifm-color-primary-darkest);
   max-width: 500px;
+}
+
+.navbar__title:hover{
+  color: var(--ifm-color-secondary);
 }
 
 section.features_src-pages- {
