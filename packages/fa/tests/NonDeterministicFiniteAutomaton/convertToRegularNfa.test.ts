@@ -1,9 +1,8 @@
 import { convertToRegularNfa } from '../../libs/NonDeterministicFiniteAutomaton/convertToRegularNfa';
-import { IFiniteAutomaton } from '../../libs/types';
 
 describe('convertToRegularNfa', () => {
 	it(`Converting e-nfa to nfa`, () => {
-		const transitions: IFiniteAutomaton['automaton']['transitions'] = {
+		const transitions = {
 			A: {
 				0: ['A'],
 			},

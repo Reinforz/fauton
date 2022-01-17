@@ -1,3 +1,5 @@
+<p align="center"><a href="https://https://nishan-docs.netlify.app/" target="_blank" rel="noopener noreferrer"><img width="125" src="https://github.com/Devorein/fauton/blob/master/docs/static/img/logo.svg" alt="Fauton logo"></a></p>
+
 <div align="center"> <h1>Fauton</h1> </div>
 <div align="center"><b>An ecosystem of packages to work with automaton (dfa/nfa/e-nfa/regex/cfg/pda)</b></div>
 
