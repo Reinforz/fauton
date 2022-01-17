@@ -1,7 +1,8 @@
-<p align="center"><a href="https://https://nishan-docs.netlify.app/" target="_blank" rel="noopener noreferrer"><img width="125" src="https://github.com/Devorein/fauton/blob/master/docs/static/img/logo.svg" alt="Fauton logo"></a></p>
+<p align="center"><a href="https://https://nishan-docs.netlify.app/" target="_blank" rel="noopener noreferrer"><img width="250" src="https://raw.githubusercontent.com/Devorein/fauton/dev/docs/static/img/logo.svg" alt="Fauton logo"></a></p>
 
 <div align="center"> <h1>Fauton</h1> </div>
 <div align="center"><b>An ecosystem of packages to work with automaton (dfa/nfa/e-nfa/regex/cfg/pda)</b></div>
+<br/>
 
 <p align="center">
   <a href="https://github.com/Devorein/fauton/actions?query=workflow%3A%22Lint%2C+Build+and+Test%22"><img src="https://github.com/devorein/fauton/workflows/Lint,%20Build%20and%20Test/badge.svg"/></a>
