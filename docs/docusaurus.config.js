@@ -42,7 +42,7 @@ const config = {
 				tsconfig: '../packages/cfg/tsconfig.json',
 
 				// Plugin options
-				out: 'fauton-cfg',
+				out: 'cfg',
 				sidebar: {
 					categoryLabel: '@fauton/cfg',
 					position: 0,
@@ -59,7 +59,7 @@ const config = {
 				tsconfig: '../packages/fa/tsconfig.json',
 
 				// Plugin options
-				out: 'fauton-fa',
+				out: 'fa',
 				sidebar: {
 					categoryLabel: '@fauton/fa',
 					position: 0,

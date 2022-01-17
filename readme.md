@@ -1,6 +1,6 @@
 <br/>
 
-<p align="center"><a href="https://https://nishan-docs.netlify.app/" target="_blank" rel="noopener noreferrer"><img width="250" src="https://raw.githubusercontent.com/Devorein/fauton/dev/docs/static/img/logo.svg" alt="Fauton logo"></a></p>
+<p align="center"><a href="https://docs.fauton.xyz" target="_blank" rel="noopener noreferrer"><img width="250" src="https://raw.githubusercontent.com/Devorein/fauton/dev/docs/static/img/logo.svg" alt="Fauton logo"></a></p>
 
 <div align="center"> <h1>Fauton</h1> </div>
 <div align="center"><b>An ecosystem of packages to work with automaton (dfa/nfa/e-nfa/regex/cfg/pda)</b></div>
@@ -26,7 +26,8 @@
 1. Full typescript support
 2. Easy to use api
 3. High test coverage
-4. Supports both node and browser environment (except a few)
+4. Supports both node and browser environment (except a few packages)
+5. Well documented with examples
 
 ## Packages
 
@@ -58,6 +59,7 @@ Big thanks to all these wonderful repos.
 4. [python-formal-langs-practicum-automata-cfg](https://github.com/persiyanov/python-formal-langs-practicum-automata-cfg) Automata, Context-free-grammar classes (implementation of CYK algorithm, converting grammar to Chomsky normal form, Thompson algo for building automaton from regex, etc.)
 5. [earley-parser-js](https://github.com/lagodiuk/earley-parser-js) Tiny JavaScript implementation of context-free languages parser - Earley parser (including generation of the parsing-forest).
 6. [probabilistic-earley-parser-javascript](https://github.com/digitalheir/probabilistic-earley-parser-javascript) An efficient implementation of a probabilistic Context Free Grammar parser in Javascript
+7. [https://github.com/caleb531/automata](https://github.com/caleb531/automata) A Python library for simulating finite automata, pushdown automata, and Turing machines
 
 ## Contributors
 
