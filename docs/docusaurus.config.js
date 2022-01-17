@@ -32,23 +32,23 @@ const config = {
 		],
 	],
 	plugins: [
-		[
-			'docusaurus-plugin-typedoc',
-			{
-				id: 'docusaurus-plugin-typedoc-1',
-				// TypeDoc options
-				entryPoints: ['../packages/cfg/libs/index.ts'],
-				tsconfig: '../packages/cfg/tsconfig.json',
+		// [
+		// 	'docusaurus-plugin-typedoc',
+		// 	{
+		// 		id: 'docusaurus-plugin-typedoc-1',
+		// 		// TypeDoc options
+		// 		entryPoints: ['../packages/cfg/libs/index.ts'],
+		// 		tsconfig: '../packages/cfg/tsconfig.json',
 
-				// Plugin options
-				out: 'fauton-cfg',
-				sidebar: {
-					categoryLabel: '@fauton/cfg',
-					position: 0,
-					fullNames: true,
-				},
-			},
-		],
+		// 		// Plugin options
+		// 		out: 'fauton-cfg',
+		// 		sidebar: {
+		// 			categoryLabel: '@fauton/cfg',
+		// 			position: 0,
+		// 			fullNames: true,
+		// 		},
+		// 	},
+		// ],
 		[
 			'docusaurus-plugin-typedoc',
 			{

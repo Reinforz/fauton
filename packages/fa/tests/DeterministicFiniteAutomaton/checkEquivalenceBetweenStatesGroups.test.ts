@@ -1,31 +1,28 @@
 import { checkEquivalenceBetweenStatesGroups } from '../../libs/DeterministicFiniteAutomaton/checkEquivalenceBetweenStatesGroups';
 
-it(`Should detect equivalency`, () => {
-	expect(
-		checkEquivalenceBetweenStatesGroups([
+describe('checkEquivalenceBetweenStatesGroups', () => {
+	it(`Detect equivalency between state groups`, () => {
+		const stateGroupEquivalency = checkEquivalenceBetweenStatesGroups([
 			[['3', '5'], ['4'], ['1', '2']],
 			[['1', '2'], ['4'], ['3', '5']],
-		])
-	).toStrictEqual(true);
-});
+		]);
+		expect(stateGroupEquivalency).toStrictEqual(true);
+	});
 
-it(`Should detect non-equivalency`, () => {
-	// For different length of state groups
-	expect(
-		checkEquivalenceBetweenStatesGroups([
+	it(`Detect non-equivalency with same length`, () => {
+		// For different length of state groups
+		const stateGroupEquivalency = checkEquivalenceBetweenStatesGroups([
 			[['3', '5'], ['4'], ['1', '2']],
-			[
-				['1', '2'],
-				['3', '5'],
-			],
-		])
-	).toStrictEqual(false);
+			[['1', '2'], ['3', '5'], ['1']],
+		]);
+		expect(stateGroupEquivalency).toStrictEqual(false);
+	});
 
-	// For different states in state groups
-	expect(
-		checkEquivalenceBetweenStatesGroups([
+	it(`Detect non-equivalency with different length`, () => {
+		const stateGroupEquivalency = checkEquivalenceBetweenStatesGroups([
 			[['3', '5'], ['4'], ['1', '2']],
-			[['1'], ['4'], ['3', '5']],
-		])
-	).toStrictEqual(false);
+			[['4'], ['3', '5']],
+		]);
+		expect(stateGroupEquivalency).toStrictEqual(false);
+	});
 });

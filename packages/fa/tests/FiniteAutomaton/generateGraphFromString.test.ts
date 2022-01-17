@@ -1,8 +1,8 @@
-import { generateGraphFromString } from '../../libs/FiniteAutomaton/generateGraphFromString';
+import { generateParseTreeForString } from '../../libs/FiniteAutomaton/generateParseTreeForString';
 
 it(`Should work`, () => {
 	expect(
-		generateGraphFromString(
+		generateParseTreeForString(
 			{
 				final_states: ['c'],
 				start_state: 'a',
@@ -46,7 +46,7 @@ it(`Should work`, () => {
 			},
 		],
 		automatonTestResult: true,
-		graph: {
+		tree: {
 			name: `a`,
 			state: 'a',
 			string: '',

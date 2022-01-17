@@ -19,6 +19,13 @@ function TOCItemList({ depth, toc, className, linkClassName, isChild }) {
 			{toc.map((heading) => (
 				<li key={heading.id}>
 					<a
+						onClick={(e) => {
+							e.preventDefault();
+							window.scrollTo({
+								top: document.querySelector(`#${heading.id}`)?.offsetTop ?? 0 + 150,
+								behavior: 'smooth',
+							});
+						}}
 						href={`#${heading.id}`}
 						className={`${linkClassName ?? ''} depth-${depth}`} // Developer provided the HTML, so assume it's safe.
 						// eslint-disable-next-line react/no-danger

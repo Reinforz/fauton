@@ -1,6 +1,6 @@
 import { GraphNode, TransformedFiniteAutomaton } from '../types';
 
-export function generateGraphFromString(
+export function generateParseTreeForString(
 	automaton: Pick<TransformedFiniteAutomaton, 'start_state' | 'final_states' | 'transitions'>,
 	inputString: string
 ) {
@@ -14,10 +14,10 @@ export function generateGraphFromString(
 			children: [],
 		},
 	];
-	let automatonTestResult = false;
+	let verdict = false;
 	const finalStates = new Set(automaton.final_states);
 
-	const graph = currentParents;
+	const tree = currentParents;
 	for (let index = 0; index < inputString.length; index += 1) {
 		const newParents: GraphNode[] = [];
 		const symbol = inputString[index];
@@ -49,7 +49,7 @@ export function generateGraphFromString(
 			for (let newParentsIndex = 0; newParentsIndex < newParents.length; newParentsIndex += 1) {
 				const newChild = newParents[newParentsIndex];
 				if (finalStates.has(newChild.state)) {
-					automatonTestResult = true;
+					verdict = true;
 					break;
 				}
 			}
@@ -57,8 +57,8 @@ export function generateGraphFromString(
 		currentParents = newParents;
 	}
 	return {
-		automatonTestResult,
+		verdict,
 		finalNodes: currentParents,
-		graph: graph[0],
+		tree: tree[0],
 	};
 }

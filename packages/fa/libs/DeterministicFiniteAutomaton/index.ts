@@ -14,13 +14,13 @@ import { checkEquivalenceBetweenStatesGroups } from './checkEquivalenceBetweenSt
 import { generateEquivalenceStates } from './generateEquivalenceStates';
 import { generateStateGroupsRecord } from './generateStateGroupsRecord';
 import { merge } from './merge';
-import { minimize } from './minimize';
+import { minimizeDfa } from './minimizeDfa';
 
 export {
 	generateEquivalenceStates,
 	generateStateGroupsRecord,
 	merge,
-	minimize,
+	minimizeDfa,
 	checkEquivalenceBetweenStatesGroups,
 };
 
@@ -96,7 +96,7 @@ export class DeterministicFiniteAutomaton extends FiniteAutomaton {
 	) {
 		return new DeterministicFiniteAutomaton(
 			this.testLogic,
-			minimize(this.automaton, minimizedDfaOptions),
+			minimizeDfa(this.automaton, minimizedDfaOptions),
 			undefined,
 			{
 				skipCharacterRangesExpansion: true,

@@ -373,6 +373,9 @@ time{
   width: 100%;
   display: block;
   padding: 5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .table-of-contents__link.table-of-contents__link--active{

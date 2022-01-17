@@ -3,7 +3,13 @@ import { checkEquivalenceBetweenStatesGroups } from './checkEquivalenceBetweenSt
 import { generateEquivalenceStates } from './generateEquivalenceStates';
 import { generateStateGroupsRecord } from './generateStateGroupsRecord';
 
-export function minimize(
+/**
+ * Minimize a dfa
+ * @param automaton dfa to minimize
+ * @param minimizedDfaOptions Label and description of the minimized dfa
+ * @returns Minimized dfa
+ */
+export function minimizeDfa(
 	automaton: TransformedFiniteAutomaton,
 	minimizedDfaOptions?: Pick<
 		Pick<IFiniteAutomaton, 'automaton'>['automaton'],

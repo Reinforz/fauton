@@ -7,14 +7,14 @@ import {
 	TFiniteAutomatonType,
 	TransformedFiniteAutomaton,
 } from '../types';
-import { generateGraphFromString } from './generateGraphFromString';
+import { generateParseTreeForString } from './generateParseTreeForString';
 import { generatePostNormalizationErrors } from './generatePostNormalizationErrors';
 import { generatePreNormalizationErrors } from './generatePreNormalizationErrors';
 import { normalize } from './normalize';
 import { validate } from './validate';
 
 export {
-	generateGraphFromString,
+	generateParseTreeForString,
 	generatePostNormalizationErrors,
 	generatePreNormalizationErrors,
 	normalize,
@@ -68,11 +68,11 @@ export class FiniteAutomaton {
 		return this.#automatonId;
 	}
 
-	generateGraphFromString(inputString: string) {
-		return generateGraphFromString(this.automaton, inputString);
+	generateParseTreeForString(inputString: string) {
+		return generateParseTreeForString(this.automaton, inputString);
 	}
 
 	test(inputString: string) {
-		return this.generateGraphFromString(inputString).automatonTestResult;
+		return this.generateParseTreeForString(inputString).verdict;
 	}
 }
