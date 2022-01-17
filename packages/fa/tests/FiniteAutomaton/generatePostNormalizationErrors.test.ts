@@ -1,8 +1,8 @@
 import { generatePostNormalizationErrors } from '../../libs/FiniteAutomaton/generatePostNormalizationErrors';
 
-it(`Should not generate any errors`, () => {
-	expect(
-		generatePostNormalizationErrors({
+describe('generatePostNormalizationErrors', () => {
+	it(`Using valid dfa`, () => {
+		const postNormalizationErrors = generatePostNormalizationErrors({
 			alphabets: ['a', 'b'],
 			final_states: ['0', '1'],
 			label: 'DFA',
@@ -23,13 +23,12 @@ it(`Should not generate any errors`, () => {
 				},
 			},
 			epsilon_transitions: null,
-		}).length
-	).toStrictEqual(0);
-});
+		});
+		expect(postNormalizationErrors.length).toStrictEqual(0);
+	});
 
-it(`Should generate errors`, () => {
-	expect(
-		generatePostNormalizationErrors({
+	it(`Using invalid dfa`, () => {
+		const postNormalizationErrors = generatePostNormalizationErrors({
 			alphabets: ['a', 'b'],
 			final_states: ['0', '3'],
 			label: 'DFA',
@@ -57,13 +56,14 @@ it(`Should generate errors`, () => {
 				2: ['0', '3'],
 				3: ['1'],
 			},
-		})
-	).toStrictEqual([
-		`Automaton final_states must reference a state (3) that is present in states`,
-		`Epsilon transitions state 2 must reference a state 3 that is present in states`,
-		`Epsilon transitions state 3 must reference a state that is present in states`,
-		`Automaton transitions (3) must reference a state that is present in states`,
-		`Automaton transitions symbol (c), must reference a valid alphabet`,
-		`Automaton transitions value (4) when a tuple, must reference a valid state`,
-	]);
+		});
+		expect(postNormalizationErrors).toStrictEqual([
+			`Automaton final_states must reference a state (3) that is present in states`,
+			`Epsilon transitions state 2 must reference a state 3 that is present in states`,
+			`Epsilon transitions state 3 must reference a state that is present in states`,
+			`Automaton transitions (3) must reference a state that is present in states`,
+			`Automaton transitions symbol (c), must reference a valid alphabet`,
+			`Automaton transitions value (4) when a tuple, must reference a valid state`,
+		]);
+	});
 });

@@ -1,7 +1,14 @@
 import { GraphNode, TransformedFiniteAutomaton } from '../types';
 
+/**
+ * Generate parse tree for a given automaton and input string
+ * @param automaton Automaton to generate parse tree from
+ * @param inputString Input string to parse
+ * @returns A parse tree, verdict on whether the string is accepted and the leaf nodes
+ */
 export function generateParseTreeForString(
 	automaton: Pick<TransformedFiniteAutomaton, 'start_state' | 'final_states' | 'transitions'>,
+	// TODO: This should be an array of tokens
 	inputString: string
 ) {
 	let currentParents: GraphNode[] = [
@@ -58,7 +65,7 @@ export function generateParseTreeForString(
 	}
 	return {
 		verdict,
-		finalNodes: currentParents,
+		leafNodes: currentParents,
 		tree: tree[0],
 	};
 }
