@@ -32,3 +32,5 @@ jobs:
           upload_coverage_script="${GITHUB_WORKSPACE}/scripts/uploadCoverage.sh"
           chmod +x $upload_coverage_script
           bash $upload_coverage_script
+        env:
+          CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}

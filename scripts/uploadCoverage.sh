@@ -2,7 +2,7 @@
 
 codecov_file="${GITHUB_WORKSPACE}/scripts/codecov.sh"
 
-curl -s https://codecov.io/bash > $codecov_file
+curl -Os https://uploader.codecov.io/latest/linux/codecov > $codecov_file
 chmod +x $codecov_file
 
 packages=( cfg fa testing )
@@ -16,7 +16,7 @@ for package in "${packages[@]}" ; do
   file="${GITHUB_WORKSPACE}/packages/$package/coverage/lcov.info"
   echo -e "${GREEN}Uploading coverage for package $package_name${NC}"
 
-  if ! ($codecov_file -f $file -F $package) then
+  if ! ($codecov_file -f $file -F $package -t $CODECOV_TOKEN) then
     echo -e "${RED}Error uploading coverage for $package_name${NC}"
     exit 1
   else
