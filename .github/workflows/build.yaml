@@ -19,13 +19,14 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Build packages
+      - name: Lint, Build and Test packages
         run: |
           # Install shared dependencies
           npm install
-          build_script="${GITHUB_WORKSPACE}/scripts/build.sh"
-          chmod +x $build_script
-          bash $build_script
+          npm run bootstrap
+          npm run lint
+          npm run build
+          npm run test
       - name: Upload test coverage
         run: |
           upload_coverage_script="${GITHUB_WORKSPACE}/scripts/uploadCoverage.sh"
