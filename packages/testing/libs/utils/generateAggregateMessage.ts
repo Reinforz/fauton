@@ -9,17 +9,29 @@ function percentagesUptoPrecision(numerators: number[], denominator: number, pre
 	return numerators.map((numerator) => percentageUptoPrecision(numerator, denominator, precision));
 }
 
+/**
+ * Generate aggregate message for an automaton
+ * @param automatonLabel Label given to the automaton
+ * @param automatonDescription Description of the automaton
+ * @param automatonTestInfo A record that contains the total false/true positive/negatives count for the automaton
+ * @returns
+ */
 export function generateAggregateMessage(
 	automatonLabel: string | undefined,
 	automatonDescription: string | undefined,
 	automatonTestInfo: AutomatonTestInfo
 ) {
 	const { falsePositives, falseNegatives, truePositives, trueNegatives } = automatonTestInfo;
+	// Its correct for both true positives and negatives
 	const totalCorrect = trueNegatives + truePositives;
+	// Its incorrect for both false positives and negatives
 	const totalIncorrect = falseNegatives + falsePositives;
+
+	// All input string would either be correct or incorrect
 	const totalStrings = totalCorrect + totalIncorrect;
 	const correctPercentage = percentageUptoPrecision(totalCorrect, totalStrings, 5);
 	const incorrectPercentage = parseFloat((100 - correctPercentage).toFixed(5));
+	// Get the percentage of false/true positive/negatives upto certain digit of precision
 	const [
 		falsePositivesPercentage,
 		falseNegativesPercentage,
@@ -31,6 +43,7 @@ export function generateAggregateMessage(
 		5
 	);
 
+	// Add the automaton description with colors
 	const descriptionStringWithColors = automatonDescription
 		? `${colors.bold(automatonDescription)}\n`
 		: '';

@@ -21,17 +21,25 @@ export function generateRandomLanguage(
 		initialInputStrings?.map((initialInputString) => initialInputString.join(' ')) ?? []
 	);
 
+	// WARN This could potentially cause an infinite loop,
+	// While we haven't reached total tokens equal to total
 	while (generatedStringsSet.size < total) {
+		// Generate a random number for the token length
 		const tokenLength = generateRandomNumber(minTokenLength, maxTokenLength);
-		const generatedTokens: string[] = [];
+		const generatedString: string[] = [];
 		for (let index = 0; index < tokenLength; index += 1) {
-			generatedTokens.push(tokens[generateRandomNumber(0, tokens.length - 1)]);
+			// Generate a random token
+			generatedString.push(tokens[generateRandomNumber(0, tokens.length - 1)]);
 		}
-
-		generatedStringsSet.add(generatedTokens.join(' '));
+		// Add the generated string by joining the tokens with space
+		generatedStringsSet.add(generatedString.join(' '));
 	}
+	// Using a array of tokens, rather than a set as there is a limit to the number of items a set can contain
+	// If $total is a very large number using a set would throw an error
 	const generatedStrings: string[][] = [];
+	// Convert the set to an array
 	Array.from(generatedStringsSet).forEach((generatedString) => {
+		// Generate tokens from the string by splitting it via space
 		generatedStrings.push(generatedString.split(' '));
 	});
 	return generatedStrings;
