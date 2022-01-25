@@ -37,14 +37,10 @@ const config = {
 			'docusaurus-plugin-typedoc',
 			{
 				id: 'docusaurus-plugin-typedoc-1',
-				// TypeDoc options
 				entryPoints: ['../packages/cfg/libs/index.ts'],
 				tsconfig: '../packages/cfg/tsconfig.json',
-
-				// Plugin options
 				out: 'cfg/api',
 				sidebar: {
-					categoryLabel: '@fauton/cfg',
 					position: 0,
 					fullNames: true,
 				},
@@ -54,14 +50,10 @@ const config = {
 			'docusaurus-plugin-typedoc',
 			{
 				id: 'docusaurus-plugin-typedoc-2',
-				// TypeDoc options
 				entryPoints: ['../packages/fa/libs/index.ts'],
 				tsconfig: '../packages/fa/tsconfig.json',
-
-				// Plugin options
 				out: 'fa/api',
 				sidebar: {
-					categoryLabel: '@fauton/fa',
 					position: 0,
 					fullNames: true,
 				},
@@ -71,14 +63,10 @@ const config = {
 			'docusaurus-plugin-typedoc',
 			{
 				id: 'docusaurus-plugin-typedoc-3',
-				// TypeDoc options
 				entryPoints: ['../packages/testing/libs/index.ts'],
 				tsconfig: '../packages/testing/tsconfig.json',
-
-				// Plugin options
 				out: 'testing/api',
 				sidebar: {
-					categoryLabel: '@fauton/testing',
 					position: 0,
 					fullNames: true,
 				},
