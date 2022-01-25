@@ -13,6 +13,8 @@ import {
 } from './types';
 import {
 	createFileWriteStreams,
+	generateAggregateMessage,
+	generateCaseMessage,
 	generateRandomLanguage,
 	generateUniversalLanguage,
 	testAutomata,
@@ -87,4 +89,11 @@ export class AutomataTest {
 	}
 }
 
-export { testAutomata, testAutomaton, generateUniversalLanguage, generateRandomLanguage };
+export {
+	generateAggregateMessage,
+	generateCaseMessage,
+	testAutomata,
+	testAutomaton,
+	generateUniversalLanguage,
+	generateRandomLanguage,
+};

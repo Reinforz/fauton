@@ -76,9 +76,9 @@ const config = {
 			'docusaurus-plugin-xgen',
 			{
 				packageDirectory: path.resolve(__dirname, '../packages'),
-				packageModuleMarkdownRootDirectory: path.resolve(__dirname, './docs'),
+				documentationDirectory: path.resolve(__dirname, './docs'),
 				packageModuleMarkdownDirectory: 'api',
-				packages: ['cfg', 'fa'],
+				packages: ['cfg', 'fa', 'testing'],
 				id: 'example-generator',
 				scope: 'fauton',
 			},
