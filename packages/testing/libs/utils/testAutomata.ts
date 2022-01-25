@@ -8,13 +8,13 @@ import { generateUniversalLanguage } from './generateUniversalLanguage';
 import { testAutomaton } from './testAutomaton';
 
 /**
- * Test automatons
+ * Test automata
  * @param logsPath Path to store the log files
  * @param configs Test configuration for each automaton
  * @param preAutomatonTestCb Callback to call before testing the automaton
  * @param postAutomatonTestCb Callback to call after testing the automaton
  */
-export async function test(
+export async function testAutomata(
 	logsPath: string,
 	configs: {
 		automatonInfo: IAutomatonInfo;

@@ -68,7 +68,24 @@ const config = {
 			},
 		],
 		[
-			'docusaurus-plugin-example-generator',
+			'docusaurus-plugin-typedoc',
+			{
+				id: 'docusaurus-plugin-typedoc-3',
+				// TypeDoc options
+				entryPoints: ['../packages/testing/libs/index.ts'],
+				tsconfig: '../packages/testing/tsconfig.json',
+
+				// Plugin options
+				out: 'testing',
+				sidebar: {
+					categoryLabel: '@fauton/testing',
+					position: 0,
+					fullNames: true,
+				},
+			},
+		],
+		[
+			'docusaurus-plugin-xgen',
 			{
 				packageDirectory: path.resolve(__dirname, '../packages'),
 				moduleMarkdownDirectory: path.resolve(__dirname, './docs'),

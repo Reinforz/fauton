@@ -11,7 +11,13 @@ import {
 	InputStringOption,
 	IOutputFiles,
 } from './types';
-import * as AutomataTestUtils from './utils';
+import {
+	createFileWriteStreams,
+	generateRandomLanguage,
+	generateUniversalLanguage,
+	testAutomata,
+	testAutomaton,
+} from './utils';
 
 type IWriteStreams = Record<`${keyof IOutputFiles}WriteStream`, null | fs.WriteStream>;
 
@@ -36,7 +42,7 @@ export class AutomataTest {
 	}
 
 	createFileWriteStreams(automatonLabel: string, outputFiles: Partial<IOutputFiles>) {
-		return AutomataTestUtils.createFileWriteStreams(this.#logsPath, automatonLabel, outputFiles);
+		return createFileWriteStreams(this.#logsPath, automatonLabel, outputFiles);
 	}
 
 	testAutomata(
@@ -48,15 +54,9 @@ export class AutomataTest {
 		writeStreams: IWriteStreams,
 		inputStrings: string[][]
 	) {
-		AutomataTestUtils.testAutomaton(
-			automaton,
-			automatonTestInfo,
-			writeStreams,
-			inputStrings,
-			() => {
-				this.#cliProgressBar.increment(1);
-			}
-		);
+		testAutomaton(automaton, automatonTestInfo, writeStreams, inputStrings, () => {
+			this.#cliProgressBar.increment(1);
+		});
 	}
 
 	async test(
@@ -65,7 +65,7 @@ export class AutomataTest {
 			options: InputStringOption;
 		}[]
 	) {
-		AutomataTestUtils.test(
+		testAutomata(
 			this.#logsPath,
 			configs.map((config) => ({
 				automatonInfo: {
@@ -87,4 +87,4 @@ export class AutomataTest {
 	}
 }
 
-export { AutomataTestUtils };
+export { testAutomata, testAutomaton, generateUniversalLanguage, generateRandomLanguage };
