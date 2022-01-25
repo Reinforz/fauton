@@ -11,7 +11,7 @@
 </p>
 
 <p align="center"><a href="https://github.com/Devorein/fauton/tree/main/packages/fa">Github</a>&nbsp;|&nbsp;
-  <a href="https://docs.fauton.xyz/fa/">Docs</a>&nbsp;|&nbsp;
+  <a href="https://docs.fauton.xyz/docs/fa/">Docs</a>&nbsp;|&nbsp;
   <a href="https://www.npmjs.com/package/@fauton/fa">NPM</a>
 </p>
 

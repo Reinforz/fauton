@@ -9,7 +9,7 @@
 </p>
 
 <p align="center"><a href="https://github.com/Devorein/fauton/tree/main/packages/cfg">Github</a>&nbsp;|&nbsp;
-  <a href="https://docs.fauton.xyz/cfg/">Docs</a>&nbsp;|&nbsp;
+  <a href="https://docs.fauton.xyz/docs/cfg/">Docs</a>&nbsp;|&nbsp;
   <a href="https://www.npmjs.com/package/@fauton/cfg">NPM</a>
 </p>
 
