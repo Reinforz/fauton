@@ -2,10 +2,10 @@
   "name": "@fauton/testing",
   "version": "0.0.1",
   "description": "A package to test your automaton (regex/dfa/nfa/e-nfa/cfg)",
-  "main": "dist/libs/index.js",
-  "typings": "dist/libs/index.d.ts",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "files": [
-    "dist/libs"
+    "dist"
   ],
   "scripts": {
     "prebuild": "del-cli ./dist",

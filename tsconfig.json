@@ -7,7 +7,7 @@
     ],
     "strict": false,
     "skipLibCheck": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "declaration": true,
     "moduleResolution": "node",
     "noImplicitAny": true,

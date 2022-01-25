@@ -5,6 +5,7 @@
     "url": "https://github.com/Devorein/fauton/issues"
   },
   "scripts": {
+    "prebuild": "lerna run prebuild",
     "build": "lerna run build",
     "test": "lerna run test",
     "lint": "lerna run lint",
