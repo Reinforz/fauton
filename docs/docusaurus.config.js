@@ -42,7 +42,7 @@ const config = {
 				tsconfig: '../packages/cfg/tsconfig.json',
 
 				// Plugin options
-				out: 'cfg',
+				out: 'cfg/api',
 				sidebar: {
 					categoryLabel: '@fauton/cfg',
 					position: 0,
@@ -59,7 +59,7 @@ const config = {
 				tsconfig: '../packages/fa/tsconfig.json',
 
 				// Plugin options
-				out: 'fa',
+				out: 'fa/api',
 				sidebar: {
 					categoryLabel: '@fauton/fa',
 					position: 0,
@@ -76,7 +76,7 @@ const config = {
 				tsconfig: '../packages/testing/tsconfig.json',
 
 				// Plugin options
-				out: 'testing',
+				out: 'testing/api',
 				sidebar: {
 					categoryLabel: '@fauton/testing',
 					position: 0,
@@ -88,7 +88,8 @@ const config = {
 			'docusaurus-plugin-xgen',
 			{
 				packageDirectory: path.resolve(__dirname, '../packages'),
-				moduleMarkdownDirectory: path.resolve(__dirname, './docs'),
+				packageModuleMarkdownRootDirectory: path.resolve(__dirname, './docs'),
+				packageModuleMarkdownDirectory: 'api',
 				packages: ['cfg', 'fa'],
 				id: 'example-generator',
 				scope: 'fauton',
