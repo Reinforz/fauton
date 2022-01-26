@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="https://github.com/Devorein/fauton/actions?query=workflow%3A%22Lint%2C+Build+and+Test%22"><img src="https://github.com/devorein/fauton/workflows/Lint,%20Build%20and%20Test/badge.svg"/></a>
-  <a href="https://app.codecov.io/gh/Devorein/fauton/branch/master"><img src="https://img.shields.io/codecov/c/github/devorein/fauton?color=blue"/></a>
+  <a href="https://app.codecov.io/gh/Devorein/fauton/branch/main"><img src="https://img.shields.io/codecov/c/github/devorein/fauton?color=blue"/></a>
   <img src="https://img.shields.io/github/commit-activity/m/devorein/fauton?color=yellow" />
   <img src="https://img.shields.io/github/repo-size/devorein/fauton?style=flat-square&color=ocombo"/>
   <img src="https://img.shields.io/github/contributors/devorein/fauton?label=contributors&color=red"/>
@@ -34,7 +34,7 @@
 - **`@fauton/cfg`** [Github](https://github.com/Devorein/fauton/tree/main/packages/cfg) [NPM](https://www.npmjs.com/package/@fauton/cfg): A package to work with cfg
 - **`@fauton/fa`** [Github](https://github.com/Devorein/fauton/tree/main/packages/fa) [NPM](https://www.npmjs.com/package/@fauton/fa): A package to work with finite automata
 - **`@fauton/regex`** [Github](https://github.com/Devorein/fauton/tree/main/packages/regex) : A package to work with regex validation and parsing
-- **`@fauton/testing`** [Github](https://github.com/Devorein/fauton/tree/main/packages/testing) : A package to test your automaton (regex/dfa/nfa/e-nfa/cfg)
+- **`@fauton/testing`** [Github](https://github.com/Devorein/fauton/tree/main/packages/testing) [NPM](https://www.npmjs.com/package/@fauton/testing) : A package to test your automaton (regex/dfa/nfa/e-nfa/cfg)
 - **`@fauton/language`** [Github](https://github.com/Devorein/fauton/tree/main/packages/language) : A package to generate language from a given set of tokens
 
 ## Algorithm Sources

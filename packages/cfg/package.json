@@ -1,6 +1,6 @@
 {
   "name": "@fauton/cfg",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A package to work with context free grammars",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -12,8 +12,8 @@
     "prepublishOnly": "npm run lint && npm run build && npm run test",
     "build": "tsc --sourceMap false",
     "build:watch": "tsc -w",
-    "lint": "eslint \"./libs\" --ext tsx,ts",
-    "lint:fix": "eslint \"./libs\" --ext tsx,ts --fix",
+    "lint": "eslint \"./libs/**/*.{tsx,ts}\"",
+    "lint:fix": "eslint \"./libs/**/*.{tsx,ts}\"",
     "format": "prettier ./libs/**/*.{ts,js} --write",
     "test": "jest --runInBand"
   },

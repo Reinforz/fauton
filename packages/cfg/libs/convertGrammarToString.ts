@@ -9,7 +9,6 @@ export function convertGrammarToString(productionRules: IContextFreeGrammar['pro
 	const grammarStringLines: string[] = [];
 	const productionRulesEntries = Object.entries(productionRules);
 	productionRulesEntries.forEach(([variable, rules]) => {
-		// Don't add newline if we are at the last rule
 		grammarStringLines.push(
 			`${variable} -> ${rules.map((rule) => (rule.length === 0 ? 'ϵ' : rule)).join(' | ')}`
 		);
