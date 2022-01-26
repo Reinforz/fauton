@@ -1,0 +1,40 @@
+{
+  "name": "@fauton/cfg",
+  "version": "0.0.4",
+  "description": "A package to work with context free grammars",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "prebuild": "del-cli ./dist",
+    "prepublishOnly": "npm run lint && npm run build && npm run test",
+    "build": "tsc --sourceMap false",
+    "build:watch": "tsc -w",
+    "lint": "eslint \"./libs/**/*.{tsx,ts}\"",
+    "lint:fix": "eslint \"./libs/**/*.{tsx,ts}\"",
+    "format": "prettier ./libs/**/*.{ts,js} --write",
+    "test": "jest --runInBand"
+  },
+  "keywords": [
+    "context-free-grammar",
+    "context-free-language",
+    "natural-language-generation",
+    "cyk-parse",
+    "cnf"
+  ],
+  "author": "Safwan Shaheer <devorein00@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Devorein/fauton.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@datastructures-js/linked-list": "^5.1.1"
+  },
+  "devDependencies": {}
+}

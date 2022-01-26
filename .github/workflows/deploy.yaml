@@ -1,0 +1,34 @@
+name: Deploy
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Deploy docs
+        run: |
+          # Install vercel globally
+          npm install vercel -g
+          cd ./docs
+          npm install
+          npm run build
+          # Create the .vercel dir
+          mkdir ./build/.vercel
+          # Create vercel project.json 
+          echo {\"projectId\": $VERCEL_PROJECT_ID, \"orgId\": $VERCEL_ORG_ID} > ./build/.vercel/project.json
+          npm run deploy
+        env:
+          VERCEL_PROJECT_ID: ${{secrets.VERCEL_PROJECT_ID}}
+          VERCEL_ORG_ID: ${{secrets.VERCEL_ORG_ID}}

@@ -1,0 +1,37 @@
+{
+  "name": "@fauton/testing",
+  "version": "0.0.1",
+  "description": "A package to test your automaton (regex/dfa/nfa/e-nfa/cfg)",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prebuild": "del-cli ./dist",
+    "prepublishOnly": "npm run lint && npm run build && npm run test",
+    "build": "tsc --sourceMap false",
+    "build:watch": "tsc -w",
+    "lint": "npx eslint \"./libs\" --ext tsx,ts",
+    "lint:fix": "npx eslint \"./libs\" --ext tsx,ts --fix",
+    "format": "npx prettier ./libs/**/*.{ts,js} --write",
+    "test": "npx jest --runInBand"
+  },
+  "keywords": [
+    "automaton-testing"
+  ],
+  "author": "Safwan Shaheer <devorein00@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Devorein/fauton.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "cli-progress": "^3.9.1",
+    "colors": "^1.4.0"
+  },
+  "devDependencies": {}
+}

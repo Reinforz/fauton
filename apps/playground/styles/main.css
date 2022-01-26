@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind utilities;
+@tailwind variants;
+
+body {
+  font-family: 'Roboto', monospace;
+  height: 100%;
+}
+
+html {
+  height: 100vh;
+}
+
+#__next {
+  height: 100%;
+}

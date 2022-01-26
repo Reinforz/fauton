@@ -1,0 +1,25 @@
+{
+  "name": "doc-scripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "exports": "./dist/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node dist/index.js",
+    "build": "tsc --sourceMap false --declaration false",
+    "build:watch": "tsc --sourceMap false --declaration false --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "marked": "^4.0.10"
+  },
+  "devDependencies": {
+    "@types/marked": "^4.0.1"
+  },
+  "engines": {
+    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+  }
+}

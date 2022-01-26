@@ -1,0 +1,39 @@
+{
+  "name": "@fauton/fa",
+  "version": "0.0.2",
+  "description": "A package to work with finite automata",
+  "main": "dist/libs/index.js",
+  "typings": "dist/libs/index.d.ts",
+  "files": [
+    "dist/libs"
+  ],
+  "scripts": {
+    "prebuild": "del-cli ./dist",
+    "prepublishOnly": "npm run lint && npm run build && npm run test",
+    "build": "tsc --sourceMap false",
+    "build:watch": "tsc -w",
+    "lint": "npx eslint \"./libs\" --ext tsx,ts",
+    "lint:fix": "npx eslint \"./libs\" --ext tsx,ts --fix",
+    "format": "npx prettier ./libs/**/*.{ts,js} --write",
+    "test": "npx jest --runInBand"
+  },
+  "keywords": [
+    "finite-automaton",
+    "deterministic-finite-automaton",
+    "non-deterministic-finite-automaton",
+    "epsilon-finite-automaton"
+  ],
+  "author": "Safwan Shaheer <devorein00@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Devorein/fauton.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "shortid": "^2.2.16"
+  },
+  "devDependencies": {}
+}

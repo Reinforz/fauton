@@ -1,46 +1,17 @@
 {
   "name": "fauton",
-  "version": "0.0.9",
-  "description": "A library to test any finite automaton with arbitrary alphabets",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "prebuild": "del-cli ./dist",
-    "prepublishOnly": "npm run build",
-    "build": "tsc --sourceMap false",
-    "start": "node dist/index.js",
-    "build:watch": "tsc -w",
-    "lint": "npx eslint \"./src\" --ext tsx,ts",
-    "lint:fix": "npx eslint \"./src\" --ext tsx,ts --fix",
-    "test": "npx jest --runInBand --config ./jest.config.js",
-    "format": "npx prettier ./src/**/*.{ts,js} --write"
-  },
-  "files": [
-    "dist/"
-  ],
-  "np": {
-    "branch": "main",
-    "cleanup": false,
-    "tests": false,
-    "yarn": false,
-    "contents": "dist",
-    "testScript": "build",
-    "message": "v%s"
-  },
-  "keywords": [
-    "dfa",
-    "nfa",
-    "nfa-to-dfa-conversion",
-    "finite-automata",
-    "automaton-testing",
-    "epsilon-nfa",
-    "epsilon-nfa-to-nfa",
-    "regex",
-    "automaton"
-  ],
   "homepage": "https://github.com/Devorein/fauton/blob/master/README.md",
   "bugs": {
     "url": "https://github.com/Devorein/fauton/issues"
+  },
+  "scripts": {
+    "prebuild": "lerna run prebuild",
+    "build": "lerna run build",
+    "test": "lerna run test",
+    "lint": "lerna run lint",
+    "format": "lerna run format",
+    "build:watch": "lerna run build:watch --parallel",
+    "bootstrap": "lerna bootstrap"
   },
   "repository": {
     "type": "git",
@@ -48,11 +19,6 @@
   },
   "author": "Safwan Shaheer <devorein00@gmail.com>",
   "license": "MIT",
-  "dependencies": {
-    "cli-progress": "^3.9.1",
-    "colors": "^1.4.0",
-    "shortid": "^2.2.16"
-  },
   "devDependencies": {
     "@types/cli-progress": "^3.9.2",
     "@types/jest": "^27.0.2",
@@ -73,7 +39,7 @@
     "ts-jest": "^27.0.7",
     "typescript": "^4.4.4"
   },
-  "publishConfig": {
-    "access": "public"
+  "dependencies": {
+    "lerna": "^4.0.0"
   }
 }
