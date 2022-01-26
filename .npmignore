@@ -6,6 +6,7 @@ package-lock.json
 **/*.ts
 !**/dist
 !**/*.d.ts
+!**/*.map.js
 **/src
 /workflows
 /.github
