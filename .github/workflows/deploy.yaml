@@ -30,9 +30,11 @@ jobs:
           npm run build
           # Create the .vercel dir
           mkdir ./build/.vercel
+          ls ./build
           # Create vercel project.json 
           echo {\"projectId\": $VERCEL_PROJECT_ID, \"orgId\": $VERCEL_ORG_ID} > ./build/.vercel/project.json
-          npm run deploy
+          npm run deploy --token $VERCEL_TOKEN
         env:
           VERCEL_PROJECT_ID: ${{secrets.VERCEL_PROJECT_ID}}
           VERCEL_ORG_ID: ${{secrets.VERCEL_ORG_ID}}
+          VERCEL_TOKEN: ${{secrets.VERCEL_TOKEN}}
