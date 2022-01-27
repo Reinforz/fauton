@@ -17,10 +17,14 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Deploy docs
+      - name: Install dependencies
         run: |
           # Install vercel globally
           npm install vercel -g
+          npm install
+          npm run bootstrap
+      - name: Deploy docs
+        run: |
           cd ./docs
           npm install
           npm run build
