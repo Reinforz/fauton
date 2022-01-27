@@ -73,7 +73,7 @@ const config = {
 			},
 		],
 		[
-			'docusaurus-plugin-xgen',
+			'docusaurus-plugin-exgen',
 			{
 				packageDirectory: path.resolve(__dirname, '../packages'),
 				documentationDirectory: path.resolve(__dirname, './docs'),
