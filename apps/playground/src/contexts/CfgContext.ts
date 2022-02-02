@@ -1,7 +1,12 @@
 import { IContextFreeGrammar } from '@fauton/cfg';
 import React, { Dispatch, SetStateAction } from 'react';
+import { UserInputGrammar } from '../types';
 
-interface IRootContext {
+interface ICfgContext {
+  grammars: {
+		label: string;
+		grammar: IContextFreeGrammar;
+	}[]
 	currentSelectedGrammar: {
 		label: string;
 		grammar: IContextFreeGrammar;
@@ -12,6 +17,7 @@ interface IRootContext {
 			grammar: IContextFreeGrammar;
 		} | null>
 	>;
+  addGrammar: ((userInputGrammar: UserInputGrammar) => void)
 }
 
-export const RootContext = React.createContext<IRootContext>({} as IRootContext);
+export const CfgContext = React.createContext<ICfgContext>({} as ICfgContext);
