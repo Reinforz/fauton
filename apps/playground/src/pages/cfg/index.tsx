@@ -1,7 +1,10 @@
 import { extractTerminalsFromCfg, IContextFreeGrammar } from "@fauton/cfg";
+import { ListItem, ListItemText } from "@mui/material";
 import { useState } from "react";
 import { CreateGrammar } from "../../components";
+import Drawer from "../../components/Drawer";
 import { CfgContext } from "../../contexts";
+import { DrawerContext } from "../../contexts/Drawer";
 import { UserInputGrammar } from "../../types";
 
 export default function ContextFreeGrammar() {
@@ -10,6 +13,7 @@ export default function ContextFreeGrammar() {
     label: string,
     grammar: IContextFreeGrammar
   } | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   function addGrammar(userInputGrammar: UserInputGrammar) {
     // Using a set to keep track of unique variables
@@ -34,13 +38,18 @@ export default function ContextFreeGrammar() {
       grammar: convertedContextFreeGrammar
     }])
   }
-  
+
   return <CfgContext.Provider value={{
     grammars: contextFreeGrammars,
     addGrammar,
     currentSelectedGrammar,
     setCurrentSelectedGrammar
   }}>
-    <CreateGrammar />
+    <DrawerContext.Provider value={{isDrawerOpen, setIsDrawerOpen}}>
+      <Drawer drawerItems={[contextFreeGrammars.map(contextFreeGrammar => <ListItem button key={contextFreeGrammar.label}>
+        <ListItemText primary={contextFreeGrammar.label} />
+      </ListItem>)]} />
+      <CreateGrammar />
+    </DrawerContext.Provider>
   </CfgContext.Provider>
 }
