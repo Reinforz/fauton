@@ -9,7 +9,6 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   return <ThemeProvider theme={generatedTheme}>
     <Component {...pageProps} />
   </ThemeProvider>
-
 };
 
 export default MyApp;

@@ -1,8 +1,8 @@
 import { extractTerminalsFromCfg, IContextFreeGrammar } from "@fauton/cfg";
+import { useRouter } from "next/dist/client/router";
 import Head from "next/head";
 import { useState } from "react";
-import { CreateGrammar } from "../components/CreateGrammar";
-import { GrammarPipeline } from "../components/GrammarPipeline";
+import { Button } from "../components";
 import { RootContext } from "../contexts/RootContext";
 import { UserInputGrammar } from "../types";
 
@@ -12,6 +12,8 @@ const Index = () => {
     label: string,
     grammar: IContextFreeGrammar
   } | null>(null);
+
+  const router = useRouter();
 
   function addGrammar(userInputGrammar: UserInputGrammar) {
     // Using a set to keep track of unique variables
@@ -45,15 +47,19 @@ const Index = () => {
       currentSelectedGrammar,
       setCurrentSelectedGrammar
     }}>
-      <div className="p-3 text-white bg-gray-900 h-full w-full">
-        <div className="flex gap-10 h-full">
-          <div className="overflow-auto w-1/2">
-            <CreateGrammar addGrammar={addGrammar} />
-          </div>
-          <div className="w-1/2">
-            <GrammarPipeline grammars={contextFreeGrammars} />
-          </div>
-        </div>
+      <div className="p-3 text-white bg-gray-900 h-full w-full flex items-center justify-center flex-col gap-5">
+        <Button label="Regular Expression" onClick={() => {
+          router.push("/regex")
+        }}/>
+        <Button label="Context Free Grammar" onClick={() => {
+          router.push("/cfg")
+        }}/>
+        <Button label="Finite Automata" onClick={() => {
+          router.push("/fa")
+        }}/>
+        <Button label="Pushdown Automata" onClick={() => {
+          router.push("/pda")
+        }}/>
       </div>
     </RootContext.Provider>
   </>;
