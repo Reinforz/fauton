@@ -7,6 +7,7 @@ import { IContextFreeGrammar, IContextFreeGrammarInput } from '../types';
  * @returns Populated cfg
  */
 export function populateCfg(cfg: IContextFreeGrammarInput) {
+  // TODO: Loop through all the production rules and extract variables from them
 	if (!cfg.variables) {
 		cfg.variables = Object.keys(cfg.productionRules);
 	}

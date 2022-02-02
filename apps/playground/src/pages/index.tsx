@@ -8,7 +8,7 @@ const Index = () => {
     <Head>
       <title>Fauton Playground</title>
     </Head>
-    <div className="p-3 text-white bg-gray-900 h-full w-full flex items-center justify-center flex-col gap-5">
+    <div className="p-3 h-full w-full flex items-center justify-center flex-col gap-5">
       <Button label="Regular Expression" onClick={() => {
         router.push("/regex")
       }}/>

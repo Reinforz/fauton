@@ -1,5 +1,6 @@
 import { extractTerminalsFromCfg, IContextFreeGrammar } from "@fauton/cfg";
 import { useState } from "react";
+import { CreateGrammar } from "../../components";
 import { CfgContext } from "../../contexts";
 import { UserInputGrammar } from "../../types";
 
@@ -40,6 +41,6 @@ export default function ContextFreeGrammar() {
     currentSelectedGrammar,
     setCurrentSelectedGrammar
   }}>
-
+    <CreateGrammar />
   </CfgContext.Provider>
 }

@@ -1,19 +1,17 @@
 import { TextField } from "@mui/material";
-import { useState } from "react";
+import { useRouter } from "next/dist/client/router";
+import { useContext, useState } from "react";
+import { CfgContext } from "../contexts";
 import { useGrammarInput } from "../hooks";
-import { UserInputGrammar } from "../types";
 import { Button } from "./Button";
 import { GrammarString } from "./GrammarString";
 import { AddIcon, DeleteIcon } from "./Icons";
 
-interface CreateGrammarProps {
-  addGrammar: (userInputGrammar: UserInputGrammar) => void
-}
-
-export function CreateGrammar(props: CreateGrammarProps) {
-  const { addGrammar } = props;
+export function CreateGrammar() {
+  const {addGrammar} = useContext(CfgContext);
   const [grammarLabel, setGrammarLabel] = useState("")
   const { userInputGrammar, productionRules, updateRuleVariable, resetState, removeRule, addRule, updateToken, addSubstitution, addToken, removeToken, removeSubstitution } = useGrammarInput();
+  const router = useRouter();
 
   let isValidGrammar = true;
   if (userInputGrammar.rules.length === 0 || userInputGrammar.rules[0]?.substitutions.length === 0 || !grammarLabel) {
@@ -76,5 +74,12 @@ export function CreateGrammar(props: CreateGrammarProps) {
       resetState();
       setGrammarLabel("")
     }} label="Add Grammar" />
+
+    <div className="">
+      <div>Operations</div>
+      {([["Generate Cfg Language", "generateCfgLanguage"]] as [string, string][]).map(([operation, route]) => <div key={operation}>
+        <Button label={operation} onClick={() => router.push(`${router.asPath}/${route}`)}/>
+      </div>)}
+    </div>
   </div>
 }
