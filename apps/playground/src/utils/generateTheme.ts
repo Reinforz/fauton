@@ -9,6 +9,7 @@ export function generateTheme() {
 	const secondaryColor = `rgba(45, 55, 72)`;
 
 	const themeOptions: ThemeOptions = {
+    spacing: 10,
 		palette: {
 			error: {
 				main: red[500],
@@ -43,15 +44,19 @@ export function generateTheme() {
 				color: grey[700],
 			},
 			h3: {
-				fontWeight: 900,
+				fontWeight: 700,
+        fontSize: '2em',
 			},
 			h4: {
-				fontWeight: 800,
+				fontWeight: 700,
+        fontSize: '1.75em',
 			},
 			h5: {
+        fontSize: '1.5em',
 				fontWeight: 700,
 			},
 			h6: {
+        fontSize: '1.25em',
 				fontWeight: 600,
 			},
 			caption: {
@@ -70,6 +75,13 @@ export function generateTheme() {
 					},
 				},
 			},
+      MuiTypography: {
+        styleOverrides: {
+          h5: {
+            margin: 10
+          }
+        }
+      },
 			MuiPaper: {
 				styleOverrides: {
 					root: {
