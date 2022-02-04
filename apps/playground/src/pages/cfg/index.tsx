@@ -5,14 +5,11 @@ import { CreateGrammar } from "../../components";
 import Drawer from "../../components/Drawer";
 import { CfgContext } from "../../contexts";
 import { DrawerContext } from "../../contexts/Drawer";
-import { UserInputGrammar } from "../../types";
+import { ContextFreeGrammarWithLabel, UserInputGrammar } from "../../types";
 
 export default function ContextFreeGrammar() {
-  const [contextFreeGrammars, setContextFreeGrammars] = useState<{ label: string, grammar: IContextFreeGrammar }[]>([]);
-  const [currentSelectedGrammar, setCurrentSelectedGrammar] = useState<{
-    label: string,
-    grammar: IContextFreeGrammar
-  } | null>(null);
+  const [contextFreeGrammars, setContextFreeGrammars] = useState<ContextFreeGrammarWithLabel[]>([]);
+  const [currentSelectedGrammar, setCurrentSelectedGrammar] = useState<ContextFreeGrammarWithLabel | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   function addGrammar(userInputGrammar: UserInputGrammar) {
@@ -35,7 +32,7 @@ export default function ContextFreeGrammar() {
     convertedContextFreeGrammar.startVariable = convertedContextFreeGrammar.variables[0]!;
     setContextFreeGrammars([...contextFreeGrammars, {
       label: userInputGrammar.label,
-      grammar: convertedContextFreeGrammar
+      ...convertedContextFreeGrammar
     }])
   }
 

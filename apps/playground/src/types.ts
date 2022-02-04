@@ -22,3 +22,5 @@ export type UserInputGrammar = {
 		substitutions: string[][];
 	}>;
 };
+
+export type ContextFreeGrammarWithLabel = IContextFreeGrammar & {label: string}

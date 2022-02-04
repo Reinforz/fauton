@@ -1,21 +1,11 @@
-import { IContextFreeGrammar } from '@fauton/cfg';
 import React, { Dispatch, SetStateAction } from 'react';
-import { UserInputGrammar } from '../types';
+import { ContextFreeGrammarWithLabel, UserInputGrammar } from '../types';
 
 interface ICfgContext {
-  grammars: {
-		label: string;
-		grammar: IContextFreeGrammar;
-	}[]
-	currentSelectedGrammar: {
-		label: string;
-		grammar: IContextFreeGrammar;
-	} | null;
+  grammars: ContextFreeGrammarWithLabel[]
+	currentSelectedGrammar: ContextFreeGrammarWithLabel | null;
 	setCurrentSelectedGrammar: Dispatch<
-		SetStateAction<{
-			label: string;
-			grammar: IContextFreeGrammar;
-		} | null>
+		SetStateAction<ContextFreeGrammarWithLabel | null>
 	>;
   addGrammar: ((userInputGrammar: UserInputGrammar) => void)
 }
