@@ -1,7 +1,9 @@
-import { TextField, Typography } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import { TextField, Typography, useTheme } from "@mui/material";
 import { useRouter } from "next/dist/client/router";
 import { useContext, useState } from "react";
 import { CfgContext } from "../contexts";
+import { DrawerContext } from "../contexts/Drawer";
 import { useGrammarInput } from "../hooks";
 import { Button } from "./Button";
 import { Flex, FlexCol } from "./Flex";
@@ -13,15 +15,18 @@ export function CreateGrammar() {
   const [grammarLabel, setGrammarLabel] = useState("");
   const { userInputGrammar, productionRules, updateRuleVariable, resetState, removeRule, addRule, updateToken, addSubstitution, addToken, removeToken, removeSubstitution } = useGrammarInput();
   const router = useRouter();
+  const {setIsDrawerOpen} = useContext(DrawerContext);
 
   let isValidGrammar = true;
   if (userInputGrammar.rules.length === 0 || userInputGrammar.rules[0]?.substitutions.length === 0 || !grammarLabel) {
     isValidGrammar = false;
   }
   isValidGrammar = isValidGrammar && userInputGrammar.rules.every(rule => rule.variable !== "")
+  const theme = useTheme();
 
   return <Flex sx={{
-    p: 2
+    p: 2,
+    height: "100%"
   }}>
     <FlexCol sx={{
       flex: 3
@@ -91,6 +96,14 @@ export function CreateGrammar() {
       {([["Generate Cfg Language", "generateCfgLanguage"]] as [string, string][]).map(([operation, route]) => <div key={operation}>
         <Button label={operation} onClick={() => router.push(`${router.asPath}/${route}`)} />
       </div>)}
+    </FlexCol>
+    <FlexCol sx={{
+      backgroundColor: theme.palette.background.light,
+      p: 0.5,
+    }}>
+      <MenuIcon onClick={() => {
+        setIsDrawerOpen(true);
+      }}/>
     </FlexCol>
   </Flex>
 }

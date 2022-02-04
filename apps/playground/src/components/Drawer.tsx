@@ -4,12 +4,11 @@ import * as React from 'react';
 import { DrawerContext } from '../contexts/Drawer';
 
 interface DrawerProps {
-  drawerItems: React.ReactNode[]
+  drawerContent: React.ReactNode
 }
 
 export default function Drawer(props: DrawerProps) {
-  const {drawerItems} = props;
-  
+  const {drawerContent} = props;
   const {isDrawerOpen, setIsDrawerOpen} = React.useContext(DrawerContext);
   
   const toggleDrawer = (open: boolean, event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -21,21 +20,23 @@ export default function Drawer(props: DrawerProps) {
   };
 
   return (
-    <div>
-      <MuiDrawer
-        anchor={"right"}
-        open={isDrawerOpen}
-        onClose={event => toggleDrawer(false, event as any)}
+    <MuiDrawer
+      anchor={"right"}
+      open={isDrawerOpen}
+      onClose={event => toggleDrawer(false, event as any)}
+      sx={{
+        p: 1
+      }}
+    >
+      <Box
+        sx={{
+          width: 250,
+        }}
+        onClick={(event) => toggleDrawer(false ,event as unknown as React.KeyboardEvent<HTMLDivElement>)}
+        onKeyDown={(event) => toggleDrawer(false ,event)}
       >
-        <Box
-          sx={{ width: 250 }}
-          role="presentation"
-          onClick={(event) => toggleDrawer(false ,event as unknown as React.KeyboardEvent<HTMLDivElement>)}
-          onKeyDown={(event) => toggleDrawer(false ,event)}
-        >
-          {drawerItems}
-        </Box>
-      </MuiDrawer>
-    </div>
+        {drawerContent}
+      </Box>
+    </MuiDrawer>
   );
 }

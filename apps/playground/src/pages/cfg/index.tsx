@@ -1,8 +1,9 @@
 import { extractTerminalsFromCfg, IContextFreeGrammar } from "@fauton/cfg";
-import { ListItem, ListItemText } from "@mui/material";
+import { ListItem, ListItemText, Typography } from "@mui/material";
 import { useState } from "react";
 import { CreateGrammar } from "../../components";
 import Drawer from "../../components/Drawer";
+import { FlexCol } from "../../components/Flex";
 import { CfgContext } from "../../contexts";
 import { DrawerContext } from "../../contexts/Drawer";
 import { ContextFreeGrammarWithLabel, UserInputGrammar } from "../../types";
@@ -42,10 +43,17 @@ export default function ContextFreeGrammar() {
     currentSelectedGrammar,
     setCurrentSelectedGrammar
   }}>
-    <DrawerContext.Provider value={{isDrawerOpen, setIsDrawerOpen}}>
-      <Drawer drawerItems={[contextFreeGrammars.map(contextFreeGrammar => <ListItem button key={contextFreeGrammar.label}>
-        <ListItemText primary={contextFreeGrammar.label} />
-      </ListItem>)]} />
+    <DrawerContext.Provider value={{ isDrawerOpen, setIsDrawerOpen }}>
+      <Drawer drawerContent={<FlexCol sx={{
+        p: 2
+      }}>
+        <Typography variant="h4">Grammars</Typography>
+        <FlexCol>
+          {[contextFreeGrammars.map(contextFreeGrammar => <ListItem button key={contextFreeGrammar.label}>
+            <ListItemText primary={contextFreeGrammar.label} />
+          </ListItem>)]}
+        </FlexCol>
+      </FlexCol>} />
       <CreateGrammar />
     </DrawerContext.Provider>
   </CfgContext.Provider>
