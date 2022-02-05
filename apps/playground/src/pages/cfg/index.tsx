@@ -1,11 +1,11 @@
 import { extractTerminalsFromCfg, IContextFreeGrammar } from "@fauton/cfg";
 import { ListItem, ListItemText, Typography } from "@mui/material";
 import { useState } from "react";
-import { CreateGrammar } from "../../components";
+import { CreateGrammar } from "../../components/cfg/CreateGrammar";
 import Drawer from "../../components/Drawer";
 import { FlexCol } from "../../components/Flex";
 import { CfgContext } from "../../contexts";
-import { DrawerContext } from "../../contexts/Drawer";
+import { DrawerContext } from "../../contexts/DrawerContext";
 import { ContextFreeGrammarWithLabel, UserInputGrammar } from "../../types";
 
 export default function ContextFreeGrammar() {

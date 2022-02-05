@@ -1,5 +1,5 @@
 import { IContextFreeGrammar, removeEmptyProduction, removeNonTerminableProduction, removeNullProduction, removeUnitProduction, removeUnreachableProduction } from "@fauton/cfg";
-import { GrammarPipelineStep, TGrammarOperations } from "../types";
+import { GrammarPipelineStep, TGrammarOperations } from "../../types";
 import { GrammarString } from "./GrammarString";
 
 interface GrammarPipelineResultProps {

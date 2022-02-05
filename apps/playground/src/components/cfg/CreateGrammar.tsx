@@ -1,14 +1,13 @@
 import MenuIcon from "@mui/icons-material/Menu";
 import { TextField, Typography, useTheme } from "@mui/material";
-import { useRouter } from "next/dist/client/router";
+import { useRouter } from "next/router";
 import { useContext, useState } from "react";
-import { CfgContext } from "../contexts";
-import { DrawerContext } from "../contexts/Drawer";
-import { useGrammarInput } from "../hooks";
-import { Button } from "./Button";
-import { Flex, FlexCol } from "./Flex";
+import { CfgContext, DrawerContext } from "../../contexts";
+import { useGrammarInput } from "../../hooks";
+import { Button } from "../Button";
+import { Flex, FlexCol } from "../Flex";
+import { AddIcon, DeleteIcon } from "../Icons";
 import { GrammarString } from "./GrammarString";
-import { AddIcon, DeleteIcon } from "./Icons";
 
 export function CreateGrammar() {
   const { addGrammar } = useContext(CfgContext);

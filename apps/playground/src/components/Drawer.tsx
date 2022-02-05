@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import * as React from 'react';
-import { DrawerContext } from '../contexts/Drawer';
+import { DrawerContext } from '../contexts/DrawerContext';
 
 interface DrawerProps {
   drawerContent: React.ReactNode
