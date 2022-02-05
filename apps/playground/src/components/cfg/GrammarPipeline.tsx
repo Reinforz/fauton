@@ -68,7 +68,7 @@ export function GrammarPipeline(props: GrammarLabProps) {
         }
       </div>
       {currentSelectedGrammar && <div className="flex justify-center">
-        <AddIcon size={25} onClick={() => {
+        <AddIcon onClick={() => {
           setGrammarOperations([...grammarOperations, "remove_null"])
         }} />
       </div>}

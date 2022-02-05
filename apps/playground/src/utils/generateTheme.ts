@@ -9,13 +9,14 @@ declare module '@mui/material/styles/createPalette' {
 }
 
 export function generateTheme() {
-	const primaryColor = 'rgba(26, 32, 44)';
+  const backgroundColor = "rgba(26, 32, 44)";
+  const backgroundColorDarker = darken(backgroundColor, 0.25);
+  const backgroundColorLighter = lighten(backgroundColor, 0.1);
+  const spacing = 10;
+
+  const primaryColor = "#e53c5a";
 	const primaryColorDarker = darken(primaryColor, 0.5);
 	const primaryColorLighter = lighten(primaryColor, 0.05);
-  const backgroundColor = grey[800];
-  const backgroundColorDarker = grey[900];
-  const backgroundColorLighter = grey[700];
-  const spacing = 10;
 	const secondaryColor = `rgba(45, 55, 72)`;
 
 	const themeOptions: ThemeOptions = {
@@ -119,7 +120,7 @@ export function generateTheme() {
 			MuiPaper: {
 				styleOverrides: {
 					root: {
-						backgroundColor: primaryColor,
+						backgroundColor,
 					},
 				},
 			},
