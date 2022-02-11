@@ -1,20 +1,16 @@
-import { IContextFreeGrammar } from "@fauton/cfg";
 import DeleteIcon from '@mui/icons-material/Delete';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { blue, red } from "@mui/material/colors";
 import { useContext, useEffect, useState } from "react";
-import { RootContext } from "../contexts";
-import { TGrammarOperations } from "../types";
-import { Button } from "./Button";
+import { CfgContext } from "../../contexts";
+import { ContextFreeGrammarWithLabel, TGrammarOperations } from "../../types";
+import { Button } from "../Button";
+import { AddIcon } from "../Icons";
+import { Select } from "../Select";
 import { GrammarPipelineResult } from "./GrammarPipelineResult";
-import { AddIcon } from "./Icons";
-import { Select } from "./Select";
 
 interface GrammarLabProps {
-  grammars: {
-    label: string,
-    grammar: IContextFreeGrammar
-  }[]
+  grammars: ContextFreeGrammarWithLabel[]
 }
 
 const grammarOperationsSelectItems = {
@@ -28,7 +24,7 @@ const grammarOperationsSelectItems = {
 
 export function GrammarPipeline(props: GrammarLabProps) {
   const { grammars } = props;
-  const { currentSelectedGrammar, setCurrentSelectedGrammar } = useContext(RootContext);
+  const { currentSelectedGrammar, setCurrentSelectedGrammar } = useContext(CfgContext);
 
   const [executePipelineOperations, setExecutePipelineOperations] = useState(false);
 
@@ -49,7 +45,7 @@ export function GrammarPipeline(props: GrammarLabProps) {
     <div className="w-1/2 flex flex-col gap-5 h-full">
       <div className="text-4xl font-bold">Pipeline</div>
       <Select className="w-full" valueLabelRecord={grammarLabelRecord} onChange={(event) => {
-        const selectedGrammar = grammars.find(({ label }) => label === event.target.value);
+        const selectedGrammar = grammars.find(({ label }) => label === event.target.value) as ContextFreeGrammarWithLabel;
         setCurrentSelectedGrammar(selectedGrammar ?? null);
       }} value={currentSelectedGrammar ? currentSelectedGrammar.label : "No grammar selected"} />
       <div className="overflow-auto flex flex-col gap-3 px-3">
@@ -72,7 +68,7 @@ export function GrammarPipeline(props: GrammarLabProps) {
         }
       </div>
       {currentSelectedGrammar && <div className="flex justify-center">
-        <AddIcon size={25} onClick={() => {
+        <AddIcon onClick={() => {
           setGrammarOperations([...grammarOperations, "remove_null"])
         }} />
       </div>}
@@ -83,7 +79,7 @@ export function GrammarPipeline(props: GrammarLabProps) {
       </div>}
     </div>
     <div className="h-full w-1/2 rounded-sm">
-      <GrammarPipelineResult start={executePipelineOperations} operations={grammarOperations} cfg={currentSelectedGrammar?.grammar} />
+      <GrammarPipelineResult start={executePipelineOperations} operations={grammarOperations} cfg={currentSelectedGrammar} />
     </div>
   </div>
 }

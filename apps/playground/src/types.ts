@@ -1,4 +1,5 @@
 import { IContextFreeGrammar } from '@fauton/cfg';
+import { Theme as MaterialUITheme } from '@mui/material';
 
 export type TGrammarOperations =
 	| 'cnf'
@@ -22,3 +23,9 @@ export type UserInputGrammar = {
 		substitutions: string[][];
 	}>;
 };
+
+export type ContextFreeGrammarWithLabel = IContextFreeGrammar & {label: string}
+
+declare module '@emotion/react' {
+  export interface Theme extends MaterialUITheme {}
+}

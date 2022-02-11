@@ -17,18 +17,25 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Deploy docs
+      - name: Install dependencies
         run: |
           # Install vercel globally
           npm install vercel -g
+          npm install
+          npm run bootstrap
+      - name: Deploy docs
+        run: |
           cd ./docs
           npm install
           npm run build
           # Create the .vercel dir
-          mkdir ./build/.vercel
+          cd build
+          mkdir .vercel
+          ls -la .
           # Create vercel project.json 
-          echo {\"projectId\": $VERCEL_PROJECT_ID, \"orgId\": $VERCEL_ORG_ID} > ./build/.vercel/project.json
-          npm run deploy
+          echo {\"projectId\": \"$VERCEL_PROJECT_ID\", \"orgId\": \"$VERCEL_ORG_ID\"} > .vercel/project.json
+          vercel --prod --token $VERCEL_TOKEN
         env:
           VERCEL_PROJECT_ID: ${{secrets.VERCEL_PROJECT_ID}}
           VERCEL_ORG_ID: ${{secrets.VERCEL_ORG_ID}}
+          VERCEL_TOKEN: ${{secrets.VERCEL_TOKEN}}

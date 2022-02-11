@@ -1,14 +1,26 @@
 import { grey, red } from '@mui/material/colors';
 import { createTheme, darken, lighten, ThemeOptions } from '@mui/material/styles';
 
+declare module '@mui/material/styles/createPalette' {
+  interface TypeBackground {
+    light: string
+    dark: string
+  }
+}
+
 export function generateTheme() {
-	const primaryColor = 'rgba(26, 32, 44)';
+  const backgroundColor = "rgba(26, 32, 44)";
+  const backgroundColorDarker = darken(backgroundColor, 0.25);
+  const backgroundColorLighter = lighten(backgroundColor, 0.1);
+  const spacing = 10;
+
+  const primaryColor = "#e53c5a";
 	const primaryColorDarker = darken(primaryColor, 0.5);
 	const primaryColorLighter = lighten(primaryColor, 0.05);
-
 	const secondaryColor = `rgba(45, 55, 72)`;
 
 	const themeOptions: ThemeOptions = {
+    spacing,
 		palette: {
 			error: {
 				main: red[500],
@@ -20,6 +32,11 @@ export function generateTheme() {
 			primary: {
 				main: primaryColor,
 			},
+      background: {
+        default: backgroundColor,
+        light: backgroundColorLighter,
+        dark: backgroundColorDarker
+      },
 		},
 		typography: {
 			fontFamily: 'Roboto',
@@ -43,15 +60,19 @@ export function generateTheme() {
 				color: grey[700],
 			},
 			h3: {
-				fontWeight: 900,
+				fontWeight: 700,
+        fontSize: '2em',
 			},
 			h4: {
-				fontWeight: 800,
+				fontWeight: 700,
+        fontSize: '1.75em',
 			},
 			h5: {
+        fontSize: '1.5em',
 				fontWeight: 700,
 			},
 			h6: {
+        fontSize: '1.25em',
 				fontWeight: 600,
 			},
 			caption: {
@@ -60,6 +81,25 @@ export function generateTheme() {
 			},
 		},
 		components: {
+      MuiSvgIcon: {
+        styleOverrides: {
+          root: {
+            cursor: "pointer"
+          }
+        },
+      },
+      MuiListItem: {
+        styleOverrides: {
+          root: {
+            backgroundColor: backgroundColorLighter,
+            paddingTop: spacing * 0.5,
+            paddingBottom: spacing * 0.5,
+            paddingLeft: spacing * 1,
+            paddingRight: spacing * 1,
+            borderRadius: spacing * 0.25
+          }
+        }
+      },
 			MuiSelect: {
 				styleOverrides: {
 					select: {
@@ -70,10 +110,17 @@ export function generateTheme() {
 					},
 				},
 			},
+      MuiTypography: {
+        styleOverrides: {
+          h5: {
+            margin: 10
+          }
+        }
+      },
 			MuiPaper: {
 				styleOverrides: {
 					root: {
-						backgroundColor: primaryColor,
+						backgroundColor,
 					},
 				},
 			},
