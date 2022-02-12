@@ -3,6 +3,7 @@ import { convertStringToGrammar } from './convertStringToGrammar';
 import { convertToCnf } from './convertToCnf';
 import { cykParse } from './cykParse';
 import { extractTerminalsFromCfg } from './extractTerminalsFromCfg';
+import findFirst from './findFirst';
 import { generateCfgLanguage } from './generateCfgLanguage';
 import { removeEmptyProduction } from './removeEmptyProduction';
 import { removeNonTerminableProduction } from './removeNonTerminableProduction';
@@ -15,18 +16,20 @@ import { validateCfg } from './validateCfg';
 
 export * from './types';
 export {
-	convertGrammarToString,
-	convertStringToGrammar,
-	convertToCnf,
-	cykParse,
-	generateCfgLanguage,
-	removeEmptyProduction,
-	removeNonTerminableProduction,
-	removeNullProduction,
-	removeUnitProduction,
-	removeUnreachableProduction,
-	removeUselessProduction,
-	extractTerminalsFromCfg,
-	simplifyCfg,
-	validateCfg,
+  convertGrammarToString,
+  convertStringToGrammar,
+  convertToCnf,
+  cykParse,
+  generateCfgLanguage,
+  removeEmptyProduction,
+  removeNonTerminableProduction,
+  removeNullProduction,
+  removeUnitProduction,
+  removeUnreachableProduction,
+  removeUselessProduction,
+  extractTerminalsFromCfg,
+  simplifyCfg,
+  validateCfg,
+  findFirst
 };
+
