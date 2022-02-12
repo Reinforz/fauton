@@ -30,13 +30,13 @@ describe('findFirst', () => {
   it(`Terminal + Variable + Epsilon producing rules`, () => {
     expect(findFirst({
       productionRules: {
-        S: ["A B C"],
+        S: ["A B C g"],
         A: ["a", "b", ""],
         B: ["c", "d", ""],
         C: ["e", "f", ""],
       }
     })).toStrictEqual({
-      S: ["a", "b", "", "c", "d", "e", "f"],
+      S: ["a", "b", "", "c", "d", "e", "f", "g"],
       A: ["a", "b", ""],
       B: ["c", "d", ""],
       C: ["e", "f", ""],

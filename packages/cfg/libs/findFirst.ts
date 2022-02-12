@@ -25,7 +25,11 @@ export default function findFirst(inputCfg: IContextFreeGrammarInput): Record<st
         // Loop through all the tokens, as some might contain epsilon
         for (let index = 0; index < tokens.length; index+=1) {
           const token = tokens[index];
-          // If its a variable, 
+          if (!variablesSet.has(token)) {
+            firstTokens.add(token)
+            break;
+          }
+          // If its a variable,
           // we need to check whether the findFirst(referenced variable) has been calculated or not
           if (!firstRecord[token]) {
             populateFirstRecord(token);
