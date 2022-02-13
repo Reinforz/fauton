@@ -5,6 +5,7 @@ export interface IContextFreeGrammar {
 	startVariable: string;
 }
 
+// Cfg input might not have all the properties, and they could be null as well
 export interface IContextFreeGrammarInput {
 	variables?: string[] | null;
 	terminals?: string[] | null;
