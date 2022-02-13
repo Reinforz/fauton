@@ -1,9 +1,9 @@
-import findFirst from "./findFirst";
+import { findFirst } from "./findFirst";
 import generateVariableReferenceRecord, { VariableReferenceLocation } from "./generateVariableReferenceRecord";
 import { IContextFreeGrammarInput } from "./types";
 import { populateCfg } from "./utils/populateCfg";
 
-export default function findFollow(inputCfg: IContextFreeGrammarInput): Record<string, string[]> {
+export function findFollow(inputCfg: IContextFreeGrammarInput): Record<string, string[]> {
   const cfg = populateCfg(inputCfg);
 	const { productionRules, variables, startVariable } = cfg;
   const followRecord: Record<string, string[]> = {};

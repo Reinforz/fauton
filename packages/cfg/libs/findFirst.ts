@@ -1,7 +1,7 @@
 import { IContextFreeGrammarInput } from "./types";
 import { populateCfg } from "./utils/populateCfg";
 
-export default function findFirst(inputCfg: IContextFreeGrammarInput): Record<string, string[]> {
+export function findFirst(inputCfg: IContextFreeGrammarInput): Record<string, string[]> {
   const cfg = populateCfg(inputCfg);
 	const { productionRules, variables } = cfg;
   const firstRecord: Record<string, string[]> = {};

@@ -1,4 +1,4 @@
-import findFollow from "../libs/findFollow";
+import { findFollow } from "../libs/findFollow";
 
 describe('findFollow', () => {
   it(`Simple grammar where next token is terminal`, () => {

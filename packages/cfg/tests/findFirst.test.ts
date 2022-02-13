@@ -1,4 +1,4 @@
-import findFirst from "../libs/findFirst";
+import { findFirst } from "../libs/findFirst";
 
 describe('findFirst', () => { 
   it(`Terminal producing rules`, () => {
