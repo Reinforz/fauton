@@ -1,3 +1,4 @@
+import { checkLLGrammar } from './checkLLGrammar';
 import { convertGrammarToString } from './convertGrammarToString';
 import { convertStringToGrammar } from './convertStringToGrammar';
 import { convertToCnf } from './convertToCnf';
@@ -17,6 +18,7 @@ import { validateCfg } from './validateCfg';
 
 export * from './types';
 export {
+  checkLLGrammar,
   findFollow,
   convertGrammarToString,
   convertStringToGrammar,
