@@ -27,7 +27,22 @@ describe('findFollow', () => {
     })).toStrictEqual({
       S: ["$"],
       B: ["b", "c"],
-      C: ["d", "a"]
+      C: ["d","b", "c", "a"]
+    })
+  })
+
+  it(`Simple grammar where next token is a variable (non edge and nullable)`, () => {
+    expect(findFollow({
+      productionRules: {
+        S: ["B b", "C d"],
+        B: ["a B C"],
+        C: ["c C a", ""]
+      },
+      startVariable: "S"
+    })).toStrictEqual({
+      S: ["$"],
+      B: ["b", "c"],
+      C: ["d","b", "c", "a"]
     })
   })
 
@@ -35,14 +50,14 @@ describe('findFollow', () => {
     expect(findFollow({
       productionRules: {
         S: ["B b", "C d"],
-        B: ["a B"],
-        C: ["c C"]
+        C: ["c C"],
+        B: ["a C"],
       },
       startVariable: "S"
     })).toStrictEqual({
       S: ["$"],
       B: ["b"],
-      C: ["d"]
+      C: ["d", "b"]
     })
   })
 })

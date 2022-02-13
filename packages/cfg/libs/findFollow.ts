@@ -1,5 +1,5 @@
 import findFirst from "./findFirst";
-import generateVariableReferenceRecord from "./generateVariableReferenceRecord";
+import generateVariableReferenceRecord, { VariableReferenceLocation } from "./generateVariableReferenceRecord";
 import { IContextFreeGrammarInput } from "./types";
 import { populateCfg } from "./utils/populateCfg";
 
@@ -21,8 +21,8 @@ export default function findFollow(inputCfg: IContextFreeGrammarInput): Record<s
     if (startVariable === productionVariable) {
       followedTokens.add("$")
     }
-    const references = variableReferenceRecord[productionVariable];
-    references.forEach(reference => {
+
+    function moveNext(reference: VariableReferenceLocation) {
       const {ruleNumber, tokenNumber, variable} = reference;
       const tokens = productionRules[variable][ruleNumber].split(" ");
       const isAtEdge = tokens.length - 1 === tokenNumber;
@@ -34,15 +34,23 @@ export default function findFollow(inputCfg: IContextFreeGrammarInput): Record<s
         } else {
           // Get the first tokens of next token
           const firstTokens = firstRecord[nextToken];
-          // If it doesn't contain epsilon
-          if (!firstTokens.includes("")) {
-            // Loop through all first tokens and add them to followed tokens
-            firstTokens.forEach(firstToken => {
-              followedTokens.add(firstToken)
+          // If first of it is nullable
+          if (firstTokens.includes("")) {
+            // Move to the next token in the rule
+            moveNext({
+              ruleNumber,
+              tokenNumber: tokenNumber + 1,
+              variable
             })
-          } else {
-            console.log(123)
-          }
+          } 
+
+          // Loop through all first tokens and add them to followed tokens
+          firstTokens.forEach((firstToken) => {
+            // Follow can never contain nullable
+            if (firstToken !== "") {
+              followedTokens.add(firstToken)
+            }
+          })
         }
       } 
       // If the variable is referenced at edge
@@ -51,14 +59,23 @@ export default function findFollow(inputCfg: IContextFreeGrammarInput): Record<s
         // B -> a B
         if (variable !== productionVariable) {
           // Populate the follow record of the variable whose rule references this variable
-          populateFollowRecord(variable)
+          if (!followRecord[variable])
+            populateFollowRecord(variable)
           // C -> a B
           // follow(B) => follow(C)
           followRecord[variable].forEach(token => {
-            followedTokens.add(token)
+            // Follow can never contain nullable
+            if (token !== "") {
+              followedTokens.add(token)
+            }
           })
         }
       }
+    }
+
+    const references = variableReferenceRecord[productionVariable];
+    references.forEach(reference => {
+      moveNext(reference)
     })
 
     // Check to see 

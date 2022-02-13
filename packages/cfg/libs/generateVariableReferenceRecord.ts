@@ -1,6 +1,6 @@
 import { IContextFreeGrammar } from "./types";
 
-interface VariableReferenceLocation {
+export interface VariableReferenceLocation {
   variable: string,
   ruleNumber: number,
   tokenNumber: number
