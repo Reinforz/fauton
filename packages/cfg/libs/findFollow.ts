@@ -3,6 +3,11 @@ import generateVariableReferenceRecord, { VariableReferenceLocation } from "./ge
 import { IContextFreeGrammarInput } from "./types";
 import { populateCfg } from "./utils/populateCfg";
 
+/**
+ * Find follow of all the variables of cfg
+ * @param inputCfg Input context free grammar
+ * @returns A record where keys are variables and values is follow(variable)
+ */
 export function findFollow(inputCfg: IContextFreeGrammarInput): Record<string, string[]> {
   const cfg = populateCfg(inputCfg);
 	const { productionRules, variables, startVariable } = cfg;
@@ -82,12 +87,14 @@ export function findFollow(inputCfg: IContextFreeGrammarInput): Record<string, s
       moveNext(reference)
     })
 
-    // Check to see 
+    // Add it to traversed set as its been calculated
     traversedSet.add(productionVariable);
     followRecord[productionVariable] = Array.from(followedTokens)
   }
 
+  // Go through each variables
   variables.forEach(variable => {
+    // Make sure its not been traversed before
     if (!traversedSet.has(variable)) {
       populateFollowRecord(variable)
     }

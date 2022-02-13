@@ -1,11 +1,19 @@
 import { IContextFreeGrammarInput } from "./types";
 import { populateCfg } from "./utils/populateCfg";
 
+/**
+ * Find first of all the variables of cfg
+ * @param inputCfg Input context free grammar
+ * @returns A record where keys are the variables of the cfg and the values first(variable)
+ */
 export function findFirst(inputCfg: IContextFreeGrammarInput): Record<string, string[]> {
   const cfg = populateCfg(inputCfg);
 	const { productionRules, variables } = cfg;
+  // A record to store first(all variables)
   const firstRecord: Record<string, string[]> = {};
+  // Using a set for faster access
   const variablesSet = new Set(variables);
+  // Set to keep track of which nodes have been traversed in order to avoid recalculation
   const traversedSet: Set<string> = new Set();
 
   function populateFirstRecord(productionVariable: string) {
