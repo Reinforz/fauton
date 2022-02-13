@@ -1,6 +1,6 @@
 {
   "name": "@fauton/cfg",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A package to work with context free grammars",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -20,7 +20,6 @@
   "keywords": [
     "context-free-grammar",
     "context-free-language",
-    "natural-language-generation",
     "cyk-parse",
     "cnf"
   ],

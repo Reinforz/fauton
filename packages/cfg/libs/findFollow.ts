@@ -18,13 +18,16 @@ export default function findFollow(inputCfg: IContextFreeGrammarInput): Record<s
     // Check to see if the production variable is the starting variable
     const followedTokens: Set<string> = new Set();
 
+    // If this is the start variable add $
     if (startVariable === productionVariable) {
       followedTokens.add("$")
     }
 
     function moveNext(reference: VariableReferenceLocation) {
       const {ruleNumber, tokenNumber, variable} = reference;
+      // Generate the tokens of the rule
       const tokens = productionRules[variable][ruleNumber].split(" ");
+      // Check if we are add edge token or not
       const isAtEdge = tokens.length - 1 === tokenNumber;
       if (!isAtEdge) {
         const nextToken = tokens[tokenNumber + 1];
@@ -34,7 +37,7 @@ export default function findFollow(inputCfg: IContextFreeGrammarInput): Record<s
         } else {
           // Get the first tokens of next token
           const firstTokens = firstRecord[nextToken];
-          // If first of it is nullable
+          // If first of it contains nullable
           if (firstTokens.includes("")) {
             // Move to the next token in the rule
             moveNext({
@@ -56,7 +59,7 @@ export default function findFollow(inputCfg: IContextFreeGrammarInput): Record<s
       // If the variable is referenced at edge
       else if (isAtEdge){
         // if the variables are not the same
-        // B -> a B
+        // B -> a B (Same), B -> a C (Different)
         if (variable !== productionVariable) {
           // Populate the follow record of the variable whose rule references this variable
           if (!followRecord[variable])
@@ -73,6 +76,7 @@ export default function findFollow(inputCfg: IContextFreeGrammarInput): Record<s
       }
     }
 
+    // All the locations where this variable is being referenced
     const references = variableReferenceRecord[productionVariable];
     references.forEach(reference => {
       moveNext(reference)
