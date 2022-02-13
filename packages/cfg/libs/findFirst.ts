@@ -13,8 +13,6 @@ export function findFirst(inputCfg: IContextFreeGrammarInput): Record<string, st
   const firstRecord: Record<string, string[]> = {};
   // Using a set for faster access
   const variablesSet = new Set(variables);
-  // Set to keep track of which nodes have been traversed in order to avoid recalculation
-  const traversedSet: Set<string> = new Set();
 
   function populateFirstRecord(productionVariable: string) {
     // Get the substitutions of that production variable 
@@ -54,16 +52,14 @@ export function findFirst(inputCfg: IContextFreeGrammarInput): Record<string, st
         }
       }
     });
-    // Add variable to traversed set to avoid calculating it again
-    traversedSet.add(productionVariable)
     // Convert the set to an array
     firstRecord[productionVariable] = Array.from(firstTokens)
   }
 
   // Loop through each variable
   variables.forEach(variable => {
-    // Check to see if its been traversed
-    if (!traversedSet.has(variable)) {
+    // Check to see if its been calculated
+    if (!firstRecord[variable]) {
       populateFirstRecord(variable)
     }
   })

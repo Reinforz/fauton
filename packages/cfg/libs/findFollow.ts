@@ -12,7 +12,6 @@ export function findFollow(inputCfg: IContextFreeGrammarInput): Record<string, s
   const cfg = populateCfg(inputCfg);
 	const { productionRules, variables, startVariable } = cfg;
   const followRecord: Record<string, string[]> = {};
-  const traversedSet: Set<string> = new Set();
   const variablesSet = new Set(variables);
   // Get the reference record for cfg
   const variableReferenceRecord = generateVariableReferenceRecord(cfg);
@@ -87,15 +86,13 @@ export function findFollow(inputCfg: IContextFreeGrammarInput): Record<string, s
       moveNext(reference)
     })
 
-    // Add it to traversed set as its been calculated
-    traversedSet.add(productionVariable);
     followRecord[productionVariable] = Array.from(followedTokens)
   }
 
   // Go through each variables
   variables.forEach(variable => {
     // Make sure its not been traversed before
-    if (!traversedSet.has(variable)) {
+    if (!followRecord[variable]) {
       populateFollowRecord(variable)
     }
   })
