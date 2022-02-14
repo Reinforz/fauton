@@ -3,7 +3,7 @@ import { populateCfg } from "./utils/populateCfg";
 
 type FirstRecord = Record<string, {
   first: string[],
-  substitutions: Record<string, string[]>
+  substitutions: Array<string[]>
 }>
 
 /**
@@ -24,12 +24,12 @@ export function findFirst(inputCfg: IContextFreeGrammarInput): FirstRecord {
     const substitutions = productionRules[productionVariable];
     // A set to keep store first(variable)
     const firstTokens: Set<string> = new Set();
-    const firstTokensSubstitutionsRecord: Record<string, string[]> = {};
+    // An array of array that stores the first for all individual rules 
+    const firstTokensSubstitutions: Array<string[]> = [];
 
-    substitutions.forEach((substitution, substitutionNumber) => {
-      if (!firstTokensSubstitutionsRecord[substitutionNumber]) {
-        firstTokensSubstitutionsRecord[substitutionNumber] = []
-      }
+    substitutions.forEach((substitution) => {
+      // Array to contain first of this particular substitution/rule
+      const firstTokensForSubstitution: Set<string> = new Set();
 
       // a A => ["a", "A"], only the first token in required
       // First token could be a variable or a terminal
@@ -38,13 +38,13 @@ export function findFirst(inputCfg: IContextFreeGrammarInput): FirstRecord {
       // If its not a variable, then it must be a terminal
       if (!variablesSet.has(firstToken)) {
         firstTokens.add(firstToken);
-        firstTokensSubstitutionsRecord[substitutionNumber].push(firstToken);
+        firstTokensForSubstitution.add(firstToken);
       } else {
         // Loop through all the tokens, as some might contain epsilon
         for (let index = 0; index < tokens.length; index+=1) {
           const token = tokens[index];
           if (!variablesSet.has(token)) {
-            firstTokensSubstitutionsRecord[substitutionNumber].push(token);
+            firstTokensForSubstitution.add(token);
             firstTokens.add(token)
             break;
           }
@@ -56,7 +56,7 @@ export function findFirst(inputCfg: IContextFreeGrammarInput): FirstRecord {
           // Store findFirst(`referenced variable`) to current production variable record 
           firstRecord[token].first.forEach(_token => {
             firstTokens.add(_token);
-            firstTokensSubstitutionsRecord[substitutionNumber].push(_token);
+            firstTokensForSubstitution.add(_token);
           })
           // Check to see if the first record for token contains epsilon
           // If it doesn't no need to check for the next tokens
@@ -65,11 +65,12 @@ export function findFirst(inputCfg: IContextFreeGrammarInput): FirstRecord {
           }
         }
       }
+      firstTokensSubstitutions.push(Array.from(firstTokensForSubstitution))
     });
     // Convert the set to an array
     firstRecord[productionVariable] = {
       first: Array.from(firstTokens),
-      substitutions: firstTokensSubstitutionsRecord
+      substitutions: firstTokensSubstitutions
     }
   }
 

@@ -42,7 +42,7 @@ export function findFollow(inputCfg: IContextFreeGrammarInput): Record<string, s
           // Get the first tokens of next token
           const firstTokens = firstRecord[nextToken];
           // If first of it contains nullable
-          if (firstTokens.includes("")) {
+          if (firstTokens.first.includes("")) {
             // Move to the next token in the rule
             moveNext({
               ruleNumber,
@@ -52,7 +52,7 @@ export function findFollow(inputCfg: IContextFreeGrammarInput): Record<string, s
           } 
 
           // Loop through all first tokens and add them to followed tokens
-          firstTokens.forEach((firstToken) => {
+          firstTokens.first.forEach((firstToken) => {
             // Follow can never contain nullable
             if (firstToken !== "") {
               followedTokens.add(firstToken)
