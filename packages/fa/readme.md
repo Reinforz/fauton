@@ -1,7 +1,6 @@
 # `@fauton/fa`
 
 <p align="center">
-  <pre align>@fauton/fa</pre>
   <img src="https://img.shields.io/bundlephobia/minzip/@fauton/fa?label=minzipped&style=flat&color=%23bb0a1e"/>
   <img src="https://img.shields.io/npm/dw/@fauton/fa?style=flat&color=orange"/>
   <img src="https://img.shields.io/github/issues/devorein/fauton/fa?color=yellow&label=issues"/>

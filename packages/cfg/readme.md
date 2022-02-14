@@ -1,4 +1,5 @@
-<pre align>@fauton/cfg</pre>
+# `@fauton/cfg`
+
 <p align="center">
   <img src="https://img.shields.io/bundlephobia/minzip/@fauton/cfg?label=minzipped&style=flat&color=%23bb0a1e"/>
   <img src="https://img.shields.io/npm/dw/@fauton/cfg?style=flat&color=orange"/>
