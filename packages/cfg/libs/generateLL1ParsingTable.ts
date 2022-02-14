@@ -5,7 +5,7 @@ import { populateCfg } from "./utils/populateCfg";
 /**
  * Generate LL1 Parsing table
  * @param inputCfg Input context free grammar
- * @returns LL1 Parsed table
+ * @returns A record for LL1 Parsed table and whether the grammar is LL1 parsable
  */
 export function generateLL1ParsingTable(inputCfg: IContextFreeGrammarInput) {
   const cfg = populateCfg(inputCfg);
