@@ -1,13 +1,17 @@
-import findFirst from "./findFirst";
+import { findFirst } from "./findFirst";
 import generateVariableReferenceRecord, { VariableReferenceLocation } from "./generateVariableReferenceRecord";
 import { IContextFreeGrammarInput } from "./types";
 import { populateCfg } from "./utils/populateCfg";
 
-export default function findFollow(inputCfg: IContextFreeGrammarInput): Record<string, string[]> {
+/**
+ * Find follow of all the variables of cfg
+ * @param inputCfg Input context free grammar
+ * @returns A record where keys are variables and values is follow(variable)
+ */
+export function findFollow(inputCfg: IContextFreeGrammarInput) {
   const cfg = populateCfg(inputCfg);
 	const { productionRules, variables, startVariable } = cfg;
   const followRecord: Record<string, string[]> = {};
-  const traversedSet: Set<string> = new Set();
   const variablesSet = new Set(variables);
   // Get the reference record for cfg
   const variableReferenceRecord = generateVariableReferenceRecord(cfg);
@@ -38,7 +42,7 @@ export default function findFollow(inputCfg: IContextFreeGrammarInput): Record<s
           // Get the first tokens of next token
           const firstTokens = firstRecord[nextToken];
           // If first of it contains nullable
-          if (firstTokens.includes("")) {
+          if (firstTokens.first.includes("")) {
             // Move to the next token in the rule
             moveNext({
               ruleNumber,
@@ -48,7 +52,7 @@ export default function findFollow(inputCfg: IContextFreeGrammarInput): Record<s
           } 
 
           // Loop through all first tokens and add them to followed tokens
-          firstTokens.forEach((firstToken) => {
+          firstTokens.first.forEach((firstToken) => {
             // Follow can never contain nullable
             if (firstToken !== "") {
               followedTokens.add(firstToken)
@@ -82,16 +86,19 @@ export default function findFollow(inputCfg: IContextFreeGrammarInput): Record<s
       moveNext(reference)
     })
 
-    // Check to see 
-    traversedSet.add(productionVariable);
     followRecord[productionVariable] = Array.from(followedTokens)
   }
 
+  // Go through each variables
   variables.forEach(variable => {
-    if (!traversedSet.has(variable)) {
+    // Make sure its not been traversed before
+    if (!followRecord[variable]) {
       populateFollowRecord(variable)
     }
   })
 
-  return followRecord;
+  return {
+    first: firstRecord,
+    follow: followRecord
+  };
 }

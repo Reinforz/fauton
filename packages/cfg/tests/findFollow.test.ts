@@ -1,4 +1,4 @@
-import findFollow from "../libs/findFollow";
+import { findFollow } from "../libs/findFollow";
 
 describe('findFollow', () => {
   it(`Simple grammar where next token is terminal`, () => {
@@ -9,7 +9,7 @@ describe('findFollow', () => {
         C: ["c C a", ""]
       },
       startVariable: "S"
-    })).toStrictEqual({
+    }).follow).toStrictEqual({
       S: ["$"],
       B: ["b", "c"],
       C: ["d", "a"]
@@ -24,7 +24,7 @@ describe('findFollow', () => {
         C: ["c C a"]
       },
       startVariable: "S"
-    })).toStrictEqual({
+    }).follow).toStrictEqual({
       S: ["$"],
       B: ["b", "c"],
       C: ["d","b", "c", "a"]
@@ -39,7 +39,7 @@ describe('findFollow', () => {
         C: ["c C a", ""]
       },
       startVariable: "S"
-    })).toStrictEqual({
+    }).follow).toStrictEqual({
       S: ["$"],
       B: ["b", "c"],
       C: ["d","b", "c", "a"]
@@ -54,7 +54,7 @@ describe('findFollow', () => {
         B: ["a C"],
       },
       startVariable: "S"
-    })).toStrictEqual({
+    }).follow).toStrictEqual({
       S: ["$"],
       B: ["b"],
       C: ["d", "b"]
