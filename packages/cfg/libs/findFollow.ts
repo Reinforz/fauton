@@ -8,7 +8,7 @@ import { populateCfg } from "./utils/populateCfg";
  * @param inputCfg Input context free grammar
  * @returns A record where keys are variables and values is follow(variable)
  */
-export function findFollow(inputCfg: IContextFreeGrammarInput): Record<string, string[]> {
+export function findFollow(inputCfg: IContextFreeGrammarInput) {
   const cfg = populateCfg(inputCfg);
 	const { productionRules, variables, startVariable } = cfg;
   const followRecord: Record<string, string[]> = {};
@@ -97,5 +97,8 @@ export function findFollow(inputCfg: IContextFreeGrammarInput): Record<string, s
     }
   })
 
-  return followRecord;
+  return {
+    first: firstRecord,
+    follow: followRecord
+  };
 }

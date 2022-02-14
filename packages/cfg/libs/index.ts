@@ -1,4 +1,3 @@
-import { checkLLGrammar } from './checkLLGrammar';
 import { convertGrammarToString } from './convertGrammarToString';
 import { convertStringToGrammar } from './convertStringToGrammar';
 import { convertToCnf } from './convertToCnf';
@@ -7,6 +6,7 @@ import { extractTerminalsFromCfg } from './extractTerminalsFromCfg';
 import { findFirst } from './findFirst';
 import { findFollow } from './findFollow';
 import { generateCfgLanguage } from './generateCfgLanguage';
+import { generateLL1ParsingTable } from './generateLL1ParsingTable';
 import { removeEmptyProduction } from './removeEmptyProduction';
 import { removeNonTerminableProduction } from './removeNonTerminableProduction';
 import { removeNullProduction } from './removeNullProduction';
@@ -18,7 +18,7 @@ import { validateCfg } from './validateCfg';
 
 export * from './types';
 export {
-  checkLLGrammar,
+  generateLL1ParsingTable,
   findFollow,
   convertGrammarToString,
   convertStringToGrammar,
