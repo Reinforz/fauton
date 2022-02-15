@@ -12,9 +12,7 @@ export function generateLL1ParsingTable(inputCfg: IContextFreeGrammarInput) {
   // Find the first and follow record of cfg
   const followRecord = findFollow(cfg);
   let isParsable = true;
-  const {terminals, variables} = cfg;
-  // $ is included in LL1 table but inside terminals array
-  const allTerminals = terminals.concat("$");
+  const {variables} = cfg;
 
   // First key for variable, 2nd key for terminal and value is rule number or null
   const llRecord: Record<string, Record<string, number | null>> = {};
@@ -24,10 +22,6 @@ export function generateLL1ParsingTable(inputCfg: IContextFreeGrammarInput) {
   // All terminals as the column
   variables.forEach(variable => {
     llRecord[variable] = {};
-    allTerminals.forEach((terminal) => {
-      // An array of rule number of the variable
-      llRecord[variable][terminal] = null;
-    })
   })
 
   // Loop through all the first record entries
@@ -40,13 +34,13 @@ export function generateLL1ParsingTable(inputCfg: IContextFreeGrammarInput) {
         if (firstTokenForSubstitution === "") {
           // Loop through each followed token and assign the rule number
           followRecord.follow[productionVariable].forEach((followedToken) => {
-            if (llRecord[productionVariable][followedToken] !== null) {
+            if (followedToken in llRecord[productionVariable]) {
               isParsable = false;
             }
             llRecord[productionVariable][followedToken] = ruleNumber
           })
         } else {
-          if (llRecord[productionVariable][firstTokenForSubstitution] !== null) {
+          if (firstTokenForSubstitution in llRecord[productionVariable]) {
             isParsable = false;
           }
           llRecord[productionVariable][firstTokenForSubstitution] = ruleNumber
