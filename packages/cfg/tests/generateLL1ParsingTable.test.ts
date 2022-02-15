@@ -1,6 +1,6 @@
 import { generateLL1ParsingTable } from '../libs/generateLL1ParsingTable';
 
-describe('first', () => {
+describe('generateLL1ParsingTable', () => {
 	it(`Simple LL1 non parsable grammar`, () => {
 		expect(
 			generateLL1ParsingTable({

@@ -27,7 +27,7 @@ describe('findFollow', () => {
     }).follow).toStrictEqual({
       S: ["$"],
       B: ["b", "c"],
-      C: ["d","b", "c", "a"]
+      C: ["d", "b", "c", "a"]
     })
   })
 
@@ -42,7 +42,7 @@ describe('findFollow', () => {
     }).follow).toStrictEqual({
       S: ["$"],
       B: ["b", "c"],
-      C: ["d","b", "c", "a"]
+      C: ["d", "b", "c", "a"]
     })
   })
 
@@ -58,6 +58,26 @@ describe('findFollow', () => {
       S: ["$"],
       B: ["b"],
       C: ["d", "b"]
+    })
+  })
+
+  it(`Simple grammar with recursion`, () => {
+    expect(findFollow({
+      productionRules: {
+        S: ["a B", ""],
+        B: ["b C", ""],
+        C: ["c S", ""],
+      },
+    }).follow).toStrictEqual({
+      "S": [
+        "$"
+      ],
+      "B": [
+        "$"
+      ],
+      "C": [
+        "$"
+      ]
     })
   })
 })
