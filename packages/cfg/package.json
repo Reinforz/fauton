@@ -21,7 +21,8 @@
     "context-free-grammar",
     "context-free-language",
     "cyk-parse",
-    "cnf"
+    "cnf",
+    "ll1-parse-table"
   ],
   "author": "Safwan Shaheer <devorein00@gmail.com>",
   "license": "MIT",

@@ -102,10 +102,7 @@ export function findFollow(inputCfg: IContextFreeGrammarInput) {
 
   // Go through each variables
   variables.forEach(variable => {
-    // Make sure its not been traversed before
-    if (!followRecord[variable] || variable === startVariable) {
-      populateFollowRecord(variable, [variable])
-    }
+    populateFollowRecord(variable, [variable])
   })
 
   const transformedFollowRecord: Record<string, Array<string>> = {};
