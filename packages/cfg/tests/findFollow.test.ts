@@ -1,7 +1,7 @@
 import { findFollow } from "../libs/findFollow";
 
 describe('findFollow', () => {
-  it(`Simple grammar where next token is terminal`, () => {
+  it(`Grammar where next token is terminal`, () => {
     expect(findFollow({
       productionRules: {
         S: ["B b", "C d"],
@@ -16,7 +16,7 @@ describe('findFollow', () => {
     })
   })
 
-  it(`Simple grammar where next token is a variable (non edge and non null)`, () => {
+  it(`Grammar where next token is a variable (non edge and non null)`, () => {
     expect(findFollow({
       productionRules: {
         S: ["B b", "C d"],
@@ -31,7 +31,7 @@ describe('findFollow', () => {
     })
   })
 
-  it(`Simple grammar where next token is a variable (non edge and nullable)`, () => {
+  it(`Grammar where next token is a variable (non edge and nullable)`, () => {
     expect(findFollow({
       productionRules: {
         S: ["B b", "C d"],
@@ -46,7 +46,7 @@ describe('findFollow', () => {
     })
   })
 
-  it(`Simple grammar where next token is a variable (edge and non null)`, () => {
+  it(`Grammar where next token is a variable (edge and non null)`, () => {
     expect(findFollow({
       productionRules: {
         S: ["B b", "C d"],
@@ -61,7 +61,29 @@ describe('findFollow', () => {
     })
   })
 
-  it(`Simple grammar with recursion`, () => {
+  it(`Grammar where next token is a variable (edge and null)`, () => {
+    expect(findFollow({
+      productionRules: {
+        S: ["i C t S S'", "a"],
+        "S'": ["e S", ""],
+        C: ["b"]
+      },
+    }).follow).toStrictEqual({
+      "S": [
+        "$",
+        "e"
+      ],
+      "S'": [
+        "$",
+        "e"
+      ],
+      "C": [
+        "t"
+      ]
+    })
+  })
+
+  it(`Grammar with recursion`, () => {
     expect(findFollow({
       productionRules: {
         S: ["a B", ""],
