@@ -3,7 +3,7 @@
 <p align="center"><a href="https://docs.fauton.xyz" target="_blank" rel="noopener noreferrer"><img width="250" src="https://raw.githubusercontent.com/Devorein/fauton/dev/docs/static/img/logo.svg" alt="Fauton logo"></a></p>
 
 <div align="center"> <h1>Fauton</h1> </div>
-<div align="center"><b>An ecosystem of packages to work with automaton (dfa/nfa/e-nfa/regex/cfg/pda)</b></div>
+<div align="center"><b>An ecosystem of packages to work with automaton and parsers (dfa/nfa/e-nfa/regex/cfg/pda)</b></div>
 <br/>
 
 <p align="center">
@@ -48,6 +48,7 @@ Wikipedia sources for all the algorithms used in the package
 5. [Chomsky Normal Form](https://en.wikipedia.org/wiki/Chomsky_normal_form) Algorithm to make parsing a string easier
 6. [Cocke–Younger–Kasami](https://en.wikipedia.org/wiki/CYK_algorithm) Parsing algorithm using a CFG
 7. [Earley Parser](https://en.wikipedia.org/wiki/Earley_parser) algorithm for parsing strings that belong to a given context-free language
+8. [LL parser](https://en.wikipedia.org/wiki/LL_parser) a top-down parser for a restricted context-free language
 
 ## Credits
 

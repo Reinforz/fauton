@@ -2,14 +2,15 @@ import { findFirst } from '../libs/findFirst';
 
 describe('findFirst', () => {
 	it(`Terminal producing rules`, () => {
+    const firstRecord = findFirst({
+      productionRules: {
+        C: ['a D', 'b C', ''],
+        D: ['a'],
+        E: ['a b c'],
+      },
+    })
 		expect(
-			findFirst({
-				productionRules: {
-					C: ['a D', 'b C', ''],
-					D: ['a'],
-					E: ['a b c'],
-				},
-			})
+			firstRecord
 		).toStrictEqual({
 			C: {
 				first: ['a', 'b', ''],
@@ -27,13 +28,14 @@ describe('findFirst', () => {
 	});
 
 	it(`Variable producing rules`, () => {
+    const firstRecord = findFirst({
+      productionRules: {
+        S: ['A B C', 'g h i', 'j k l'],
+        A: ['a', 'b', 'c'],
+      },
+    });
 		expect(
-			findFirst({
-				productionRules: {
-					S: ['A B C', 'g h i', 'j k l'],
-					A: ['a', 'b', 'c'],
-				},
-			})
+			firstRecord
 		).toStrictEqual({
 			S: {
 				first: ['a', 'b', 'c', 'g', 'j'],
@@ -47,15 +49,16 @@ describe('findFirst', () => {
 	});
 
 	it(`Terminal + Variable + Epsilon producing rules`, () => {
+    const firstRecord = findFirst({
+      productionRules: {
+        S: ['A B C g'],
+        A: ['a', 'b', ''],
+        B: ['c', 'd', ''],
+        C: ['e', 'f', ''],
+      },
+    })
 		expect(
-			findFirst({
-				productionRules: {
-					S: ['A B C g'],
-					A: ['a', 'b', ''],
-					B: ['c', 'd', ''],
-					C: ['e', 'f', ''],
-				},
-			})
+			firstRecord
 		).toStrictEqual({
 			S: {
 				first: ['a', 'b', '', 'c', 'd', 'e', 'f', 'g'],
@@ -77,16 +80,17 @@ describe('findFirst', () => {
 	});
 
 	it(`Multiple Terminal + Multiple Variable + Epsilon producing rules`, () => {
+    const firstRecord = findFirst({
+      productionRules: {
+        E: ["T E'"],
+        "E'": ["* T E'", ''],
+        T: ["F T'"],
+        "T'": ['', "+ F T'"],
+        F: ['', 'id', '( E'],
+      },
+    })
 		expect(
-			findFirst({
-				productionRules: {
-					E: ["T E'"],
-					"E'": ["* T E'", ''],
-					T: ["F T'"],
-					"T'": ['', "+ F T'"],
-					F: ['', 'id', '( E'],
-				},
-			})
+			firstRecord
 		).toStrictEqual({
 			E: {
 				first: ['', 'id', '(', '+', '*'],

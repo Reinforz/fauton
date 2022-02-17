@@ -1,7 +1,7 @@
 {
   "name": "@fauton/cfg",
-  "version": "0.0.7",
-  "description": "A package to work with context free grammars",
+  "version": "0.0.9",
+  "description": "A package to work with context free grammars and LL1 parsers",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
@@ -21,7 +21,8 @@
     "context-free-grammar",
     "context-free-language",
     "cyk-parse",
-    "cnf"
+    "cnf",
+    "ll1-parse-table"
   ],
   "author": "Safwan Shaheer <devorein00@gmail.com>",
   "license": "MIT",

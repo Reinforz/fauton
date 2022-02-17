@@ -7,6 +7,7 @@ import { findFirst } from './findFirst';
 import { findFollow } from './findFollow';
 import { generateCfgLanguage } from './generateCfgLanguage';
 import { generateLL1ParsingTable } from './generateLL1ParsingTable';
+import { parseWithLL1Table } from "./parseWithLL1Table";
 import { removeEmptyProduction } from './removeEmptyProduction';
 import { removeNonTerminableProduction } from './removeNonTerminableProduction';
 import { removeNullProduction } from './removeNullProduction';
@@ -18,6 +19,7 @@ import { validateCfg } from './validateCfg';
 
 export * from './types';
 export {
+  parseWithLL1Table,
   generateLL1ParsingTable,
   findFollow,
   convertGrammarToString,
