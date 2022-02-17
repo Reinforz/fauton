@@ -12,10 +12,11 @@ export function parseWithLL1Table(inputCfg: IContextFreeGrammarInput, textConten
     if (variableAtStackTop === textContent[lookAheadPointer]) {
       lookAheadPointer += 1
     } else {
-      const ruleNumber = parseTable[variableAtStackTop][textContent[lookAheadPointer]];
-      if (ruleNumber) {
+      const char = textContent[lookAheadPointer];
+      if (char in parseTable[variableAtStackTop]) {
+        const ruleNumber = parseTable[variableAtStackTop][char]!;
         const productionRule = cfg.productionRules[variableAtStackTop][ruleNumber];
-        const productionRuleTokens = productionRule.split("").reverse();
+        const productionRuleTokens = productionRule.split(" ").reverse();
         productionRuleTokens.forEach(productionRuleToken => {
           ruleStack.push(productionRuleToken);
         })
