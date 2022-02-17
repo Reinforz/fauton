@@ -1,7 +1,7 @@
 {
   "name": "@fauton/cfg",
-  "version": "0.0.8",
-  "description": "A package to work with context free grammars",
+  "version": "0.0.9",
+  "description": "A package to work with context free grammars and LL1 parsers",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [

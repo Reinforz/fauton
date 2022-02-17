@@ -2,14 +2,15 @@ import { findFollow } from "../libs/findFollow";
 
 describe('findFollow', () => {
   it(`Grammar where next token is terminal`, () => {
-    expect(findFollow({
+    const followRecord = findFollow({
       productionRules: {
         S: ["B b", "C d"],
         B: ["a B c", ""],
         C: ["c C a", ""]
       },
       startVariable: "S"
-    }).follow).toStrictEqual({
+    }).follow;
+    expect(followRecord).toStrictEqual({
       S: ["$"],
       B: ["b", "c"],
       C: ["d", "a"]
@@ -17,14 +18,15 @@ describe('findFollow', () => {
   })
 
   it(`Grammar where next token is a variable (non edge and non null)`, () => {
-    expect(findFollow({
+    const followRecord = findFollow({
       productionRules: {
         S: ["B b", "C d"],
         B: ["a B C"],
         C: ["c C a"]
       },
       startVariable: "S"
-    }).follow).toStrictEqual({
+    }).follow
+    expect(followRecord).toStrictEqual({
       S: ["$"],
       B: ["b", "c"],
       C: ["d", "b", "c", "a"]
@@ -32,14 +34,15 @@ describe('findFollow', () => {
   })
 
   it(`Grammar where next token is a variable (non edge and nullable)`, () => {
-    expect(findFollow({
+    const followRecord = findFollow({
       productionRules: {
         S: ["B b", "C d"],
         B: ["a B C"],
         C: ["c C a", ""]
       },
       startVariable: "S"
-    }).follow).toStrictEqual({
+    }).follow;
+    expect(followRecord).toStrictEqual({
       S: ["$"],
       B: ["b", "c"],
       C: ["d", "b", "c", "a"]
@@ -47,14 +50,15 @@ describe('findFollow', () => {
   })
 
   it(`Grammar where next token is a variable (edge and non null)`, () => {
-    expect(findFollow({
+    const followRecord = findFollow({
       productionRules: {
         S: ["B b", "C d"],
         C: ["c C"],
         B: ["a C"],
       },
       startVariable: "S"
-    }).follow).toStrictEqual({
+    }).follow
+    expect(followRecord).toStrictEqual({
       S: ["$"],
       B: ["b"],
       C: ["d", "b"]
@@ -62,13 +66,14 @@ describe('findFollow', () => {
   })
 
   it(`Grammar where next token is a variable (edge and null)`, () => {
-    expect(findFollow({
+    const followRecord = findFollow({
       productionRules: {
         S: ["i C t S S'", "a"],
         "S'": ["e S", ""],
         C: ["b"]
       },
-    }).follow).toStrictEqual({
+    }).follow
+    expect(followRecord).toStrictEqual({
       "S": [
         "$",
         "e"
@@ -84,13 +89,14 @@ describe('findFollow', () => {
   })
 
   it(`Grammar with recursion`, () => {
-    expect(findFollow({
+    const followRecord = findFollow({
       productionRules: {
         S: ["a B", ""],
         B: ["b C", ""],
         C: ["c S", ""],
       },
-    }).follow).toStrictEqual({
+    }).follow
+    expect(followRecord).toStrictEqual({
       "S": [
         "$"
       ],
