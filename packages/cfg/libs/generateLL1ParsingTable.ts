@@ -40,9 +40,10 @@ export function generateLL1ParsingTable(inputCfg: IContextFreeGrammarInput) {
             llRecord[productionVariable][followedToken] = ruleNumber
           })
         } else {
-          if (firstTokenForSubstitution in llRecord[productionVariable]) {
-            isParsable = false;
-          }
+          // TODO: No tests reaches this path, maybe its not required?
+          // if (firstTokenForSubstitution in llRecord[productionVariable]) {
+          //   isParsable = false;
+          // }
           llRecord[productionVariable][firstTokenForSubstitution] = ruleNumber
         }
       })
