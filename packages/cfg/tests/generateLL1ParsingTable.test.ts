@@ -2,26 +2,28 @@ import { generateLL1ParsingTable } from '../libs/generateLL1ParsingTable';
 
 describe('generateLL1ParsingTable', () => {
 	it(`Simple LL1 non parsable grammar`, () => {
+    const ll1ParsingTable = generateLL1ParsingTable({
+      productionRules: {
+        S: ['a S b S', 'b S a S', ''],
+      },
+    });
 		expect(
-			generateLL1ParsingTable({
-				productionRules: {
-					S: ['a S b S', 'b S a S', ''],
-				},
-			})
+			ll1ParsingTable
 		).toStrictEqual({ parseTable: { S: { a: 2, b: 2, $: 2 } }, isParsable: false });
 	});
 
 	it(`Complex LL1 parsable grammar`, () => {
+    const ll1ParsingTable = generateLL1ParsingTable({
+      productionRules: {
+        E: ["T E'"],
+        "E'": ["+ T E'", ''],
+        T: ["F T'"],
+        "T'": ["* F T'", ''],
+        F: ['id', '( E )'],
+      },
+    })
 		expect(
-			generateLL1ParsingTable({
-				productionRules: {
-					E: ["T E'"],
-					"E'": ["+ T E'", ''],
-					T: ["F T'"],
-					"T'": ["* F T'", ''],
-					F: ['id', '( E )'],
-				},
-			})
+			ll1ParsingTable
 		).toStrictEqual({
 			parseTable: {
 				E: {
