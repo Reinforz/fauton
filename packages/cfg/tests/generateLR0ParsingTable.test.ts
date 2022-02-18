@@ -1,4 +1,4 @@
-import { addDotToProductionRule, generateClosureOfLR0Item } from "../libs/generateLR0ParsingTable";
+import { addDotToProductionRule, augmentCfg, generateClosureOfLR0Item } from "../libs/generateLR0ParsingTable";
 
 describe('addDotToProductionRule', () => { 
   it(`Simple grammar`, () => {
@@ -26,8 +26,6 @@ describe('generateClosureOfLR0Item', () => {
     
     generateClosureOfLR0Item({
       productionRules,
-      startVariable: "S'",
-      terminals: ["a", "b"],
       variables: ["S'", "S", "A"]
     }, "S'")
 
@@ -35,6 +33,30 @@ describe('generateClosureOfLR0Item', () => {
       "S'": ["$.$ S"],
       S: ["$.$ A A"],
       A: ["$.$ a A", "$.$ b"]
+    })
+  })
+})
+
+describe('augmentCfg', () => { 
+  it(`Simple grammar`, () => {
+    const augmentedGrammar = augmentCfg({
+      productionRules: {
+        S: ["A a", "B"],
+        A: ["a b"],
+        B: ["S a"]
+      },
+    })
+
+    expect(augmentedGrammar).toStrictEqual({
+      productionRules: {
+        "S'": ["S"],
+        S: ["A a", "B"],
+        A: ["a b"],
+        B: ["S a"]
+      },
+      variables: [ "S'", "S", "A", "B"],
+      startVariable: "S'",
+      terminals: ["a", "b"]
     })
   })
 })

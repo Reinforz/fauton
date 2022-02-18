@@ -12,7 +12,7 @@ export function addDotToProductionRule (productionRules: IContextFreeGrammar["pr
   });
 }
 
-export function generateClosureOfLR0Item(cfg: IContextFreeGrammar, productionVariable: string) {
+export function generateClosureOfLR0Item(cfg: Omit<IContextFreeGrammar, "startVariable" | "terminals">, productionVariable: string) {
   const {productionRules, variables} = cfg;
   // Creating a set of variables for faster membership lookup
   const variablesSet = new Set(variables);
@@ -36,12 +36,17 @@ export function generateClosureOfLR0Item(cfg: IContextFreeGrammar, productionVar
   })
 }
 
-export function generateLR0ParsingTable(inputCfg: IContextFreeGrammarInput) {
+export function augmentCfg(inputCfg: IContextFreeGrammarInput) {
   const cfg  = populateCfg(inputCfg);
   const { productionRules, startVariable, variables } = cfg;
   // Create the augmented grammar
-  const newStartVariable = `${startVariable  }'`;
-  variables.push(newStartVariable);
-  productionRules[newStartVariable] = productionRules[startVariable]
+  const newStartVariable = `${startVariable}'`;
+  variables.unshift(newStartVariable);
+  productionRules[newStartVariable] = [startVariable]
   cfg.startVariable = newStartVariable
+  return cfg;
+}
+
+export function generateLR0ParsingTable(inputCfg: IContextFreeGrammarInput) {
+  augmentCfg(inputCfg);
 }
