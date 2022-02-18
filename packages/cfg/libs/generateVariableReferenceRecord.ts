@@ -1,11 +1,19 @@
 import { IContextFreeGrammar } from "./types";
 
 export interface VariableReferenceLocation {
+  // The production variable name
   variable: string,
+  // Rule number of the production variable
   ruleNumber: number,
+  // Token number of the rule
   tokenNumber: number
 }
 
+/**
+ * Return a record providing details of the location of each variable of the cfg
+ * @param cfg Input context free grammar
+ * @returns A record which provides info regarding the location of a variable
+ */
 export default function generateVariableReferenceRecord(cfg: Pick<IContextFreeGrammar, "productionRules" | "variables">) {
   const {variables, productionRules} = cfg;
   const variableReferenceLocationRecord: Record<string, VariableReferenceLocation[]> = {};
