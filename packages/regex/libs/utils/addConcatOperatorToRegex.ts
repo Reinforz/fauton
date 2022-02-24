@@ -16,7 +16,9 @@ export function addConcatOperatorToRegex(regexString: string) {
 	for (let index = 0; index < regexString.length; index += 1) {
 		const regexSymbol = regexString[index];
 		newRegexString += regexSymbol;
-
+    // Break on last character
+    // We could've looped one less time 
+    // but then the last symbol wouldn't have been added
     if (index === regexString.length -1 ) {
       break;
     }
