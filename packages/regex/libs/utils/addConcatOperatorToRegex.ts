@@ -1,3 +1,8 @@
+/**
+ * Add concat (.) operator to regex string where necessary
+ * @param regexString Regex string to add concat operator to
+ * @returns Concat operator added regex string
+ */
 export function addConcatOperatorToRegex(regexString: string) {
 	if (regexString.length === 1) {
 		return regexString;
@@ -8,16 +13,16 @@ export function addConcatOperatorToRegex(regexString: string) {
 	const regexOperatorGroup3 = new Set('*+?');
 
 	let newRegexString = '';
-	for (let index = 0; index < regexString.length; index + 1) {
+	for (let index = 0; index < regexString.length; index += 1) {
 		const regexSymbol = regexString[index];
 		newRegexString += regexSymbol;
-		// Break in the last symbol
-		if (index === regexString.length - 1) {
-			break;
-		}
+
+    if (index === regexString.length -1 ) {
+      break;
+    }
 		// add concatenation operator between
 		// literal.literal, right_bracket.left_bracket, literal.left_bracket
-		else if (
+		if (
 			!regexOperatorGroup1.has(regexSymbol) &&
 			!regexOperatorGroup2.has(regexString[index + 1])
 		) {
