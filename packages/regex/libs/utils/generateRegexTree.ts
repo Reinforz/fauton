@@ -56,7 +56,9 @@ export function generateRegexTreeLiteralNode(regexString: string): [RegexNode, s
 }
 
 export function generateRegexTree(postfixRegexString: string) {
+  // Set of binary regex operators
 	const binaryRegexOperators = new Set('.|');
+  // Set of unary regex operators
 	const unaryRegexOperators = new Set('*+?');
 	let result: [RegexNode, string] | null = null;
 	if (binaryRegexOperators.has(postfixRegexString[postfixRegexString.length - 1])) {

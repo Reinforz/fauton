@@ -17,6 +17,11 @@ export class RegularExpression {
 	test(inputString: string) {
 		return Boolean(inputString.match(this.automaton.regex));
 	}
+
+  convertToPostfix() {
+    return RegularExpressionUtils.convertInfixRegexToPostfix(String(this.automaton.regex))
+  }
 }
 
 export { RegularExpressionUtils };
+
