@@ -1,9 +1,9 @@
 /* eslint-disable no-use-before-define */
 
-export type UnaryRegexOperators = "+" | "*";
+export type UnaryRegexOperators = "+" | "*" | "?";
+export type UnaryRegexOperatorsName = "Plus" | "Kleene" | "Optional";
 export type BinaryRegexOperators = "." | "|";
 export type BinaryRegexOperatorsName = "Concat" | "Or";
-export type UnaryRegexOperatorsName = "Plus" | "Kleene";
 
 export interface UnaryRegexNode<Operator extends UnaryRegexOperatorsName = UnaryRegexOperatorsName> {
   operator: Operator
@@ -18,6 +18,7 @@ export interface BinaryRegexNode<Operator extends BinaryRegexOperatorsName = Bin
 export interface ConcatRegexNode extends BinaryRegexNode<"Concat"> {}
 export interface OrRegexNode extends BinaryRegexNode<"Or"> {}
 export interface KleeneRegexNode extends UnaryRegexNode<"Kleene"> {}
+export interface OptionalRegexNode extends UnaryRegexNode<"Optional"> {}
 export interface PlusRegexNode extends UnaryRegexNode<"Plus"> {}
 
 export interface LiteralRegexNode {
@@ -35,6 +36,7 @@ export interface IRegularExpression {
 export type RegexNode =
 	| ConcatRegexNode
 	| KleeneRegexNode
+	| OptionalRegexNode
 	| OrRegexNode
 	| LiteralRegexNode
 	| PlusRegexNode;

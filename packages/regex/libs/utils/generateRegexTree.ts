@@ -7,7 +7,13 @@ const RegexOperatorKeywordRecord: Record<UnaryRegexOperators | BinaryRegexOperat
   "|": "Or",
   "*": "Kleene",
   "+": "Plus",
+  "?": "Optional"
 };
+
+// Set of binary regex operators
+const binaryRegexOperators = new Set('.|');
+// Set of unary regex operators
+const unaryRegexOperators = new Set('*+?');
 
 export function generateRegexTreeBinaryOperatorNode(regexString: string): [RegexNode, string] {
 	const [rightNode, regex1] = generateRegexTree(regexString.slice(0, regexString.length - 1));
@@ -44,23 +50,15 @@ export function generateRegexTreeLiteralNode(regexString: string): [RegexNode, s
 }
 
 export function generateRegexTree(postfixRegexString: string) {
-  // Set of binary regex operators
-	const binaryRegexOperators = new Set('.|');
-  // Set of unary regex operators
-	const unaryRegexOperators = new Set('*+?');
-	let result: [RegexNode, string] | null = null;
   const lastSymbolInPostfixRegexString = postfixRegexString[postfixRegexString.length - 1];
   // Checking for binary operators
 	if (binaryRegexOperators.has(lastSymbolInPostfixRegexString)) {
-		result = generateRegexTreeBinaryOperatorNode(postfixRegexString);
+		return generateRegexTreeBinaryOperatorNode(postfixRegexString);
 	} 
   // Checking for unary operators
   else if (unaryRegexOperators.has(lastSymbolInPostfixRegexString)) {
-		result = generateRegexTreeUnaryOperatorNode(postfixRegexString);
+		return generateRegexTreeUnaryOperatorNode(postfixRegexString);
 	} 
   // Checking for regular literals
-  else {
-		result = generateRegexTreeLiteralNode(postfixRegexString);
-	}
-	return result;
+  return generateRegexTreeLiteralNode(postfixRegexString);
 }

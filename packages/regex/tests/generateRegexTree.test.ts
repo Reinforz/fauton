@@ -13,7 +13,7 @@ describe('generateRegexTree', () => {
 					{ operands: ['a'], operator: 'Literal' },
 					{
 						operands: [
-							{ operands: [{ operands: ['b'], operator: 'Literal' }], operator: undefined },
+							{ operands: [{ operands: ['b'], operator: 'Literal' }], operator: 'Optional' },
 							{ operands: [{ operands: ['c'], operator: 'Literal' }], operator: 'Kleene' },
 						],
 						operator: 'Concat',
