@@ -1,24 +1,24 @@
 /* eslint-disable no-use-before-define */
 
-export interface ConcatRegexNode {
-	operator: 'Concat';
-	operands: [RegexNode, RegexNode];
-}
+export type UnaryRegexOperators = "+" | "*";
+export type BinaryRegexOperators = "." | "|";
+export type BinaryRegexOperatorsName = "Concat" | "Or";
+export type UnaryRegexOperatorsName = "Plus" | "Kleene";
 
-export interface KleeneRegexNode {
-	operator: 'Kleene';
+export interface UnaryRegexNode<Operator extends UnaryRegexOperatorsName = UnaryRegexOperatorsName> {
+  operator: Operator
 	operands: [RegexNode];
 }
 
-export interface OrRegexNode {
-	operator: 'Or';
+export interface BinaryRegexNode<Operator extends BinaryRegexOperatorsName = BinaryRegexOperatorsName> {
+  operator: Operator
 	operands: [RegexNode, RegexNode];
 }
 
-export interface PlusRegexNode {
-	operator: 'Plus';
-	operands: [RegexNode];
-}
+export interface ConcatRegexNode extends BinaryRegexNode<"Concat"> {}
+export interface OrRegexNode extends BinaryRegexNode<"Or"> {}
+export interface KleeneRegexNode extends UnaryRegexNode<"Kleene"> {}
+export interface PlusRegexNode extends UnaryRegexNode<"Plus"> {}
 
 export interface LiteralRegexNode {
 	operator: 'Literal';
