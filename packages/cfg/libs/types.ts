@@ -31,3 +31,5 @@ export interface ICfgLanguageGenerationOption {
 export type ParseTree = {
   [k: string]: (string | ParseTree)[]
 }
+
+export type Derivation = [string, string[]]

@@ -1,10 +1,10 @@
 import { generateLL1ParsingTable } from "./generateLL1ParsingTable";
 import { generateParseTreeFromDerivations } from "./generateParseTreeFromDerivations";
-import { IContextFreeGrammarInput } from "./types";
+import { Derivation, IContextFreeGrammarInput } from "./types";
 import { populateCfg } from "./utils/populateCfg";
 
 export function parseWithLL1Table(inputCfg: IContextFreeGrammarInput, textContent: string) {
-  const derivations: [string, string[]][] = []
+  const derivations: Derivation[] = []
   const cfg = populateCfg(inputCfg)
   const {parseTable} = generateLL1ParsingTable(cfg);
   const ruleStack = ["$", cfg.startVariable];
@@ -32,6 +32,6 @@ export function parseWithLL1Table(inputCfg: IContextFreeGrammarInput, textConten
   return {
     parsed: parsed ?? (ruleStack.length === 1 && ruleStack[0] === "$"),
     derivations,
-    tree: generateParseTreeFromDerivations(cfg, derivations)
+    tree: generateParseTreeFromDerivations(cfg.variables, derivations)
   }
 }
