@@ -2,22 +2,35 @@ import { parseWithLL1Table } from "../libs/parseWithLL1Table";
 
 describe('parseWithLL1Table', () => { 
   it(`Parsable string`, () => {
-    const isParsable = parseWithLL1Table({
+    const {parsed, derivations} = parseWithLL1Table({
       productionRules: {
         S: ["A A"],
         A: ["a A", "b"],
       }
     }, "abab")
-    expect(isParsable).toBe(true)
+    expect(derivations).toStrictEqual([
+      ["S", ["A", "A"]],
+      ["A", ["a", "A"]],
+      ["A", ["b"]],
+      ["A", ["a", "A"]],
+      ["A", ["b"]]
+    ])
+    expect(parsed).toBe(true)
   })
 
   it(`Unparsable string`, () => {
-    const isParsable = parseWithLL1Table({
+    const {parsed, derivations} = parseWithLL1Table({
       productionRules: {
         S: ["A A"],
         A: ["a A", "b"],
       }
     }, "aba")
-    expect(isParsable).toBe(false)
+    expect(derivations).toStrictEqual([
+      ["S", ["A", "A"]],
+      ["A", ["a", "A"]],
+      ["A", ["b"]],
+      ["A", ["a", "A"]]
+    ])
+    expect(parsed).toBe(false)
   })
 })
