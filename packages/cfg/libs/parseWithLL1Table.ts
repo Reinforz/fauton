@@ -1,9 +1,10 @@
 import { generateLL1ParsingTable } from "./generateLL1ParsingTable";
+import { generateParseTreeFromDerivations } from "./generateParseTreeFromDerivations";
 import { IContextFreeGrammarInput } from "./types";
 import { populateCfg } from "./utils/populateCfg";
 
 export function parseWithLL1Table(inputCfg: IContextFreeGrammarInput, textContent: string) {
-  const derivations: string[] = []
+  const derivations: [string, string[]][] = []
   const cfg = populateCfg(inputCfg)
   const {parseTable} = generateLL1ParsingTable(cfg);
   const ruleStack = ["$", cfg.startVariable];
@@ -17,11 +18,9 @@ export function parseWithLL1Table(inputCfg: IContextFreeGrammarInput, textConten
       if (char in parseTable[variableAtStackTop]) {
         const ruleNumber = parseTable[variableAtStackTop][char]!;
         const productionRule = cfg.productionRules[variableAtStackTop][ruleNumber];
-        const productionRuleTokens = productionRule.split(" ").reverse();
-        productionRuleTokens.forEach(productionRuleToken => {
-          ruleStack.push(productionRuleToken);
-        })
-        derivations.push(`${variableAtStackTop}:${productionRule}`)
+        const productionRuleTokens = productionRule.split(" ");
+        ruleStack.push(...[...productionRuleTokens].reverse())
+        derivations.push([variableAtStackTop, productionRuleTokens])
       }
     }
   }
@@ -29,6 +28,6 @@ export function parseWithLL1Table(inputCfg: IContextFreeGrammarInput, textConten
   return {
     parsed: ruleStack.length === 1 && ruleStack[0] === "$",
     derivations,
-    tree: null
+    tree: generateParseTreeFromDerivations(cfg, derivations)
   }
 }
