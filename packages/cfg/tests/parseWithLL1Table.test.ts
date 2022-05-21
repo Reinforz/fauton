@@ -24,12 +24,11 @@ describe('parseWithLL1Table', () => {
         S: ["A A"],
         A: ["a A", "b"],
       }
-    }, "aba")
+    }, "abcab")
     expect(derivations).toStrictEqual([
       ["S", ["A", "A"]],
       ["A", ["a", "A"]],
       ["A", ["b"]],
-      ["A", ["a", "A"]]
     ])
     expect(parsed).toBe(false)
   })
