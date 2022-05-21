@@ -4,23 +4,28 @@ export function generateParseTreeFromDerivations(cfg: IContextFreeGrammar, deriv
   const rootTree: ParseTree[] = []
   const variablesSet = new Set(cfg.variables);
 
-  function recurse(derivation: [string, string[]], parentTreeContainer: (string | ParseTree)[], derivationNumber: number) {
-    const [productionVariable, productionRuleTokens] = derivation;
-    const parentNode: ParseTree = {
-      [productionVariable]: []
-    };
+  let derivationNumber = 0;
 
-    for (let index = 0; index < productionRuleTokens.length; index+=1) {
-      const token = productionRuleTokens[index];
-      if (variablesSet.has(token)) {
-        recurse(derivations[derivationNumber + 1], parentNode[productionVariable], derivationNumber + 1)
-      } else {
-        parentNode[productionVariable].push(token)
+  function recurse(derivation: [string, string[]], parentTreeContainer: (string | ParseTree)[]) {
+    if (derivationNumber < derivations.length) {
+      const [productionVariable, productionRuleTokens] = derivation;
+      const parentNode: ParseTree = {
+        [productionVariable]: []
+      };
+  
+      for (let index = 0; index < productionRuleTokens.length; index+=1) {
+        const token = productionRuleTokens[index];
+        if (variablesSet.has(token)) {
+          derivationNumber += 1;
+          recurse(derivations[derivationNumber], parentNode[productionVariable])
+        } else {
+          parentNode[productionVariable].push(token)
+        }
       }
+      parentTreeContainer.push(parentNode)
     }
-    parentTreeContainer.push(parentNode)
   }
 
-  recurse(derivations[0], rootTree, 0)
+  recurse(derivations[0], rootTree)
   return rootTree[0]
 }

@@ -9,6 +9,7 @@ export function parseWithLL1Table(inputCfg: IContextFreeGrammarInput, textConten
   const {parseTable} = generateLL1ParsingTable(cfg);
   const ruleStack = ["$", cfg.startVariable];
   let lookAheadPointer = 0;
+  let parsed: null | boolean = null
   while (ruleStack.length !== 1 && lookAheadPointer !== textContent.length) {
     const variableAtStackTop = ruleStack.pop()!;
     if (variableAtStackTop === textContent[lookAheadPointer]) {
@@ -21,12 +22,15 @@ export function parseWithLL1Table(inputCfg: IContextFreeGrammarInput, textConten
         const productionRuleTokens = productionRule.split(" ");
         ruleStack.push(...[...productionRuleTokens].reverse())
         derivations.push([variableAtStackTop, productionRuleTokens])
+      } else {
+        parsed = false;
+        break;
       }
     }
   }
 
   return {
-    parsed: ruleStack.length === 1 && ruleStack[0] === "$",
+    parsed: parsed ?? (ruleStack.length === 1 && ruleStack[0] === "$"),
     derivations,
     tree: generateParseTreeFromDerivations(cfg, derivations)
   }
