@@ -41,7 +41,7 @@ export function leftFactoring(inputCfg: IContextFreeGrammarInput) {
     if (Object.keys(ruleIndexMatchedTokensCountRecord).length !== 0) {
       // Get the least number of common token
       const minTokenMatches = Math.min(...Object.values(ruleIndexMatchedTokensCountRecord))
-      const newProductionVariable = `${productionVariable}1`;
+      const newProductionVariable = `${productionVariable}'`;
       const productionRulesForNewVariable: string[] = [];
       const productionRulesForCurrentVariable: Set<string> = new Set()
       Object.keys(ruleIndexMatchedTokensCountRecord).forEach(matchedProductionRulesIndex => {
