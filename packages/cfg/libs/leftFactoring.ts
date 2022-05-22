@@ -1,15 +1,19 @@
 import { IContextFreeGrammar, IContextFreeGrammarInput } from "./types";
 import { populateCfg } from "./utils/populateCfg";
 
+/**
+ * Left factors a grammar to remove non determinism
+ * @param inputCfg Input context free grammar
+ * @returns Left refactored grammar
+ */
 export function leftFactoring(inputCfg: IContextFreeGrammarInput) {
   const cfg = populateCfg(inputCfg);
   const cfgProductionRulesEntries = Object.entries(cfg.productionRules);
   let currentEntryNumber = 0;
   while(currentEntryNumber !== cfgProductionRulesEntries.length) {
     const [productionVariable, productionRules] = cfgProductionRulesEntries[currentEntryNumber];
-    let productionRuleIndexWithFirstMatch = -1;
-    const matchedTokensCountArray: number[] = [];
-    const matchedProductionRulesIndexSet: Set<number> = new Set()
+    // Production rule index and number of tokens that matched, index with 0 matched tokens are not added
+    const ruleIndexMatchedTokensCountRecord: Record<string, number> = {};
     for (let outerProductionRuleIndex = 0; outerProductionRuleIndex < productionRules.length - 1; outerProductionRuleIndex += 1) {
       for (let innerProductionRuleIndex = outerProductionRuleIndex + 1; innerProductionRuleIndex < productionRules.length; innerProductionRuleIndex += 1) {
         const outerProductionRuleTokens = productionRules[outerProductionRuleIndex].split(" ");
@@ -19,38 +23,43 @@ export function leftFactoring(inputCfg: IContextFreeGrammarInput) {
         while (currentTokenIndex !== innerProductionRuleTokens.length) {
           if (outerProductionRuleTokens[currentTokenIndex] === innerProductionRuleTokens[currentTokenIndex]) {
             totalTokenMatches += 1;
-            productionRuleIndexWithFirstMatch = currentEntryNumber;
+            ruleIndexMatchedTokensCountRecord[outerProductionRuleIndex] = totalTokenMatches;
           } else {
+            // Break the loop if there is mismatch between two tokens in the same index
             break;
           }
           currentTokenIndex += 1
         }
+        // Only populate record if there is at least one token match
         if (totalTokenMatches !== 0) {
-          matchedTokensCountArray.push(totalTokenMatches)
-          matchedProductionRulesIndexSet.add(innerProductionRuleIndex)
+          ruleIndexMatchedTokensCountRecord[innerProductionRuleIndex] = totalTokenMatches
         }
       }
-      if (productionRuleIndexWithFirstMatch !== -1) {
-        matchedProductionRulesIndexSet.add(outerProductionRuleIndex)
-        break;
-      }
     }
-    if (matchedTokensCountArray.length !== 0) {
-      const minTokenMatches = Math.min(...matchedTokensCountArray)
+
+    // Only continue if there is common tokens
+    if (Object.keys(ruleIndexMatchedTokensCountRecord).length !== 0) {
+      // Get the least number of common token
+      const minTokenMatches = Math.min(...Object.values(ruleIndexMatchedTokensCountRecord))
       const newProductionVariable = `${productionVariable}1`;
       const productionRulesForNewVariable: string[] = [];
       const productionRulesForCurrentVariable: Set<string> = new Set()
-      matchedProductionRulesIndexSet.forEach(matchedProductionRulesIndex => {
-        const productionRuleTokens = productionRules[matchedProductionRulesIndex].split(" ");
+      Object.keys(ruleIndexMatchedTokensCountRecord).forEach(matchedProductionRulesIndex => {
+        const productionRuleTokens = productionRules[parseInt(matchedProductionRulesIndex, 10)].split(" ");
+        // Everything after min token count will be stored as production rule of new variable
         productionRulesForNewVariable.push(productionRuleTokens.slice(minTokenMatches).join(" "))
       })
+      // Add the new production variable and its rule after the current entry index so that it can be processed further in the next iteration
       cfgProductionRulesEntries.splice(currentEntryNumber + 1, 0, [newProductionVariable, productionRulesForNewVariable])
       productionRules.forEach((productionRule, productionRuleIndex) => {
-        const productionRuleTokens = productionRule.split(" ")
-        if (matchedProductionRulesIndexSet.has(productionRuleIndex)) {
+        const productionRuleTokens = productionRule.split(" ");
+        // If there are matched tokens 
+        if (ruleIndexMatchedTokensCountRecord[productionRuleIndex]) {
+          // Everything before min token count will be stored as production rule of current variable
           const newProductionRule = productionRuleTokens.slice(0, minTokenMatches).join(" ");
           productionRulesForCurrentVariable.add(`${newProductionRule} ${newProductionVariable}`)
         } else {
+          // Otherwise add the production rule without changing it
           productionRulesForCurrentVariable.add(productionRule)
         }
       })
@@ -60,6 +69,7 @@ export function leftFactoring(inputCfg: IContextFreeGrammarInput) {
   }
 
   const productionRules: IContextFreeGrammar["productionRules"] = {};
+  // Loop through new entries and populate the new production rules
   cfgProductionRulesEntries.forEach(([productionVariable, productionRulesForVariable]) => {
     productionRules[productionVariable] = productionRulesForVariable;
   })
