@@ -1,8 +1,8 @@
-import { leftFactoring } from '../libs/leftFactoring';
+import { removeNonDeterminism } from '../libs/removeNonDeterminism';
 
-describe('leftFactoring', () => {
+describe('removeNonDeterminism', () => {
 	it(`Should be able to left factor for multiple production rule`, () => {
-		const leftRefactored = leftFactoring({
+		const leftRefactored = removeNonDeterminism({
       productionRules: {
         S: ["a A d", "a B"],
         A: ["a", "a b"],
@@ -25,7 +25,7 @@ describe('leftFactoring', () => {
 	});
 
   it(`Should be able to left factor for single production rule`, () => {
-		const leftRefactored = leftFactoring({
+		const leftRefactored = removeNonDeterminism({
 			productionRules: {
 				S: ['b', 'a S S b S', 'a S a S b', 'a b b'],
 			},
