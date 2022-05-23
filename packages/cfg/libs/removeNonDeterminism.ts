@@ -6,7 +6,7 @@ import { populateCfg } from "./utils/populateCfg";
  * @param inputCfg Input context free grammar
  * @returns Left refactored grammar
  */
-export function leftFactoring(inputCfg: IContextFreeGrammarInput) {
+export function removeNonDeterminism(inputCfg: IContextFreeGrammarInput) {
   const cfg = populateCfg(inputCfg);
   const cfgProductionRulesEntries = Object.entries(cfg.productionRules);
   let currentEntryNumber = 0;
