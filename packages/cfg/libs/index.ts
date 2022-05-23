@@ -8,6 +8,7 @@ import { findFollow } from './findFollow';
 import { generateCfgLanguage } from './generateCfgLanguage';
 import { generateLL1ParsingTable } from './generateLL1ParsingTable';
 import { addDotToProductionRule, generateClosureOfLR0Item, generateLR0ParsingTable } from './generateLR0ParsingTable';
+import { leftFactoring } from './leftFactoring';
 import { parseWithLL1Table } from "./parseWithLL1Table";
 import { removeEmptyProduction } from './removeEmptyProduction';
 import { removeNonTerminableProduction } from './removeNonTerminableProduction';
@@ -28,6 +29,7 @@ export const LRO = {
 
 export * from './types';
 export {
+  leftFactoring,
   parseWithLL1Table,
   generateLL1ParsingTable,
   findFollow,
