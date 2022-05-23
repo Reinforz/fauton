@@ -1,11 +1,11 @@
 {
   "name": "@fauton/cfg",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "A package to work with context free grammars and LL1 parsers",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "dist/"
+    "dist/*"
   ],
   "scripts": {
     "prebuild": "del-cli ./dist",
