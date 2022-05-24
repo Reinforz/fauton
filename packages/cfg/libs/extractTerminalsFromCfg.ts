@@ -2,7 +2,7 @@ import { IContextFreeGrammarInput } from './types';
 
 /**
  * Extract terminals from cfg rules
- * @param cfg Cfg object
+ * @param inputCfg input Cfg
  * @returns An array of terminals
  */
 export function extractTerminalsFromCfg(

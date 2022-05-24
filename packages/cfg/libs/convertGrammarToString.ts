@@ -3,7 +3,7 @@ import { IContextFreeGrammar } from './types';
 /**
  * Convert a cfg to its string representation
  * @param productionRules Production rules record
- * @returns A string corresponding to the cfg rules
+ * @returns A string representation of the cfg production rules
  */
 export function convertGrammarToString(productionRules: IContextFreeGrammar['productionRules']) {
 	const grammarStringLines: string[] = [];

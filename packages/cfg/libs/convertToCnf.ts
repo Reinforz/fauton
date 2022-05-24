@@ -252,7 +252,7 @@ export function checkForSelfReference(rules: string[], variable: string) {
 /**
  * Converts a cfg to cnf
  * @param cfg Input cfg to convert to cnf
- * @returns Resultant cfg converted to cnf
+ * @returns cfg converted to cnf 
  */
 export function convertToCnf(inputCfg: IContextFreeGrammarInput) {
 	const cfg = populateCfg(inputCfg);
