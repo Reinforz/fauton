@@ -27,3 +27,9 @@ export interface ICfgLanguageGenerationOption {
 	useSpaceWhenJoiningTokens?: boolean;
 	parseDirection?: 'left' | 'right';
 }
+
+export type ParseTree = {
+  [k: string]: (string | ParseTree)[]
+}
+
+export type Derivation = [string, string[]]

@@ -1,7 +1,7 @@
 /**
  * Validates a simple regex consisting of ()|*.+? operators
  * @param regexString Validate regex string
- * @returns Whether the regex is valid or not
+ * @returns boolean whether the regex is valid or not
  */
 export function validateRegex(regexString: string) {
 	const operations = new Set(['(', '+', '*', '|', '?']);
